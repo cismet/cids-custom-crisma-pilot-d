@@ -13,16 +13,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.vividsolutions.jts.geom.Geometry;
 
+import edu.umd.cs.piccolo.event.PBasicInputEventHandler;
 import edu.umd.cs.piccolo.event.PInputEvent;
+
+import org.openide.util.ImageUtilities;
+import org.openide.util.NbBundle;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
 
 import java.io.IOException;
 
 import java.util.Map;
 
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 import de.cismet.cids.custom.crisma.worldstate.viewer.AbstractDetailView;
 
@@ -35,7 +45,6 @@ import de.cismet.cismap.commons.gui.MappingComponent;
 import de.cismet.cismap.commons.gui.layerwidget.ActiveLayerModel;
 import de.cismet.cismap.commons.gui.piccolo.eventlistener.BackgroundRefreshingPanEventListener;
 import de.cismet.cismap.commons.gui.piccolo.eventlistener.RubberBandZoomListener;
-import de.cismet.cismap.commons.interaction.events.MapClickedEvent;
 import de.cismet.cismap.commons.raster.wms.simple.SimpleWMS;
 import de.cismet.cismap.commons.raster.wms.simple.SimpleWmsGetMapUrl;
 
@@ -57,6 +66,7 @@ public class ShakemapView extends AbstractDetailView {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private de.cismet.cismap.commons.gui.MappingComponent mappingComponent1;
     // End of variables declaration//GEN-END:variables
 
@@ -67,6 +77,26 @@ public class ShakemapView extends AbstractDetailView {
      */
     public ShakemapView() {
         initComponents();
+
+        final JPanel p = new JPanel() {
+
+                final Image i = ImageUtilities.loadImage(ShakemapView.class.getPackage().getName().replaceAll(
+                            "\\.",
+                            "/") + "/legend.png");
+
+                @Override
+                protected void paintComponent(final Graphics g) {
+                    g.drawImage(i, 0, 0, this);
+                    g.dispose();
+                }
+            };
+
+        final Dimension d = new Dimension(253, 240);
+        p.setMaximumSize(d);
+        p.setMinimumSize(d);
+        p.setSize(d);
+        p.setPreferredSize(d);
+        jPanel2.add(p, BorderLayout.CENTER);
     }
 
     //~ Methods ----------------------------------------------------------------
@@ -82,6 +112,7 @@ public class ShakemapView extends AbstractDetailView {
 
         jPanel1 = new javax.swing.JPanel();
         mappingComponent1 = new de.cismet.cismap.commons.gui.MappingComponent();
+        jPanel2 = new javax.swing.JPanel();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -96,6 +127,16 @@ public class ShakemapView extends AbstractDetailView {
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
         jPanel1.add(mappingComponent1, gridBagConstraints);
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                NbBundle.getMessage(ShakemapView.class, "ShakemapView.jPanel2.border.title"))); // NOI18N
+        jPanel2.setLayout(new java.awt.BorderLayout());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        jPanel1.add(jPanel2, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -141,7 +182,7 @@ public class ShakemapView extends AbstractDetailView {
      */
     private void init() {
         try {
-            initPilotDMap(mappingComponent1, "shakemap", getWorldstate(), 0.7f);
+            initPilotDMap(mappingComponent1, "shakemap", getWorldstate(), 0.7f, new WFSRequestListener());
         } catch (final Exception e) {
             LOG.error("cannot initialise shakemap miniature view", e);
         }
@@ -154,6 +195,7 @@ public class ShakemapView extends AbstractDetailView {
      * @param   dataitem           DOCUMENT ME!
      * @param   worldstate         DOCUMENT ME!
      * @param   translucency       DOCUMENT ME!
+     * @param   listener           DOCUMENT ME!
      *
      * @throws  IOException            DOCUMENT ME!
      * @throws  IllegalStateException  DOCUMENT ME!
@@ -161,7 +203,8 @@ public class ShakemapView extends AbstractDetailView {
     public static void initPilotDMap(final MappingComponent mappingComponent1,
             final String dataitem,
             final CidsBean worldstate,
-            final float translucency) throws IOException {
+            final float translucency,
+            final PBasicInputEventHandler listener) throws IOException {
         for (final CidsBean b : worldstate.getBeanCollectionProperty("worldstatedata")) {
             if (dataitem.equals(b.getProperty("name"))) {
                 final Geometry g = (Geometry)b.getProperty("spatialcoverage.geo_field");
@@ -190,7 +233,7 @@ public class ShakemapView extends AbstractDetailView {
                 mappingModel.addLayer(layer);
 
                 mappingComponent1.setMappingModel(mappingModel);
-                mappingComponent1.addInputListener("wfsclick", new WFSRequestListener());
+                mappingComponent1.addInputListener("wfsclick", listener);
                 mappingComponent1.setInteractionMode("wfsclick");
                 mappingComponent1.unlock();
                 mappingComponent1.gotoInitialBoundingBox();
@@ -240,7 +283,7 @@ public class ShakemapView extends AbstractDetailView {
      *
      * @version  $Revision$, $Date$
      */
-    private static final class WFSRequestListener extends BackgroundRefreshingPanEventListener {
+    public static final class WFSRequestListener extends BackgroundRefreshingPanEventListener {
 
         //~ Instance fields ----------------------------------------------------
 

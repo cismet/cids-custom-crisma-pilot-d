@@ -7,27 +7,13 @@
 ****************************************************/
 package de.cismet.cids.custom.crisma.pilotD.worldstate;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import com.vividsolutions.jts.geom.Geometry;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-
 import de.cismet.cids.custom.crisma.WorldstateContainer;
+import de.cismet.cids.custom.crisma.pilotD.worldstate.ShakemapView.WFSRequestListener;
 
 import de.cismet.cids.dynamics.CidsBean;
-
-import de.cismet.cismap.commons.Crs;
-import de.cismet.cismap.commons.CrsTransformer;
-import de.cismet.cismap.commons.XBoundingBox;
-import de.cismet.cismap.commons.gui.layerwidget.ActiveLayerModel;
-import de.cismet.cismap.commons.raster.wms.simple.SimpleWMS;
-import de.cismet.cismap.commons.raster.wms.simple.SimpleWmsGetMapUrl;
 
 /**
  * DOCUMENT ME!
@@ -112,7 +98,7 @@ public class ShakemapMiniatureView extends javax.swing.JPanel implements Worldst
      */
     private void init() {
         try {
-            ShakemapView.initPilotDMap(mappingComponent1, "shakemap", worldstate, 0.7f);
+            ShakemapView.initPilotDMap(mappingComponent1, "shakemap", worldstate, 0.7f, new WFSRequestListener());
         } catch (final Exception e) {
             LOG.error("cannot initialise shakemap miniature view", e);
         }

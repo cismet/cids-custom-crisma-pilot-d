@@ -141,7 +141,8 @@ public final class ExecModelWizardAction extends AbstractCidsBeanAction {
     private void exec(final WizardDescriptor wizard) throws Exception {
         final List<String> models = (List<String>)wizard.getProperty(ChooseModelWizardPanel.PROP_SELECTED_MODELS);
         final Boolean b = (Boolean)wizard.getProperty(ChooseEQDataWizardPanel.PROP_USE_SHAKEMAP);
-        final int maxSteps = models.size() + (((b != null) || !b) ? 3 : 2);
+        final int maxSteps = models.size()
+                    + ((models.contains("Building Impact Model") && ((b == null) || !b)) ? 3 : 2);
         int step = 1;
         final BusyStatusPanel p = new BusyStatusPanel("Executing ...");
         p.setBusy(true);
