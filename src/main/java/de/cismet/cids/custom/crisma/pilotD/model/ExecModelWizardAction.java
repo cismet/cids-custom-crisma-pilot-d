@@ -12,10 +12,19 @@ import Sirius.navigator.ui.ComponentRegistry;
 import org.openide.DialogDisplayer;
 import org.openide.WizardDescriptor;
 import org.openide.WizardDescriptor.Panel;
+import org.openide.util.ImageUtilities;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.Component;
 import java.awt.Dialog;
+import java.awt.EventQueue;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
 
 import java.text.MessageFormat;
 
@@ -23,10 +32,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.event.ChangeListener;
 
+import de.cismet.cids.custom.crisma.worldstate.editor.NotEditableEditor;
+
 import de.cismet.cids.utils.abstracts.AbstractCidsBeanAction;
+
+import de.cismet.commons.gui.progress.BusyStatusPanel;
 
 /**
  * DOCUMENT ME!
@@ -40,7 +56,11 @@ public final class ExecModelWizardAction extends AbstractCidsBeanAction {
 
     public static final String PROP_WORLDSTATE = "__prop_worldstate__";
 
+    private static final transient Logger LOG = LoggerFactory.getLogger(ExecModelWizardAction.class);
+
     //~ Instance fields --------------------------------------------------------
+
+    private final transient ImageIcon exec;
 
     private transient ExecModelWizardIterator it;
 
@@ -51,6 +71,23 @@ public final class ExecModelWizardAction extends AbstractCidsBeanAction {
      */
     public ExecModelWizardAction() {
         super("Execute Model");
+
+        final Image i = ImageUtilities.loadImage(ExecModelWizardAction.class.getPackage().getName().replaceAll(
+                    "\\.",
+                    "/")
+                        + "/exec_128.png");
+
+        final BufferedImage bi = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
+        final Graphics2D g2 = bi.createGraphics();
+        g2.drawImage(i, 0, 0, null);
+        g2.dispose();
+        final BufferedImage scaled = NotEditableEditor.getScaledInstance(
+                bi,
+                64,
+                64,
+                RenderingHints.VALUE_INTERPOLATION_BICUBIC,
+                true);
+        exec = new ImageIcon(scaled);
     }
 
     //~ Methods ----------------------------------------------------------------
@@ -79,8 +116,90 @@ public final class ExecModelWizardAction extends AbstractCidsBeanAction {
         final boolean cancelled = wizard.getValue() != WizardDescriptor.FINISH_OPTION;
 
         if (!cancelled) {
-            System.out.println(wizard);
+            final Thread t = new Thread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            try {
+                                exec(wizard);
+                            } catch (Exception ex) {
+                                LOG.warn("cannot exec model", ex);
+                            }
+                        }
+                    });
+            t.start();
         }
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   wizard  DOCUMENT ME!
+     *
+     * @throws  Exception  DOCUMENT ME!
+     */
+    private void exec(final WizardDescriptor wizard) throws Exception {
+        final List<String> models = (List<String>)wizard.getProperty(ChooseModelWizardPanel.PROP_SELECTED_MODELS);
+        final Boolean b = (Boolean)wizard.getProperty(ChooseEQDataWizardPanel.PROP_USE_SHAKEMAP);
+        final int maxSteps = models.size() + (((b != null) || !b) ? 3 : 2);
+        int step = 1;
+        final BusyStatusPanel p = new BusyStatusPanel("Executing ...");
+        p.setBusy(true);
+        p.setStatusMessage("Step " + step++ + ": Collecting execution data ...");
+
+        final JOptionPane pane = new JOptionPane(
+                p,
+                JOptionPane.YES_OPTION,
+                JOptionPane.INFORMATION_MESSAGE,
+                exec,
+                new Object[] { "Send to background" },
+                "Send to background");
+        final JDialog dialog = pane.createDialog(ComponentRegistry.getRegistry().getMainWindow(),
+                "Executing ("
+                        + maxSteps
+                        + " steps)");
+        EventQueue.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    dialog.pack();
+                    dialog.setLocationRelativeTo(ComponentRegistry.getRegistry().getMainWindow());
+                    dialog.setVisible(true);
+                }
+            });
+
+        Thread.sleep(2500);
+
+        for (final String s : models) {
+            if ("Building Impact Model".equals(s)) {
+                if ((b == null) || !b) {
+                    p.setStatusMessage("Step " + step++ + ": Simulating earthquake ...");
+                    Thread.sleep(2500);
+                }
+
+                p.setStatusMessage("Step " + step++ + ": Calculating building damage ...");
+            } else if ("Evacuation Model".equals(s)) {
+                p.setStatusMessage("Step " + step++ + ": Evacuating population ...");
+            } else if ("Population Impact Model".equals(s)) {
+                p.setStatusMessage("Step " + step++ + ": Calculating casualties ...");
+            } else if ("Road Network Impact Model".equals(s)) {
+                p.setStatusMessage("Step " + step++ + ": Calculating road damage ...");
+            }
+
+            Thread.sleep(2500);
+        }
+
+        p.setStatusMessage("Step " + step++ + ": Finalising...");
+        Thread.sleep(2500);
+
+        EventQueue.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    dialog.setVisible(false);
+                    dialog.dispose();
+                }
+            });
     }
 
     /**
