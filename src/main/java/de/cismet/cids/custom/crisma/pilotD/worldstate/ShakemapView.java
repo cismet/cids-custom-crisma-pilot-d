@@ -11,10 +11,23 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.PrecisionModel;
 
 import edu.umd.cs.piccolo.event.PBasicInputEventHandler;
 import edu.umd.cs.piccolo.event.PInputEvent;
+
+import org.deegree.datatypes.QualifiedName;
+import org.deegree.model.feature.FeatureCollection;
+import org.deegree.model.feature.GMLFeatureCollectionDocument;
+import org.deegree.ogcwebservices.wfs.capabilities.WFSFeatureType;
+
+import org.jdom.Element;
+import org.jdom.Namespace;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
 
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle;
@@ -28,6 +41,11 @@ import java.awt.Graphics;
 import java.awt.Image;
 
 import java.io.IOException;
+import java.io.InputStream;
+
+import java.lang.reflect.Field;
+
+import java.net.URI;
 
 import java.util.Map;
 
@@ -41,12 +59,22 @@ import de.cismet.cids.dynamics.CidsBean;
 import de.cismet.cismap.commons.Crs;
 import de.cismet.cismap.commons.CrsTransformer;
 import de.cismet.cismap.commons.XBoundingBox;
+import de.cismet.cismap.commons.features.DefaultStyledFeature;
 import de.cismet.cismap.commons.gui.MappingComponent;
 import de.cismet.cismap.commons.gui.layerwidget.ActiveLayerModel;
+import de.cismet.cismap.commons.gui.piccolo.FeatureAnnotationSymbol;
 import de.cismet.cismap.commons.gui.piccolo.eventlistener.BackgroundRefreshingPanEventListener;
 import de.cismet.cismap.commons.gui.piccolo.eventlistener.RubberBandZoomListener;
 import de.cismet.cismap.commons.raster.wms.simple.SimpleWMS;
 import de.cismet.cismap.commons.raster.wms.simple.SimpleWmsGetMapUrl;
+import de.cismet.cismap.commons.wfs.capabilities.FeatureType;
+import de.cismet.cismap.commons.wfs.capabilities.WFSCapabilities;
+import de.cismet.cismap.commons.wfs.capabilities.WFSCapabilitiesFactory;
+import de.cismet.cismap.commons.wfs.capabilities.deegree.DeegreeFeatureType;
+
+import de.cismet.security.AccessHandler.ACCESS_METHODS;
+
+import de.cismet.security.WebAccessManager;
 
 /**
  * DOCUMENT ME!
@@ -58,7 +86,7 @@ public class ShakemapView extends AbstractDetailView {
 
     //~ Static fields/initializers ---------------------------------------------
 
-    private static final transient Logger LOG = LoggerFactory.getLogger(ShakemapMiniatureView.class);
+    private static final transient Logger LOG = LoggerFactory.getLogger(ShakemapView.class);
 
     //~ Instance fields --------------------------------------------------------
 
@@ -276,6 +304,48 @@ public class ShakemapView extends AbstractDetailView {
         return null;
     }
 
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  args  DOCUMENT ME!
+     */
+    public static void main(final String[] args) {
+        try {
+            final FeatureType t = WFSRequestListener.getFeatureType(
+                    "http://crisma.cismet.de/geoserver/ows?service=wfs&version=1.1.0&request=GetCapabilities",
+                    new QualifiedName("crisma", "abcd_cell", new URI("de:cismet:cids:custom:crisma")));
+            System.out.println(t);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //~ Inner Interfaces -------------------------------------------------------
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @version  $Revision$, $Date$
+     */
+    public static interface WFSCallback {
+
+        //~ Methods ------------------------------------------------------------
+
+        /**
+         * DOCUMENT ME!
+         *
+         * @param  fc  DOCUMENT ME!
+         */
+        void callback(final FeatureCollection fc);
+
+        /**
+         * DOCUMENT ME!
+         *
+         * @return  DOCUMENT ME!
+         */
+        MappingComponent getMap();
+    }
+
     //~ Inner Classes ----------------------------------------------------------
 
     /**
@@ -288,14 +358,31 @@ public class ShakemapView extends AbstractDetailView {
         //~ Instance fields ----------------------------------------------------
 
         private final RubberBandZoomListener zoomDelegate;
+        private final String capUrl;
+        private final QualifiedName qname;
+        private final WFSCallback cb;
 
         //~ Constructors -------------------------------------------------------
 
         /**
-         * Creates a new PanAndMousewheelZoomListener object.
+         * Creates a new WFSRequestListener object.
          */
         public WFSRequestListener() {
+            this(null, null, null);
+        }
+
+        /**
+         * Creates a new PanAndMousewheelZoomListener object.
+         *
+         * @param  capUrl  DOCUMENT ME!
+         * @param  qname   DOCUMENT ME!
+         * @param  cb      DOCUMENT ME!
+         */
+        public WFSRequestListener(final String capUrl, final QualifiedName qname, final WFSCallback cb) {
             zoomDelegate = new RubberBandZoomListener();
+            this.capUrl = capUrl;
+            this.qname = qname;
+            this.cb = cb;
         }
 
         //~ Methods ------------------------------------------------------------
@@ -307,10 +394,146 @@ public class ShakemapView extends AbstractDetailView {
 
         @Override
         public void mouseClicked(final PInputEvent event) {
+            if (capUrl == null) {
+                return;
+            }
+
             final MappingComponent mc = (MappingComponent)event.getComponent();
             final double xCoord = mc.getWtst().getSourceX(event.getPosition().getX() - mc.getClip_offset_x());
             final double yCoord = mc.getWtst().getSourceY(event.getPosition().getY() - mc.getClip_offset_y());
-            LOG.error("clicked: [x=" + xCoord + "|y=" + yCoord + "]");
+
+            final Thread t = new Thread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            try {
+                                final FeatureType ft = getFeatureType(capUrl, qname);
+                                final Element root = ft.getWFSCapabilities().getServiceFacade().getGetFeatureQuery(ft);
+                                root.setAttribute("maxFeatures", "1");
+                                final Namespace wfsNs = Namespace.getNamespace("http://www.opengis.net/wfs"); // NOI18N
+                                final Namespace ogcNs = Namespace.getNamespace("http://www.opengis.net/ogc"); // NOI18N
+                                final Namespace gmlNs = Namespace.getNamespace("http://www.opengis.net/gml"); // NOI18N
+                                final Element query = root.getChild("Query", wfsNs);                          // NOI18N
+                                query.setAttribute("srsName", "EPSG:32633");                                  // NOI18N
+                                final Element filter = query.getChild("Filter", ogcNs);                       // NOI18N
+                                filter.removeChildren("BBOX", ogcNs);                                         // NOI18N
+                                final Element intersects = new Element("Intersects", ogcNs);                  // NOI18N
+                                filter.addContent(intersects);
+                                final Element propName = new Element("PropertyName", ogcNs);                  // NOI18N
+                                propName.setText("crisma:the_geom");                                          // NOI18N
+                                intersects.addContent(propName);
+                                final Element pointElement = new Element("Point", gmlNs);                     // NOI18N
+                                intersects.addContent(pointElement);
+
+                                // coordinates
+                                final Element pos = new Element("coordinates", gmlNs); // NOI18N
+                                pointElement.addContent(pos);
+                                // coordinates
+                                pos.setText(xCoord + "," + yCoord); // NOI18N
+
+                                final XMLOutputter raw = new XMLOutputter(Format.getRawFormat());
+
+                                if (LOG.isDebugEnabled()) {
+                                    final XMLOutputter pretty = new XMLOutputter(Format.getPrettyFormat());
+                                    LOG.debug("created feature query: " + pretty.outputString(root)); // NOI18N
+                                }
+
+                                final String req = raw.outputString(root);
+                                final InputStream resp = WebAccessManager.getInstance()
+                                            .doRequest(
+                                                ft.getWFSCapabilities().getURL(),
+                                                req,
+                                                ACCESS_METHODS.POST_REQUEST);
+                                final GMLFeatureCollectionDocument gmlDoc = new GMLFeatureCollectionDocument();
+                                gmlDoc.load(
+                                    resp,
+                                    "http://crisma");
+                                final FeatureCollection fc = gmlDoc.parse();
+                                if (fc.size() == 1) {
+                                    cb.callback(fc);
+                                    cb.getMap().getFeatureCollection().removeAllFeatures();
+                                    cb.getMap().getFeatureCollection().addFeature(new ClickFeature(xCoord, yCoord));
+                                } else {
+                                    LOG.warn("no feature at point");
+                                }
+                            } catch (final Exception ex) {
+                                LOG.error("cannot fetch feature", ex);
+                            }
+                        }
+                    });
+            t.start();
+        }
+
+        /**
+         * DOCUMENT ME!
+         *
+         * @param   capabilitiesUrl  DOCUMENT ME!
+         * @param   qname            DOCUMENT ME!
+         *
+         * @return  DOCUMENT ME!
+         *
+         * @throws  IOException  DOCUMENT ME!
+         */
+        public static FeatureType getFeatureType(final String capabilitiesUrl, final QualifiedName qname)
+                throws IOException {
+            try {
+                final WFSCapabilitiesFactory factory = new WFSCapabilitiesFactory();
+
+                final WFSCapabilities wfsCapabilities = factory.createCapabilities(capabilitiesUrl);
+                // FIXME: evil actions lead to the cake... the feature types without fetching their description, normal
+                // facilities will do getFeatureInfo for every feature type, which is very inefficient and slow
+                final Field field = wfsCapabilities.getClass().getDeclaredField("cap"); // NOI18N
+                field.setAccessible(true);
+                final org.deegree.ogcwebservices.wfs.capabilities.WFSCapabilities dCaps =
+                    (org.deegree.ogcwebservices.wfs.capabilities.WFSCapabilities)field.get(
+                        wfsCapabilities);
+                final WFSFeatureType basinType = dCaps.getFeatureTypeList().getFeatureType(qname);
+
+                if (basinType == null) {
+                    throw new IllegalStateException("WFS does not serve feature with given qname: " + qname); // NOI18N
+                }
+
+                return new DeegreeFeatureType(basinType, wfsCapabilities);
+            } catch (final Exception e) {
+                final String message = "cannot fetch feature type for capabilities url and qname: [" // NOI18N
+                            + capabilitiesUrl
+                            + "|"                                                                    // NOI18N
+                            + qname + "]";                                                           // NOI18N
+                LOG.error(message, e);
+
+                throw new IOException(message, e);
+            }
+        }
+
+        //~ Inner Classes ------------------------------------------------------
+
+        /**
+         * DOCUMENT ME!
+         *
+         * @version  $Revision$, $Date$
+         */
+        private static final class ClickFeature extends DefaultStyledFeature {
+
+            //~ Constructors ---------------------------------------------------
+
+            /**
+             * Creates a new ClickFeature object.
+             *
+             * @param  x  DOCUMENT ME!
+             * @param  y  DOCUMENT ME!
+             */
+            public ClickFeature(final double x, final double y) {
+                final GeometryFactory gf = new GeometryFactory(new PrecisionModel(PrecisionModel.FIXED), 32633);
+                setGeometry(gf.createPoint(new Coordinate(x, y)));
+            }
+
+            //~ Methods --------------------------------------------------------
+
+            @Override
+            public FeatureAnnotationSymbol getPointAnnotationSymbol() {
+                return super.getPointAnnotationSymbol(); // To change body of generated methods, choose Tools |
+                                                         // Templates.
+            }
         }
     }
 }
