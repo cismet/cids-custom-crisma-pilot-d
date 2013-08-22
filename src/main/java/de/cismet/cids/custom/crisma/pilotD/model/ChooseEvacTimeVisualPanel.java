@@ -42,7 +42,7 @@ public class ChooseEvacTimeVisualPanel extends javax.swing.JPanel {
 
         initComponents();
 
-        setName("Choose Evacuation Duration");
+        setName("Evacuation Model: Choose Evacuation Duration");
     }
 
     //~ Methods ----------------------------------------------------------------

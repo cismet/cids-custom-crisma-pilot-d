@@ -84,7 +84,7 @@ public class ChooseEQDateVisualPanel extends javax.swing.JPanel {
                 }
             });
 
-        setName("Choose EQ Date");
+        setName("Population Impact Model: Choose EQ Date");
     }
 
     //~ Methods ----------------------------------------------------------------

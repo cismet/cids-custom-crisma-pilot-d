@@ -98,7 +98,7 @@ public class ChooseEQDataVisualPanel extends javax.swing.JPanel {
         jTextField1.getDocument().addDocumentListener(docL);
         jTextField2.getDocument().addDocumentListener(docL);
 
-        setName("Choose EQ Data");
+        setName("Building Impact Model: Choose EQ Data");
     }
 
     //~ Methods ----------------------------------------------------------------
