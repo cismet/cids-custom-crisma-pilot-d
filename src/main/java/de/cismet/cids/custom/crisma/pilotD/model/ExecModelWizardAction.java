@@ -233,12 +233,16 @@ public final class ExecModelWizardAction extends AbstractCidsBeanAction {
 
         private int currentIndex;
 
+        private final transient Image image;
+
         //~ Constructors -------------------------------------------------------
 
         /**
          * Creates a new ExecModelWizardIterator object.
          */
         public ExecModelWizardIterator() {
+            image = ImageUtilities.loadImage(ExecModelWizardIterator.class.getPackage().getName().replaceAll("\\.", "/")
+                            + "/seismic.png");
         }
 
         //~ Methods ------------------------------------------------------------
@@ -260,6 +264,7 @@ public final class ExecModelWizardAction extends AbstractCidsBeanAction {
                 WizardDescriptor.PROP_CONTENT_DATA,
                 new String[] { currentPanels[0].getComponent().getName() });
             wizard.putProperty(WizardDescriptor.PROP_CONTENT_SELECTED_INDEX, currentIndex);
+            wizard.putProperty(WizardDescriptor.PROP_IMAGE, image);
         }
 
         /**
