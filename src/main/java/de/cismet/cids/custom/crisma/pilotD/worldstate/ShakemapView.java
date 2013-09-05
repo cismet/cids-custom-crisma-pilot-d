@@ -252,7 +252,7 @@ public class ShakemapView extends AbstractDetailView {
                 final SimpleWMS layer = new SimpleWMS(new SimpleWmsGetMapUrl(
                             "http://crisma.cismet.de/geoserver/crisma/wms?service=WMS&version=1.1.0&request=GetMap&layers="
                                     + json.get("layername")
-                                    + "&bbox=<cismap:boundingBox>&width=<cismap:width>&height=<cismap:height>&srs=EPSG:32633&format=image/png"));
+                                    + "&bbox=<cismap:boundingBox>&width=<cismap:width>&height=<cismap:height>&srs=EPSG:32633&format=image/png&transparent=true"));
                 final SimpleWMS ortho = getOrthoLayer(worldstate);
                 if (ortho != null) {
                     mappingModel.addLayer(ortho);

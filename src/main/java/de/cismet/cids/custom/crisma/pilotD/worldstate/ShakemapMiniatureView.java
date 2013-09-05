@@ -99,6 +99,7 @@ public class ShakemapMiniatureView extends javax.swing.JPanel implements Worldst
     private void init() {
         try {
             ShakemapView.initPilotDMap(mappingComponent1, "shakemap", worldstate, 0.7f, new WFSRequestListener());
+            mappingComponent1.setInteractionMode("MUTE");
         } catch (final Exception e) {
             LOG.error("cannot initialise shakemap miniature view", e);
         }
