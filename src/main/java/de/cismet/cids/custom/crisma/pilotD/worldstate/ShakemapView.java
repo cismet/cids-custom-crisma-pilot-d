@@ -410,6 +410,7 @@ public class ShakemapView extends AbstractDetailView {
                                 final FeatureType ft = getFeatureType(capUrl, qname);
                                 final Element root = ft.getWFSCapabilities().getServiceFacade().getGetFeatureQuery(ft);
                                 root.setAttribute("maxFeatures", "1");
+                                root.setAttribute("resultType", "results");
                                 final Namespace wfsNs = Namespace.getNamespace("http://www.opengis.net/wfs"); // NOI18N
                                 final Namespace ogcNs = Namespace.getNamespace("http://www.opengis.net/ogc"); // NOI18N
                                 final Namespace gmlNs = Namespace.getNamespace("http://www.opengis.net/gml"); // NOI18N
