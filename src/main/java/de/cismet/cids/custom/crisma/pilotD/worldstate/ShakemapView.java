@@ -75,6 +75,10 @@ import de.cismet.cismap.commons.wfs.capabilities.deegree.DeegreeFeatureType;
 import de.cismet.security.AccessHandler.ACCESS_METHODS;
 
 import de.cismet.security.WebAccessManager;
+import java.awt.EventQueue;
+import java.awt.Polygon;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
 /**
  * DOCUMENT ME!
@@ -211,9 +215,62 @@ public class ShakemapView extends AbstractDetailView {
     private void init() {
         try {
             initPilotDMap(mappingComponent1, "shakemap", getWorldstate(), 0.7f, new WFSRequestListener());
+            activateLayerWidget(mappingComponent1);
         } catch (final Exception e) {
             LOG.error("cannot initialise shakemap miniature view", e);
         }
+    }
+    
+    public static void activateLayerWidget(final MappingComponent mappingComponent1){
+        mappingComponent1.setInternalLayerWidgetAvailable(true);
+            mappingComponent1.addMouseMotionListener(new MouseMotionListener() {
+
+                    @Override
+                    public void mouseDragged(final MouseEvent e) {
+                        // noop
+                    }
+
+                    @Override
+                    public void mouseMoved(final MouseEvent e) {
+                        if ((System.currentTimeMillis() - dontDispatch) < 1300) {
+                            return;
+                        }
+
+                        dontDispatch = -1;
+
+                        final int h = mappingComponent1.getHeight();
+                        final int w = mappingComponent1.getWidth();
+                        final int w10 = w / 10;
+
+                        final Polygon hotArea = new Polygon();
+                        hotArea.addPoint(w - w10, h);
+                        hotArea.addPoint(w, h);
+                        hotArea.addPoint(w, h - w10);
+                        hotArea.addPoint(w - w10, h);
+
+                        if (hotArea.contains(e.getPoint()) && !mappingComponent1.isInternalLayerWidgetVisible()) {
+                            EventQueue.invokeLater(new Runnable() {
+
+                                    @Override
+                                    public void run() {
+                                        mappingComponent1.showInternalLayerWidget(true, 300);
+                                    }
+                                });
+                            dontDispatch = System.currentTimeMillis();
+                        } else if (mappingComponent1.isInternalLayerWidgetVisible()) {
+                            EventQueue.invokeLater(new Runnable() {
+
+                                    @Override
+                                    public void run() {
+                                        mappingComponent1.showInternalLayerWidget(false, 300);
+                                    }
+                                });
+                            dontDispatch = System.currentTimeMillis();
+                        }
+                    }
+
+                    private long dontDispatch = -1;
+                });
     }
 
     /**
