@@ -79,6 +79,13 @@ import java.awt.EventQueue;
 import java.awt.Polygon;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import org.deegree.model.feature.Feature;
+import org.deegree.model.feature.FeatureProperty;
 
 /**
  * DOCUMENT ME!
@@ -97,8 +104,13 @@ public class ShakemapView extends AbstractDetailView {
     private final transient ShakemapMiniatureView miniatureView = new ShakemapMiniatureView();
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private de.cismet.cismap.commons.gui.MappingComponent mappingComponent1;
     // End of variables declaration//GEN-END:variables
 
@@ -123,7 +135,7 @@ public class ShakemapView extends AbstractDetailView {
                 }
             };
 
-        final Dimension d = new Dimension(253, 240);
+        final Dimension d = new Dimension(129, 239);
         p.setMaximumSize(d);
         p.setMinimumSize(d);
         p.setSize(d);
@@ -139,12 +151,18 @@ public class ShakemapView extends AbstractDetailView {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
         java.awt.GridBagConstraints gridBagConstraints;
 
         jPanel1 = new javax.swing.JPanel();
         mappingComponent1 = new de.cismet.cismap.commons.gui.MappingComponent();
         jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -153,6 +171,7 @@ public class ShakemapView extends AbstractDetailView {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridheight = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 1.0;
@@ -160,15 +179,59 @@ public class ShakemapView extends AbstractDetailView {
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
         jPanel1.add(mappingComponent1, gridBagConstraints);
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                NbBundle.getMessage(ShakemapView.class, "ShakemapView.jPanel2.border.title"))); // NOI18N
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(NbBundle.getMessage(ShakemapView.class, "ShakemapView.jPanel2.border.title"))); // NOI18N
         jPanel2.setLayout(new java.awt.BorderLayout());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
+        jPanel1.add(jPanel2, gridBagConstraints);
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(NbBundle.getMessage(ShakemapView.class, "ShakemapView.jPanel3.border.title"))); // NOI18N
+        jPanel3.setLayout(new java.awt.GridBagLayout());
+
+        jLabel1.setText(NbBundle.getMessage(ShakemapView.class, "ShakemapView.jLabel1.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        jPanel3.add(jLabel1, gridBagConstraints);
+
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel2.setText(NbBundle.getMessage(ShakemapView.class, "ShakemapView.jLabel2.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
-        jPanel1.add(jPanel2, gridBagConstraints);
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        jPanel3.add(jLabel2, gridBagConstraints);
+
+        jLabel3.setText(NbBundle.getMessage(ShakemapView.class, "ShakemapView.jLabel3.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        jPanel3.add(jLabel3, gridBagConstraints);
+
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel4.setText(NbBundle.getMessage(ShakemapView.class, "ShakemapView.jLabel4.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        jPanel3.add(jLabel4, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel1.add(jPanel3, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -178,7 +241,7 @@ public class ShakemapView extends AbstractDetailView {
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         add(jPanel1, gridBagConstraints);
-    } // </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>//GEN-END:initComponents
 
     @Override
     public JComponent getView() {
@@ -214,10 +277,56 @@ public class ShakemapView extends AbstractDetailView {
      */
     private void init() {
         try {
-            initPilotDMap(mappingComponent1, "shakemap", getWorldstate(), 0.7f, new WFSRequestListener());
+            initPilotDMap(mappingComponent1, "shakemap", getWorldstate(), 0.7f, new WFSRequestListener(
+                    "http://crisma.cismet.de/geoserver/ows?service=wfs&version=1.1.0&request=GetCapabilities",
+                    new QualifiedName("crisma", "shakem_1", new URI("de:cismet:cids:custom:crisma")),
+                    new WFSCall()));
             activateLayerWidget(mappingComponent1);
         } catch (final Exception e) {
             LOG.error("cannot initialise shakemap miniature view", e);
+        }
+    }
+    
+        private final class WFSCall implements WFSCallback {
+
+        //~ Methods ------------------------------------------------------------
+
+        @Override
+        public void callback(final FeatureCollection fc) {
+            final Feature f = fc.iterator().next();
+            String a;
+            String b;
+            a = b = null;
+            try {
+                for (final FeatureProperty fp : f.getProperties()) {
+                    if (fp.getName().equals(
+                                    new QualifiedName("crisma", "pga", new URI("de:cismet:cids:custom:crisma")))) {
+                        a = fp.getValue().toString();
+                    } else if (fp.getName().equals(
+                                    new QualifiedName("crisma", "mmi", new URI("de:cismet:cids:custom:crisma")))) {
+                        b = fp.getValue().toString();
+                    }
+                }
+
+                final String aa = a;
+                final String bb = b;
+
+                EventQueue.invokeLater(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            jLabel2.setText(Math.round(Double.parseDouble(aa) * 100) / 100d + " g");
+                            jLabel4.setText(Math.round(Double.parseDouble(bb) * 10) / 10d + " MMI");
+                        }
+                    });
+            } catch (Exception ex) {
+                throw new IllegalStateException("cannot get feature property", ex);
+            }
+        }
+
+        @Override
+        public MappingComponent getMap() {
+            return mappingComponent1;
         }
     }
     
@@ -301,22 +410,33 @@ public class ShakemapView extends AbstractDetailView {
                 mappingModel.addHome(bbox);
 
                 final ObjectMapper m = new ObjectMapper(new JsonFactory());
-                final TypeReference<Map<String, String>> ref = new TypeReference<Map<String, String>>() {
-                    };
+                final TypeReference<Map<String, String>> ref = new TypeReference<Map<String, String>>() {};
+                final TypeReference<Map<String, String>> refDesc = new TypeReference<Map<String, String>>() {};
 
                 final String jsonString = (String)b.getProperty("actualaccessinfo");
                 final Map<String, String> json = m.readValue(jsonString, ref);
-                final SimpleWMS layer = new SimpleWMS(new SimpleWmsGetMapUrl(
-                            "http://crisma.cismet.de/geoserver/crisma/wms?service=WMS&version=1.1.0&request=GetMap&layers="
-                                    + json.get("layername")
-                                    + "&bbox=<cismap:boundingBox>&width=<cismap:width>&height=<cismap:height>&srs=EPSG:32633&format=image/png&transparent=true"));
+                final String jsonStringDesc = (String)b.getProperty("datadescriptor.defaultaccessinfo");
+                final Map<String, String> jsonDesc = m.readValue(jsonStringDesc, refDesc);
+                final SimpleWMS layer = new SimpleWMS(new SimpleWmsGetMapUrl(jsonDesc.get("simplewms_getmap").replace("<cismap:layers>", json.get("layername"))));
+                if(json.get("displayName") != null){
+                    layer.setName(json.get("displayName"));
+                }
+                
+                
                 final SimpleWMS ortho = getOrthoLayer(worldstate);
                 if (ortho != null) {
+                    ortho.setName("L'Aquila Orthophoto");
                     mappingModel.addLayer(ortho);
                     layer.setTranslucency(translucency);
                 }
-                mappingModel.addLayer(layer);
+                
+                
+                for(final SimpleWMS s : getSupportiveLayers(worldstate)){
+                    mappingModel.addLayer(s);
+                }
 
+                mappingModel.addLayer(layer);
+                
                 mappingComponent1.setMappingModel(mappingModel);
                 mappingComponent1.addInputListener("wfsclick", listener);
                 mappingComponent1.setInteractionMode("wfsclick");
@@ -329,7 +449,7 @@ public class ShakemapView extends AbstractDetailView {
 
         throw new IllegalStateException("no shakemap dataitem present: " + worldstate);
     }
-
+    
     /**
      * DOCUMENT ME!
      *
@@ -343,15 +463,15 @@ public class ShakemapView extends AbstractDetailView {
         for (final CidsBean be : worldstate.getBeanCollectionProperty("worldstatedata")) {
             if ("ortho".equals(be.getProperty("name"))) {
                 final ObjectMapper m = new ObjectMapper(new JsonFactory());
-                final TypeReference<Map<String, String>> ref = new TypeReference<Map<String, String>>() {
-                    };
+                final TypeReference<Map<String, String>> ref = new TypeReference<Map<String, String>>() {};
+                final TypeReference<Map<String, String>> refDesc = new TypeReference<Map<String, String>>() {};
 
                 final String jsonString = (String)be.getProperty("actualaccessinfo");
                 final Map<String, String> json = m.readValue(jsonString, ref);
+                final String jsonStringDesc = (String)be.getProperty("datadescriptor.defaultaccessinfo");
+                final Map<String, String> jsonDesc = m.readValue(jsonStringDesc, refDesc);
+                final SimpleWMS layer = new SimpleWMS(new SimpleWmsGetMapUrl(jsonDesc.get("simplewms_getmap").replace("<cismap:layers>", json.get("layername"))));
 
-                final SimpleWMS layer = new SimpleWMS(new SimpleWmsGetMapUrl(
-                            "http://geoportale2.regione.abruzzo.it/erdas-iws/ogc/wms/?&VERSION=1.1.1&REQUEST=GetMap&BBOX=<cismap:boundingBox>&WIDTH=<cismap:width>&HEIGHT=<cismap:height>&SRS=EPSG:32633&FORMAT=image/png&TRANSPARENT=TRUE&BGCOLOR=0xF0F0F0&EXCEPTIONS=application/vnd.ogc.se_xml&LAYERS="
-                                    + json.get("layername")));
                 layer.setTranslucency(1f);
 
                 return layer;
@@ -359,6 +479,48 @@ public class ShakemapView extends AbstractDetailView {
         }
 
         return null;
+    }
+    
+    public static List<SimpleWMS> getSupportiveLayers(final CidsBean worldstate) throws IOException {
+        final List<SimpleWMS> ret = new ArrayList<SimpleWMS>();
+        final List<CidsBean> cbs = worldstate.getBeanCollectionProperty("worldstatedata");
+        Collections.sort(cbs, new Comparator<CidsBean>() {
+
+            @Override
+            public int compare(CidsBean o1, CidsBean o2)
+            {
+                return o1.getProperty("name").toString().compareTo(o2.getProperty("name").toString());
+            }
+        });
+                for (final CidsBean be : cbs) {
+            for(final CidsBean cat : (Collection<CidsBean>)be.getProperty("datadescriptor.categories")){
+                if("SUPPORTIVE_WMS".equals(cat.getProperty("key"))){
+                    
+                final ObjectMapper m = new ObjectMapper(new JsonFactory());
+                final TypeReference<Map<String, String>> ref = new TypeReference<Map<String, String>>() {};
+                final TypeReference<Map<String, String>> refDesc = new TypeReference<Map<String, String>>() {};
+
+                final String jsonString = (String)be.getProperty("actualaccessinfo");
+                final Map<String, String> json = m.readValue(jsonString, ref);
+                final String jsonStringDesc = (String)be.getProperty("datadescriptor.defaultaccessinfo");
+                final Map<String, String> jsonDesc = m.readValue(jsonStringDesc, refDesc);
+                final SimpleWMS layer = new SimpleWMS(new SimpleWmsGetMapUrl(jsonDesc.get("simplewms_getmap").replace("<cismap:layers>", json.get("layername"))));
+                
+                if(json.get("displayName") == null){
+                    layer.setName(json.get("layername"));
+                } else {
+                    layer.setName(json.get("displayName"));
+                }
+                    layer.setTranslucency(1f);
+                    layer.setVisible(false);
+                    layer.setEnabled(false);
+                    
+                    ret.add(layer);
+                }
+            }
+        }
+        
+        return ret;
     }
 
     /**

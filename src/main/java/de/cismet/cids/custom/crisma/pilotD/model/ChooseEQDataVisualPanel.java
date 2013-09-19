@@ -156,7 +156,7 @@ public class ChooseEQDataVisualPanel extends javax.swing.JPanel {
                 final SimpleWMS layer = new SimpleWMS(new SimpleWmsGetMapUrl(
                             "http://crisma.cismet.de/geoserver/crisma/wms?service=WMS&version=1.1.0&request=GetMap&layers="
                                     + json.get("layername")
-                                    + "&bbox=<cismap:boundingBox>&width=<cismap:width>&height=<cismap:height>&srs=EPSG:32633&format=image/png"));
+                                    + "&bbox=<cismap:boundingBox>&width=<cismap:width>&height=<cismap:height>&srs=EPSG:32633&format=image/png&transparent=true"));
                 mappingModel.addLayer(layer);
 
                 mappingComponent1.setMappingModel(mappingModel);
@@ -200,7 +200,8 @@ public class ChooseEQDataVisualPanel extends javax.swing.JPanel {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    private void initComponents()
+    {
         java.awt.GridBagConstraints gridBagConstraints;
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
@@ -221,8 +222,7 @@ public class ChooseEQDataVisualPanel extends javax.swing.JPanel {
 
         setLayout(new java.awt.GridBagLayout());
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                NbBundle.getMessage(ChooseEQDataVisualPanel.class, "ChooseEQDataVisualPanel.jPanel1.border.title"))); // NOI18N
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(NbBundle.getMessage(ChooseEQDataVisualPanel.class, "ChooseEQDataVisualPanel.jPanel1.border.title"))); // NOI18N
         jPanel1.setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -241,9 +241,7 @@ public class ChooseEQDataVisualPanel extends javax.swing.JPanel {
         gridBagConstraints.gridy = 1;
         jPanel1.add(jLabel5, gridBagConstraints);
 
-        jTextField1.setText(NbBundle.getMessage(
-                ChooseEQDataVisualPanel.class,
-                "ChooseEQDataVisualPanel.jTextField1.text")); // NOI18N
+        jTextField1.setText(NbBundle.getMessage(ChooseEQDataVisualPanel.class, "ChooseEQDataVisualPanel.jTextField1.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -252,9 +250,7 @@ public class ChooseEQDataVisualPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel1.add(jTextField1, gridBagConstraints);
 
-        jTextField2.setText(NbBundle.getMessage(
-                ChooseEQDataVisualPanel.class,
-                "ChooseEQDataVisualPanel.jTextField2.text")); // NOI18N
+        jTextField2.setText(NbBundle.getMessage(ChooseEQDataVisualPanel.class, "ChooseEQDataVisualPanel.jTextField2.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
@@ -290,13 +286,7 @@ public class ChooseEQDataVisualPanel extends javax.swing.JPanel {
 
         jSpinner1.setPreferredSize(new java.awt.Dimension(82, 28));
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(
-                org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE,
-                this,
-                org.jdesktop.beansbinding.ELProperty.create("${model.depth}"),
-                jSpinner1,
-                org.jdesktop.beansbinding.BeanProperty.create("value"),
-                "");
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${model.depth}"), jSpinner1, org.jdesktop.beansbinding.BeanProperty.create("value"), "");
         binding.setConverter(new Conv3());
         bindingGroup.addBinding(binding);
 
@@ -308,13 +298,7 @@ public class ChooseEQDataVisualPanel extends javax.swing.JPanel {
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(
-                org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ,
-                jSlider1,
-                org.jdesktop.beansbinding.ELProperty.create("${value}"),
-                jLabel3,
-                org.jdesktop.beansbinding.BeanProperty.create("text"),
-                "mag_bind_text");
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, jSlider1, org.jdesktop.beansbinding.ELProperty.create("${value}"), jLabel3, org.jdesktop.beansbinding.BeanProperty.create("text"), "mag_bind_text");
         binding.setConverter(new Conv());
         bindingGroup.addBinding(binding);
 
@@ -329,13 +313,7 @@ public class ChooseEQDataVisualPanel extends javax.swing.JPanel {
         jSlider1.setMaximum(120);
         jSlider1.setPaintTicks(true);
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(
-                org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE,
-                this,
-                org.jdesktop.beansbinding.ELProperty.create("${model.magnitude}"),
-                jSlider1,
-                org.jdesktop.beansbinding.BeanProperty.create("value"),
-                "mag_bind_float");
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${model.magnitude}"), jSlider1, org.jdesktop.beansbinding.BeanProperty.create("value"), "mag_bind_float");
         binding.setConverter(new Conv2());
         bindingGroup.addBinding(binding);
 
@@ -367,16 +345,14 @@ public class ChooseEQDataVisualPanel extends javax.swing.JPanel {
         add(jPanel2, gridBagConstraints);
 
         jCheckBox1.setSelected(true);
-        jCheckBox1.setText(NbBundle.getMessage(
-                ChooseEQDataVisualPanel.class,
-                "ChooseEQDataVisualPanel.jCheckBox1.text")); // NOI18N
-        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
-
-                @Override
-                public void actionPerformed(final java.awt.event.ActionEvent evt) {
-                    jCheckBox1ActionPerformed(evt);
-                }
-            });
+        jCheckBox1.setText(NbBundle.getMessage(ChooseEQDataVisualPanel.class, "ChooseEQDataVisualPanel.jCheckBox1.text")); // NOI18N
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                jCheckBox1ActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -385,17 +361,17 @@ public class ChooseEQDataVisualPanel extends javax.swing.JPanel {
         add(jCheckBox1, gridBagConstraints);
 
         bindingGroup.bind();
-    } // </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>//GEN-END:initComponents
 
     /**
      * DOCUMENT ME!
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void jCheckBox1ActionPerformed(final java.awt.event.ActionEvent evt) //GEN-FIRST:event_jCheckBox1ActionPerformed
-    {                                                                            //GEN-HEADEREND:event_jCheckBox1ActionPerformed
+    private void jCheckBox1ActionPerformed(final java.awt.event.ActionEvent evt)//GEN-FIRST:event_jCheckBox1ActionPerformed
+    {//GEN-HEADEREND:event_jCheckBox1ActionPerformed
         toggleEnabled();
-    }                                                                            //GEN-LAST:event_jCheckBox1ActionPerformed
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     //~ Inner Classes ----------------------------------------------------------
 
