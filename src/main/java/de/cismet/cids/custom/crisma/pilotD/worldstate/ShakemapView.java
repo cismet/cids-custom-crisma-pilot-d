@@ -20,7 +20,9 @@ import edu.umd.cs.piccolo.event.PBasicInputEventHandler;
 import edu.umd.cs.piccolo.event.PInputEvent;
 
 import org.deegree.datatypes.QualifiedName;
+import org.deegree.model.feature.Feature;
 import org.deegree.model.feature.FeatureCollection;
+import org.deegree.model.feature.FeatureProperty;
 import org.deegree.model.feature.GMLFeatureCollectionDocument;
 import org.deegree.ogcwebservices.wfs.capabilities.WFSFeatureType;
 
@@ -37,8 +39,12 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Polygon;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,6 +53,11 @@ import java.lang.reflect.Field;
 
 import java.net.URI;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JComponent;
@@ -75,17 +86,6 @@ import de.cismet.cismap.commons.wfs.capabilities.deegree.DeegreeFeatureType;
 import de.cismet.security.AccessHandler.ACCESS_METHODS;
 
 import de.cismet.security.WebAccessManager;
-import java.awt.EventQueue;
-import java.awt.Polygon;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import org.deegree.model.feature.Feature;
-import org.deegree.model.feature.FeatureProperty;
 
 /**
  * DOCUMENT ME!
@@ -151,8 +151,7 @@ public class ShakemapView extends AbstractDetailView {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents()
-    {
+    private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
         jPanel1 = new javax.swing.JPanel();
@@ -179,7 +178,8 @@ public class ShakemapView extends AbstractDetailView {
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
         jPanel1.add(mappingComponent1, gridBagConstraints);
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(NbBundle.getMessage(ShakemapView.class, "ShakemapView.jPanel2.border.title"))); // NOI18N
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                NbBundle.getMessage(ShakemapView.class, "ShakemapView.jPanel2.border.title"))); // NOI18N
         jPanel2.setLayout(new java.awt.BorderLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -188,7 +188,8 @@ public class ShakemapView extends AbstractDetailView {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
         jPanel1.add(jPanel2, gridBagConstraints);
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(NbBundle.getMessage(ShakemapView.class, "ShakemapView.jPanel3.border.title"))); // NOI18N
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                NbBundle.getMessage(ShakemapView.class, "ShakemapView.jPanel3.border.title"))); // NOI18N
         jPanel3.setLayout(new java.awt.GridBagLayout());
 
         jLabel1.setText(NbBundle.getMessage(ShakemapView.class, "ShakemapView.jLabel1.text")); // NOI18N
@@ -241,7 +242,7 @@ public class ShakemapView extends AbstractDetailView {
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
         add(jPanel1, gridBagConstraints);
-    }// </editor-fold>//GEN-END:initComponents
+    } // </editor-fold>//GEN-END:initComponents
 
     @Override
     public JComponent getView() {
@@ -277,7 +278,12 @@ public class ShakemapView extends AbstractDetailView {
      */
     private void init() {
         try {
-            initPilotDMap(mappingComponent1, "shakemap", getWorldstate(), 0.7f, new WFSRequestListener(
+            initPilotDMap(
+                mappingComponent1,
+                "shakemap",
+                getWorldstate(),
+                0.7f,
+                new WFSRequestListener(
                     "http://crisma.cismet.de/geoserver/ows?service=wfs&version=1.1.0&request=GetCapabilities",
                     new QualifiedName("crisma", "shakem_1", new URI("de:cismet:cids:custom:crisma")),
                     new WFSCall()));
@@ -286,100 +292,62 @@ public class ShakemapView extends AbstractDetailView {
             LOG.error("cannot initialise shakemap miniature view", e);
         }
     }
-    
-        private final class WFSCall implements WFSCallback {
 
-        //~ Methods ------------------------------------------------------------
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  mappingComponent1  DOCUMENT ME!
+     */
+    public static void activateLayerWidget(final MappingComponent mappingComponent1) {
+        mappingComponent1.setInternalLayerWidgetAvailable(true);
+        mappingComponent1.addMouseMotionListener(new MouseMotionListener() {
 
-        @Override
-        public void callback(final FeatureCollection fc) {
-            final Feature f = fc.iterator().next();
-            String a;
-            String b;
-            a = b = null;
-            try {
-                for (final FeatureProperty fp : f.getProperties()) {
-                    if (fp.getName().equals(
-                                    new QualifiedName("crisma", "pga", new URI("de:cismet:cids:custom:crisma")))) {
-                        a = fp.getValue().toString();
-                    } else if (fp.getName().equals(
-                                    new QualifiedName("crisma", "mmi", new URI("de:cismet:cids:custom:crisma")))) {
-                        b = fp.getValue().toString();
+                @Override
+                public void mouseDragged(final MouseEvent e) {
+                    // noop
+                }
+
+                @Override
+                public void mouseMoved(final MouseEvent e) {
+                    if ((System.currentTimeMillis() - dontDispatch) < 1300) {
+                        return;
+                    }
+
+                    dontDispatch = -1;
+
+                    final int h = mappingComponent1.getHeight();
+                    final int w = mappingComponent1.getWidth();
+                    final int w10 = w / 10;
+
+                    final Polygon hotArea = new Polygon();
+                    hotArea.addPoint(w - w10, h);
+                    hotArea.addPoint(w, h);
+                    hotArea.addPoint(w, h - w10);
+                    hotArea.addPoint(w - w10, h);
+
+                    if (hotArea.contains(e.getPoint()) && !mappingComponent1.isInternalLayerWidgetVisible()) {
+                        EventQueue.invokeLater(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    mappingComponent1.showInternalLayerWidget(true, 300);
+                                }
+                            });
+                        dontDispatch = System.currentTimeMillis();
+                    } else if (mappingComponent1.isInternalLayerWidgetVisible()) {
+                        EventQueue.invokeLater(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    mappingComponent1.showInternalLayerWidget(false, 300);
+                                }
+                            });
+                        dontDispatch = System.currentTimeMillis();
                     }
                 }
 
-                final String aa = a;
-                final String bb = b;
-
-                EventQueue.invokeLater(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            jLabel2.setText(Math.round(Double.parseDouble(aa) * 100) / 100d + " g");
-                            jLabel4.setText(Math.round(Double.parseDouble(bb) * 10) / 10d + " MMI");
-                        }
-                    });
-            } catch (Exception ex) {
-                throw new IllegalStateException("cannot get feature property", ex);
-            }
-        }
-
-        @Override
-        public MappingComponent getMap() {
-            return mappingComponent1;
-        }
-    }
-    
-    public static void activateLayerWidget(final MappingComponent mappingComponent1){
-        mappingComponent1.setInternalLayerWidgetAvailable(true);
-            mappingComponent1.addMouseMotionListener(new MouseMotionListener() {
-
-                    @Override
-                    public void mouseDragged(final MouseEvent e) {
-                        // noop
-                    }
-
-                    @Override
-                    public void mouseMoved(final MouseEvent e) {
-                        if ((System.currentTimeMillis() - dontDispatch) < 1300) {
-                            return;
-                        }
-
-                        dontDispatch = -1;
-
-                        final int h = mappingComponent1.getHeight();
-                        final int w = mappingComponent1.getWidth();
-                        final int w10 = w / 10;
-
-                        final Polygon hotArea = new Polygon();
-                        hotArea.addPoint(w - w10, h);
-                        hotArea.addPoint(w, h);
-                        hotArea.addPoint(w, h - w10);
-                        hotArea.addPoint(w - w10, h);
-
-                        if (hotArea.contains(e.getPoint()) && !mappingComponent1.isInternalLayerWidgetVisible()) {
-                            EventQueue.invokeLater(new Runnable() {
-
-                                    @Override
-                                    public void run() {
-                                        mappingComponent1.showInternalLayerWidget(true, 300);
-                                    }
-                                });
-                            dontDispatch = System.currentTimeMillis();
-                        } else if (mappingComponent1.isInternalLayerWidgetVisible()) {
-                            EventQueue.invokeLater(new Runnable() {
-
-                                    @Override
-                                    public void run() {
-                                        mappingComponent1.showInternalLayerWidget(false, 300);
-                                    }
-                                });
-                            dontDispatch = System.currentTimeMillis();
-                        }
-                    }
-
-                    private long dontDispatch = -1;
-                });
+                private long dontDispatch = -1;
+            });
     }
 
     /**
@@ -410,33 +378,45 @@ public class ShakemapView extends AbstractDetailView {
                 mappingModel.addHome(bbox);
 
                 final ObjectMapper m = new ObjectMapper(new JsonFactory());
-                final TypeReference<Map<String, String>> ref = new TypeReference<Map<String, String>>() {};
-                final TypeReference<Map<String, String>> refDesc = new TypeReference<Map<String, String>>() {};
+                final TypeReference<Map<String, String>> ref = new TypeReference<Map<String, String>>() {
+                    };
+
+                final TypeReference<Map<String, String>> refDesc = new TypeReference<Map<String, String>>() {
+                    };
 
                 final String jsonString = (String)b.getProperty("actualaccessinfo");
                 final Map<String, String> json = m.readValue(jsonString, ref);
                 final String jsonStringDesc = (String)b.getProperty("datadescriptor.defaultaccessinfo");
                 final Map<String, String> jsonDesc = m.readValue(jsonStringDesc, refDesc);
-                final SimpleWMS layer = new SimpleWMS(new SimpleWmsGetMapUrl(jsonDesc.get("simplewms_getmap").replace("<cismap:layers>", json.get("layername"))));
-                if(json.get("displayName") != null){
+                final SimpleWMS layer = new SimpleWMS(new SimpleWmsGetMapUrl(
+                            jsonDesc.get("simplewms_getmap").replace("<cismap:layers>", json.get("layername"))));
+                if (json.get("displayName") != null) {
                     layer.setName(json.get("displayName"));
                 }
-                
-                
+
                 final SimpleWMS ortho = getOrthoLayer(worldstate);
                 if (ortho != null) {
                     ortho.setName("L'Aquila Orthophoto");
                     mappingModel.addLayer(ortho);
                     layer.setTranslucency(translucency);
                 }
-                
-                
-                for(final SimpleWMS s : getSupportiveLayers(worldstate)){
+
+                for (final SimpleWMS s : getSupportiveLayers(worldstate)) {
                     mappingModel.addLayer(s);
                 }
 
+                if (json.get("additionalStyle") != null) {
+                    final SimpleWMS layera = new SimpleWMS(new SimpleWmsGetMapUrl(
+                                jsonDesc.get("simplewms_getmap").replace("<cismap:layers>", json.get("layername"))
+                                            .concat("&styles=").concat(json.get("additionalStyle"))));
+                    layera.setName(json.get("additionalStyleLName"));
+                    layera.setEnabled(false);
+                    layera.setVisible(false);
+                    mappingModel.addLayer(layera);
+                }
+
                 mappingModel.addLayer(layer);
-                
+
                 mappingComponent1.setMappingModel(mappingModel);
                 mappingComponent1.addInputListener("wfsclick", listener);
                 mappingComponent1.setInteractionMode("wfsclick");
@@ -449,7 +429,7 @@ public class ShakemapView extends AbstractDetailView {
 
         throw new IllegalStateException("no shakemap dataitem present: " + worldstate);
     }
-    
+
     /**
      * DOCUMENT ME!
      *
@@ -463,14 +443,18 @@ public class ShakemapView extends AbstractDetailView {
         for (final CidsBean be : worldstate.getBeanCollectionProperty("worldstatedata")) {
             if ("ortho".equals(be.getProperty("name"))) {
                 final ObjectMapper m = new ObjectMapper(new JsonFactory());
-                final TypeReference<Map<String, String>> ref = new TypeReference<Map<String, String>>() {};
-                final TypeReference<Map<String, String>> refDesc = new TypeReference<Map<String, String>>() {};
+                final TypeReference<Map<String, String>> ref = new TypeReference<Map<String, String>>() {
+                    };
+
+                final TypeReference<Map<String, String>> refDesc = new TypeReference<Map<String, String>>() {
+                    };
 
                 final String jsonString = (String)be.getProperty("actualaccessinfo");
                 final Map<String, String> json = m.readValue(jsonString, ref);
                 final String jsonStringDesc = (String)be.getProperty("datadescriptor.defaultaccessinfo");
                 final Map<String, String> jsonDesc = m.readValue(jsonStringDesc, refDesc);
-                final SimpleWMS layer = new SimpleWMS(new SimpleWmsGetMapUrl(jsonDesc.get("simplewms_getmap").replace("<cismap:layers>", json.get("layername"))));
+                final SimpleWMS layer = new SimpleWMS(new SimpleWmsGetMapUrl(
+                            jsonDesc.get("simplewms_getmap").replace("<cismap:layers>", json.get("layername"))));
 
                 layer.setTranslucency(1f);
 
@@ -480,46 +464,57 @@ public class ShakemapView extends AbstractDetailView {
 
         return null;
     }
-    
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   worldstate  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  IOException  DOCUMENT ME!
+     */
     public static List<SimpleWMS> getSupportiveLayers(final CidsBean worldstate) throws IOException {
         final List<SimpleWMS> ret = new ArrayList<SimpleWMS>();
         final List<CidsBean> cbs = worldstate.getBeanCollectionProperty("worldstatedata");
         Collections.sort(cbs, new Comparator<CidsBean>() {
 
-            @Override
-            public int compare(CidsBean o1, CidsBean o2)
-            {
-                return o1.getProperty("name").toString().compareTo(o2.getProperty("name").toString());
-            }
-        });
-                for (final CidsBean be : cbs) {
-            for(final CidsBean cat : (Collection<CidsBean>)be.getProperty("datadescriptor.categories")){
-                if("SUPPORTIVE_WMS".equals(cat.getProperty("key"))){
-                    
-                final ObjectMapper m = new ObjectMapper(new JsonFactory());
-                final TypeReference<Map<String, String>> ref = new TypeReference<Map<String, String>>() {};
-                final TypeReference<Map<String, String>> refDesc = new TypeReference<Map<String, String>>() {};
-
-                final String jsonString = (String)be.getProperty("actualaccessinfo");
-                final Map<String, String> json = m.readValue(jsonString, ref);
-                final String jsonStringDesc = (String)be.getProperty("datadescriptor.defaultaccessinfo");
-                final Map<String, String> jsonDesc = m.readValue(jsonStringDesc, refDesc);
-                final SimpleWMS layer = new SimpleWMS(new SimpleWmsGetMapUrl(jsonDesc.get("simplewms_getmap").replace("<cismap:layers>", json.get("layername"))));
-                
-                if(json.get("displayName") == null){
-                    layer.setName(json.get("layername"));
-                } else {
-                    layer.setName(json.get("displayName"));
+                @Override
+                public int compare(final CidsBean o1, final CidsBean o2) {
+                    return o1.getProperty("name").toString().compareTo(o2.getProperty("name").toString());
                 }
+            });
+        for (final CidsBean be : cbs) {
+            for (final CidsBean cat : (Collection<CidsBean>)be.getProperty("datadescriptor.categories")) {
+                if ("SUPPORTIVE_WMS".equals(cat.getProperty("key"))) {
+                    final ObjectMapper m = new ObjectMapper(new JsonFactory());
+                    final TypeReference<Map<String, String>> ref = new TypeReference<Map<String, String>>() {
+                        };
+
+                    final TypeReference<Map<String, String>> refDesc = new TypeReference<Map<String, String>>() {
+                        };
+
+                    final String jsonString = (String)be.getProperty("actualaccessinfo");
+                    final Map<String, String> json = m.readValue(jsonString, ref);
+                    final String jsonStringDesc = (String)be.getProperty("datadescriptor.defaultaccessinfo");
+                    final Map<String, String> jsonDesc = m.readValue(jsonStringDesc, refDesc);
+                    final SimpleWMS layer = new SimpleWMS(new SimpleWmsGetMapUrl(
+                                jsonDesc.get("simplewms_getmap").replace("<cismap:layers>", json.get("layername"))));
+
+                    if (json.get("displayName") == null) {
+                        layer.setName(json.get("layername"));
+                    } else {
+                        layer.setName(json.get("displayName"));
+                    }
                     layer.setTranslucency(1f);
                     layer.setVisible(false);
                     layer.setEnabled(false);
-                    
+
                     ret.add(layer);
                 }
             }
         }
-        
+
         return ret;
     }
 
@@ -566,6 +561,54 @@ public class ShakemapView extends AbstractDetailView {
     }
 
     //~ Inner Classes ----------------------------------------------------------
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @version  $Revision$, $Date$
+     */
+    private final class WFSCall implements WFSCallback {
+
+        //~ Methods ------------------------------------------------------------
+
+        @Override
+        public void callback(final FeatureCollection fc) {
+            final Feature f = fc.iterator().next();
+            String a;
+            String b;
+            a = b = null;
+            try {
+                for (final FeatureProperty fp : f.getProperties()) {
+                    if (fp.getName().equals(
+                                    new QualifiedName("crisma", "pga", new URI("de:cismet:cids:custom:crisma")))) {
+                        a = fp.getValue().toString();
+                    } else if (fp.getName().equals(
+                                    new QualifiedName("crisma", "mmi", new URI("de:cismet:cids:custom:crisma")))) {
+                        b = fp.getValue().toString();
+                    }
+                }
+
+                final String aa = a;
+                final String bb = b;
+
+                EventQueue.invokeLater(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            jLabel2.setText((Math.round(Double.parseDouble(aa) * 100) / 100d) + " g");
+                            jLabel4.setText((Math.round(Double.parseDouble(bb) * 10) / 10d) + " MMI");
+                        }
+                    });
+            } catch (Exception ex) {
+                throw new IllegalStateException("cannot get feature property", ex);
+            }
+        }
+
+        @Override
+        public MappingComponent getMap() {
+            return mappingComponent1;
+        }
+    }
 
     /**
      * DOCUMENT ME!
