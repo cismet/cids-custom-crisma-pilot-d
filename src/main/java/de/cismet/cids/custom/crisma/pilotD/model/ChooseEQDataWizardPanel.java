@@ -27,38 +27,18 @@ public final class ChooseEQDataWizardPanel extends AbstractWizardPanel {
 
     //~ Static fields/initializers ---------------------------------------------
 
-    public static final String PROP_USE_SHAKEMAP = "__prop_use_shakemap__";
     public static final String PROP_DEPTH = "__prop_depth__";
     public static final String PROP_MAGNITUDE = "__prop_magnitude__";
     public static final String PROP_EPICENTER = "__prop_epicenter__";
 
     //~ Instance fields --------------------------------------------------------
 
-    private transient boolean useShakeMap;
     private transient int depth;
     private transient float magnitude;
     private transient Point epicenter;
     private transient CidsBean worldstate;
 
     //~ Methods ----------------------------------------------------------------
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @return  DOCUMENT ME!
-     */
-    public boolean isUseShakeMap() {
-        return useShakeMap;
-    }
-
-    /**
-     * DOCUMENT ME!
-     *
-     * @param  useShakeMap  DOCUMENT ME!
-     */
-    public void setUseShakeMap(final boolean useShakeMap) {
-        this.useShakeMap = useShakeMap;
-    }
 
     /**
      * DOCUMENT ME!
@@ -145,8 +125,6 @@ public final class ChooseEQDataWizardPanel extends AbstractWizardPanel {
 
     @Override
     protected void read(final WizardDescriptor wizard) {
-        final Boolean u = (Boolean)wizard.getProperty(PROP_USE_SHAKEMAP);
-        setUseShakeMap((u == null) ? false : u);
         final Integer d = (Integer)wizard.getProperty(PROP_DEPTH);
         setDepth((d == null) ? 0 : d);
         final Float f = (Float)wizard.getProperty(PROP_MAGNITUDE);
@@ -159,7 +137,6 @@ public final class ChooseEQDataWizardPanel extends AbstractWizardPanel {
 
     @Override
     protected void store(final WizardDescriptor wizard) {
-        wizard.putProperty(PROP_USE_SHAKEMAP, isUseShakeMap());
         wizard.putProperty(PROP_DEPTH, getDepth());
         wizard.putProperty(PROP_MAGNITUDE, getMagnitude());
         wizard.putProperty(PROP_EPICENTER, getEpicenter());

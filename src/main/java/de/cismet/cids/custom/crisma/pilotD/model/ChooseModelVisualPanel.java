@@ -61,10 +61,12 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
         initComponents();
 
         final DefaultListModel<String> allModel = new DefaultListModel<String>();
-        allModel.addElement("Building Impact Model");
-        allModel.addElement("Evacuation Model");
-        allModel.addElement("Population Impact Model");
-        allModel.addElement("Road Network Impact Model");
+        allModel.addElement("Building Hazard [Model]");
+        allModel.addElement("Building Impact [Model]");
+        allModel.addElement("Population Impact [Model]");
+        allModel.addElement("Road Network Impact [Model]");
+        allModel.addElement("Building Resistance [Mitigation]");
+        allModel.addElement("People Congestion Reduction [Mitigation]");
 
         jXList1.setModel(allModel);
 
@@ -92,7 +94,7 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
                 }
             });
 
-        setName("Choose Models");
+        setName("Choose Transitions");
     }
 
     //~ Methods ----------------------------------------------------------------
@@ -135,6 +137,7 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
                 new java.awt.Dimension(0, 0),
                 new java.awt.Dimension(0, 32767));
 
+        setPreferredSize(new java.awt.Dimension(1024, 768));
         setLayout(new java.awt.GridBagLayout());
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(

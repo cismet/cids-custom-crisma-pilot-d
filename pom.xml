@@ -146,6 +146,11 @@
             <artifactId>cismet-deegree</artifactId>
             <version>2.3.4</version>
         </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-main</artifactId>
+            <version>2.7.4</version>
+        </dependency>
     </dependencies>
 
     <repositories>

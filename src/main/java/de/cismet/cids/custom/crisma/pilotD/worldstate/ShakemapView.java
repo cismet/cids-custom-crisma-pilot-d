@@ -76,6 +76,7 @@ import de.cismet.cismap.commons.gui.layerwidget.ActiveLayerModel;
 import de.cismet.cismap.commons.gui.piccolo.FeatureAnnotationSymbol;
 import de.cismet.cismap.commons.gui.piccolo.eventlistener.BackgroundRefreshingPanEventListener;
 import de.cismet.cismap.commons.gui.piccolo.eventlistener.RubberBandZoomListener;
+import de.cismet.cismap.commons.interaction.CismapBroker;
 import de.cismet.cismap.commons.raster.wms.simple.SimpleWMS;
 import de.cismet.cismap.commons.raster.wms.simple.SimpleWmsGetMapUrl;
 import de.cismet.cismap.commons.wfs.capabilities.FeatureType;
@@ -374,7 +375,9 @@ public class ShakemapView extends AbstractDetailView {
                 final Geometry gt = CrsTransformer.transformToGivenCrs(g, "EPSG:32633");
                 final XBoundingBox bbox = new XBoundingBox(gt);
                 final ActiveLayerModel mappingModel = new ActiveLayerModel();
-                mappingModel.setSrs(new Crs("EPSG:32633", "EPSG:32633", "EPSG:32633", true, true));
+                final Crs crs = new Crs("EPSG:32633", "EPSG:32633", "EPSG:32633", true, true);
+                mappingModel.setSrs(crs);
+                CismapBroker.getInstance().setSrs(crs);
                 mappingModel.addHome(bbox);
 
                 final ObjectMapper m = new ObjectMapper(new JsonFactory());

@@ -38,6 +38,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.event.ChangeListener;
 
+import de.cismet.cids.custom.crisma.pilotD.model.AreaEditorWizardPanel.AreaEditor;
 import de.cismet.cids.custom.crisma.worldstate.editor.NotEditableEditor;
 
 import de.cismet.cids.utils.abstracts.AbstractCidsBeanAction;
@@ -70,7 +71,7 @@ public final class ExecModelWizardAction extends AbstractCidsBeanAction {
      * Creates a new ExecModelWizardAction object.
      */
     public ExecModelWizardAction() {
-        super("Execute Model");
+        super("Transition Wizard");
 
         final Image i = ImageUtilities.loadImage(ExecModelWizardAction.class.getPackage().getName().replaceAll(
                     "\\.",
@@ -139,14 +140,13 @@ public final class ExecModelWizardAction extends AbstractCidsBeanAction {
      * @throws  Exception  DOCUMENT ME!
      */
     private void exec(final WizardDescriptor wizard) throws Exception {
-        final List<String> models = (List<String>)wizard.getProperty(ChooseModelWizardPanel.PROP_SELECTED_MODELS);
-        final Boolean b = (Boolean)wizard.getProperty(ChooseEQDataWizardPanel.PROP_USE_SHAKEMAP);
-        final int maxSteps = models.size()
-                    + ((models.contains("Building Impact Model") && ((b == null) || !b)) ? 3 : 2);
+        final List<String> transitions = (List<String>)wizard.getProperty(
+                ChooseModelWizardPanel.PROP_SELECTED_TRANSITIONS);
+        final int maxSteps = transitions.size();
         int step = 1;
         final BusyStatusPanel p = new BusyStatusPanel("Executing ...");
         p.setBusy(true);
-        p.setStatusMessage("Step " + step++ + ": Collecting execution data ...");
+        p.setStatusMessage("Step " + step++ + ": Collecting execution data ...               ");
 
         final JOptionPane pane = new JOptionPane(
                 p,
@@ -171,20 +171,19 @@ public final class ExecModelWizardAction extends AbstractCidsBeanAction {
 
         Thread.sleep(2500);
 
-        for (final String s : models) {
-            if ("Building Impact Model".equals(s)) {
-                if ((b == null) || !b) {
-                    p.setStatusMessage("Step " + step++ + ": Simulating earthquake ...");
-                    Thread.sleep(2500);
-                }
-
+        for (final String s : transitions) {
+            if ("Building Hazard [Model]".equals(s)) {
+                p.setStatusMessage("Step " + step++ + ": Simulating earthquake ...");
+            } else if ("Building Impact [Model]".equals(s)) {
                 p.setStatusMessage("Step " + step++ + ": Calculating building damage ...");
-            } else if ("Evacuation Model".equals(s)) {
-                p.setStatusMessage("Step " + step++ + ": Evacuating population ...");
-            } else if ("Population Impact Model".equals(s)) {
+            } else if ("Population Impact [Model]".equals(s)) {
                 p.setStatusMessage("Step " + step++ + ": Calculating casualties ...");
-            } else if ("Road Network Impact Model".equals(s)) {
+            } else if ("Road Network Impact [Model]".equals(s)) {
                 p.setStatusMessage("Step " + step++ + ": Calculating road damage ...");
+            } else if ("Building Resistance [Mitigation]".equals(s)) {
+                p.setStatusMessage("Step " + step++ + ": Adapting building resistance ...");
+            } else if ("People Congestion Reduction [Mitigation]".equals(s)) {
+                p.setStatusMessage("Step " + step++ + ": Reducing people congestion ...");
             }
 
             Thread.sleep(2500);
@@ -275,8 +274,10 @@ public final class ExecModelWizardAction extends AbstractCidsBeanAction {
                 allPanels = new WizardDescriptor.Panel[] {
                         new ChooseModelWizardPanel(),
                         new ChooseEQDataWizardPanel(),
-                        new ChooseEQDateWizardPanel(),
-                        new ChooseEvacTimeWizardPanel(),
+                        new AreaEditorWizardPanel(new BuildingEditor(),
+                            "Building Resistance [Mitigation]"),
+                        new AreaEditorWizardPanel(new PeopleCongestionEditor(),
+                            "People Congestion Reduction [Mitigation]"),
                         new EnterMetadataWizardPanel()
                     };
 
@@ -345,22 +346,23 @@ public final class ExecModelWizardAction extends AbstractCidsBeanAction {
             }
 
             if (currentIndex == 0) {
-                final List<String> l = (List<String>)wizard.getProperty(ChooseModelWizardPanel.PROP_SELECTED_MODELS);
+                final List<String> l = (List<String>)wizard.getProperty(
+                        ChooseModelWizardPanel.PROP_SELECTED_TRANSITIONS);
                 final List<String> steps = new ArrayList<String>();
                 final List<Panel> panels = new ArrayList<Panel>();
                 steps.add(allPanels[0].getComponent().getName());
                 panels.add(allPanels[0]);
 
                 for (final String s : l) {
-                    if ("Building Impact Model".equals(s)) {
+                    if ("Building Hazard [Model]".equals(s)) {
                         steps.add(allPanels[1].getComponent().getName());
                         panels.add(allPanels[1]);
-                    } else if ("Evacuation Model".equals(s)) {
-                        steps.add(allPanels[3].getComponent().getName());
-                        panels.add(allPanels[3]);
-                    } else if ("Population Impact Model".equals(s)) {
+                    } else if ("Building Resistance [Mitigation]".equals(s)) {
                         steps.add(allPanels[2].getComponent().getName());
                         panels.add(allPanels[2]);
+                    } else if ("People Congestion Reduction [Mitigation]".equals(s)) {
+                        steps.add(allPanels[3].getComponent().getName());
+                        panels.add(allPanels[3]);
                     }
                 }
 

@@ -26,7 +26,7 @@ public final class ChooseModelWizardPanel extends AbstractWizardPanel {
 
     //~ Static fields/initializers ---------------------------------------------
 
-    public static final String PROP_SELECTED_MODELS = "__prop_selected_models__";
+    public static final String PROP_SELECTED_TRANSITIONS = "__prop_selected_transitions__";
 
     //~ Instance fields --------------------------------------------------------
 
@@ -70,11 +70,11 @@ public final class ChooseModelWizardPanel extends AbstractWizardPanel {
 
     @Override
     protected void read(final WizardDescriptor wizard) {
-        setSelectedModels((List)wizard.getProperty(PROP_SELECTED_MODELS));
+        setSelectedModels((List)wizard.getProperty(PROP_SELECTED_TRANSITIONS));
     }
 
     @Override
     protected void store(final WizardDescriptor wizard) {
-        wizard.putProperty(PROP_SELECTED_MODELS, getSelectedModels());
+        wizard.putProperty(PROP_SELECTED_TRANSITIONS, getSelectedModels());
     }
 }
