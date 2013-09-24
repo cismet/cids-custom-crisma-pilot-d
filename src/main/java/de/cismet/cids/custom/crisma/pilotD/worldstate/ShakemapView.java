@@ -16,7 +16,6 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.PrecisionModel;
 
-import edu.umd.cs.piccolo.event.PBasicInputEventHandler;
 import edu.umd.cs.piccolo.event.PInputEvent;
 
 import org.deegree.datatypes.QualifiedName;
@@ -63,6 +62,7 @@ import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
+import de.cismet.cids.custom.crisma.MapSync;
 import de.cismet.cids.custom.crisma.worldstate.viewer.AbstractDetailView;
 
 import de.cismet.cids.dynamics.CidsBean;
@@ -94,7 +94,7 @@ import de.cismet.security.WebAccessManager;
  * @author   mscholl
  * @version  $Revision$, $Date$
  */
-public class ShakemapView extends AbstractDetailView {
+public class ShakemapView extends AbstractDetailView implements MapSync {
 
     //~ Static fields/initializers ---------------------------------------------
 
@@ -367,7 +367,7 @@ public class ShakemapView extends AbstractDetailView {
             final String dataitem,
             final CidsBean worldstate,
             final float translucency,
-            final PBasicInputEventHandler listener) throws IOException {
+            final WFSRequestListener listener) throws IOException {
         for (final CidsBean b : worldstate.getBeanCollectionProperty("worldstatedata")) {
             if (dataitem.equals(b.getProperty("name"))) {
                 final Geometry g = (Geometry)b.getProperty("spatialcoverage.geo_field");
@@ -419,6 +419,8 @@ public class ShakemapView extends AbstractDetailView {
                 }
 
                 mappingModel.addLayer(layer);
+
+                listener.setLayerName(json.get("layername"));
 
                 mappingComponent1.setMappingModel(mappingModel);
                 mappingComponent1.addInputListener("wfsclick", listener);
@@ -537,6 +539,11 @@ public class ShakemapView extends AbstractDetailView {
         }
     }
 
+    @Override
+    public MappingComponent getMap() {
+        return mappingComponent1;
+    }
+
     //~ Inner Interfaces -------------------------------------------------------
 
     /**
@@ -624,7 +631,7 @@ public class ShakemapView extends AbstractDetailView {
 
         private final RubberBandZoomListener zoomDelegate;
         private final String capUrl;
-        private final QualifiedName qname;
+        private QualifiedName qname;
         private final WFSCallback cb;
 
         //~ Constructors -------------------------------------------------------
@@ -651,6 +658,17 @@ public class ShakemapView extends AbstractDetailView {
         }
 
         //~ Methods ------------------------------------------------------------
+
+        /**
+         * DOCUMENT ME!
+         *
+         * @param  layerName  DOCUMENT ME!
+         */
+        public void setLayerName(final String layerName) {
+            if (qname != null) {
+                qname = new QualifiedName(qname.getPrefix(), layerName, qname.getNamespace());
+            }
+        }
 
         @Override
         public void mouseWheelRotated(final PInputEvent pInputEvent) {
