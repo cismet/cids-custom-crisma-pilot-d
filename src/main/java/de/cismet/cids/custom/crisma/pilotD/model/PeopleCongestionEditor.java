@@ -14,7 +14,6 @@ import org.openide.util.NbBundle;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JSpinner;
 
 import de.cismet.cids.custom.crisma.pilotD.model.AreaEditorVisualPanel.Conv;
@@ -44,10 +43,8 @@ public class PeopleCongestionEditor extends AreaEditor {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JSlider jSlider1;
     private javax.swing.JSpinner jSpinner1;
     private javax.swing.JTextField jTextField1;
@@ -63,10 +60,6 @@ public class PeopleCongestionEditor extends AreaEditor {
         initComponents();
 
         jSpinner1.setEditor(new JSpinner.NumberEditor(jSpinner1, "+0'%';-0'%'"));
-
-        final DefaultComboBoxModel model = new DefaultComboBoxModel(EvacMeans.values());
-        jComboBox1.setModel(model);
-        jComboBox1.setSelectedItem(EvacMeans.CAR);
     }
 
     //~ Methods ----------------------------------------------------------------
@@ -99,8 +92,6 @@ public class PeopleCongestionEditor extends AreaEditor {
         jLabel2 = new javax.swing.JLabel();
         jSpinner1 = new javax.swing.JSpinner();
         jSlider1 = new javax.swing.JSlider();
-        jLabel3 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -156,7 +147,6 @@ public class PeopleCongestionEditor extends AreaEditor {
         add(jSpinner1, gridBagConstraints);
 
         jSlider1.setMaximum(200);
-        jSlider1.setValue(100);
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(
                 org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE,
@@ -174,35 +164,6 @@ public class PeopleCongestionEditor extends AreaEditor {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(jSlider1, gridBagConstraints);
-
-        jLabel3.setText(NbBundle.getMessage(PeopleCongestionEditor.class, "PeopleCongestionEditor.jLabel3.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(jLabel3, gridBagConstraints);
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(
-                new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(
-                org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE,
-                this,
-                org.jdesktop.beansbinding.ELProperty.create("${area.value}"),
-                jComboBox1,
-                org.jdesktop.beansbinding.BeanProperty.create("selectedItem"),
-                "m");
-        binding.setConverter(new MConv());
-        bindingGroup.addBinding(binding);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(jComboBox1, gridBagConstraints);
 
         bindingGroup.bind();
     } // </editor-fold>//GEN-END:initComponents
