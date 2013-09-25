@@ -297,6 +297,7 @@ public class AreaEditorVisualPanel extends javax.swing.JPanel {
                 new WFSRequestListener());
             mappingComponent1.setInteractionMode(MappingComponent.NEW_POLYGON);
             mappingComponent1.setReadOnly(false);
+            ShakemapView.activateLayerWidget(mappingComponent1);
         } catch (IOException ex) {
             LOG.error("error initialising", ex);
         }

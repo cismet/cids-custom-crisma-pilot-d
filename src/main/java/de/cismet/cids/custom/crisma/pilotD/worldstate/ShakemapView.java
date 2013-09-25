@@ -403,8 +403,7 @@ public class ShakemapView extends AbstractDetailView implements MapSync {
                     mappingModel.addLayer(ortho);
                     layer.setTranslucency(translucency);
                 }
-
-                for (final SimpleWMS s : getSupportiveLayers(worldstate)) {
+                for (final SimpleWMS s : getSupportiveLayers(worldstate, dataitem)) {
                     mappingModel.addLayer(s);
                 }
 
@@ -474,12 +473,14 @@ public class ShakemapView extends AbstractDetailView implements MapSync {
      * DOCUMENT ME!
      *
      * @param   worldstate  DOCUMENT ME!
+     * @param   mainItem    DOCUMENT ME!
      *
      * @return  DOCUMENT ME!
      *
      * @throws  IOException  DOCUMENT ME!
      */
-    public static List<SimpleWMS> getSupportiveLayers(final CidsBean worldstate) throws IOException {
+    public static List<SimpleWMS> getSupportiveLayers(final CidsBean worldstate, final String mainItem)
+            throws IOException {
         final List<SimpleWMS> ret = new ArrayList<SimpleWMS>();
         final List<CidsBean> cbs = worldstate.getBeanCollectionProperty("worldstatedata");
         Collections.sort(cbs, new Comparator<CidsBean>() {
@@ -491,7 +492,7 @@ public class ShakemapView extends AbstractDetailView implements MapSync {
             });
         for (final CidsBean be : cbs) {
             for (final CidsBean cat : (Collection<CidsBean>)be.getProperty("datadescriptor.categories")) {
-                if ("SUPPORTIVE_WMS".equals(cat.getProperty("key"))) {
+                if ("SUPPORTIVE_WMS".equals(cat.getProperty("key")) && !(mainItem.equals(be.getProperty("name")))) {
                     final ObjectMapper m = new ObjectMapper(new JsonFactory());
                     final TypeReference<Map<String, String>> ref = new TypeReference<Map<String, String>>() {
                         };

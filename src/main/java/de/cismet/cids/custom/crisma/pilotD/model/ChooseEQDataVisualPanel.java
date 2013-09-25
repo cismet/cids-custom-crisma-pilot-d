@@ -33,6 +33,9 @@ import java.util.Map;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import de.cismet.cids.custom.crisma.pilotD.worldstate.ShakemapView;
+import de.cismet.cids.custom.crisma.pilotD.worldstate.ShakemapView.WFSRequestListener;
+
 import de.cismet.cids.dynamics.CidsBean;
 
 import de.cismet.cismap.commons.Crs;
@@ -130,49 +133,13 @@ public class ChooseEQDataVisualPanel extends javax.swing.JPanel {
      * @throws  IOException  DOCUMENT ME!
      */
     private void initMap() throws IOException {
-        for (final CidsBean b : model.getWorldstate().getBeanCollectionProperty("worldstatedata")) {
-            if ("boundaries".equals(b.getProperty("name"))) {
-                final Geometry g = (Geometry)b.getProperty("spatialcoverage.geo_field");
-                g.setSRID(4326);
-                final Geometry gt = CrsTransformer.transformToGivenCrs(g, "EPSG:32633");
-                final XBoundingBox bbox = new XBoundingBox(gt);
-                final ActiveLayerModel mappingModel = new ActiveLayerModel();
-                mappingModel.setSrs(new Crs("EPSG:32633", "EPSG:32633", "EPSG:32633", true, true));
-                mappingModel.addHome(bbox);
-
-                final ObjectMapper m = new ObjectMapper(new JsonFactory());
-                final TypeReference<Map<String, String>> ref = new TypeReference<Map<String, String>>() {
-                    };
-
-                final SimpleWMS ortho = getOrthoLayer(model.getWorldstate());
-                if (ortho != null) {
-                    mappingModel.addLayer(ortho);
-                }
-
-                final String jsonString = (String)b.getProperty("actualaccessinfo");
-                final Map<String, String> json = m.readValue(jsonString, ref);
-                final SimpleWMS layer = new SimpleWMS(new SimpleWmsGetMapUrl(
-                            "http://crisma.cismet.de/geoserver/crisma/wms?service=WMS&version=1.1.0&request=GetMap&layers="
-                                    + json.get("layername")
-                                    + "&bbox=<cismap:boundingBox>&width=<cismap:width>&height=<cismap:height>&srs=EPSG:32633&format=image/png&transparent=true"));
-                mappingModel.addLayer(layer);
-
-                mappingComponent1.setMappingModel(mappingModel);
-                mappingComponent1.addInputListener("epi", new AddEpicenterListener());
-                mappingComponent1.setInteractionMode("epi");
-                mappingComponent1.unlock();
-                final Point p = model.getEpicenter();
-                mappingComponent1.getFeatureCollection().removeAllFeatures();
-                if (p == null) {
-                    mappingComponent1.gotoInitialBoundingBox();
-                } else {
-                    final EpicenterFeature feature = new EpicenterFeature();
-                    feature.setGeometry(p);
-                    mappingComponent1.getFeatureCollection().addFeature(feature);
-                    mappingComponent1.zoomToFeatureCollection(true);
-                }
-            }
-        }
+        ShakemapView.initPilotDMap(
+            mappingComponent1,
+            "comune_aq",
+            model.getWorldstate(),
+            1f,
+            new WFSRequestListener());
+        ShakemapView.activateLayerWidget(mappingComponent1);
     }
 
     /**
