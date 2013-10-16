@@ -512,9 +512,16 @@ public class ShakemapView extends AbstractDetailView implements MapSync {
                     } else {
                         layer.setName(json.get("displayName"));
                     }
-                    layer.setTranslucency(1f);
-                    layer.setVisible(false);
-                    layer.setEnabled(false);
+
+                    if (json.get("visible") == null) {
+                        layer.setTranslucency(1f);
+                        layer.setVisible(false);
+                        layer.setEnabled(false);
+                    } else {
+                        layer.setTranslucency(1f);
+                        layer.setVisible(true);
+                        layer.setEnabled(true);
+                    }
 
                     ret.add(layer);
                 }
@@ -692,6 +699,10 @@ public class ShakemapView extends AbstractDetailView implements MapSync {
                         public void run() {
                             try {
                                 final FeatureType ft = getFeatureType(capUrl, qname);
+                                final String geom = ft.getWFSCapabilities()
+                                            .getServiceFacade()
+                                            .describeFeatureType(ft)
+                                            .getFirstGeometryName();
                                 final Element root = ft.getWFSCapabilities().getServiceFacade().getGetFeatureQuery(ft);
                                 root.setAttribute("maxFeatures", "1");
                                 root.setAttribute("resultType", "results");
@@ -705,7 +716,7 @@ public class ShakemapView extends AbstractDetailView implements MapSync {
                                 final Element intersects = new Element("Intersects", ogcNs);                  // NOI18N
                                 filter.addContent(intersects);
                                 final Element propName = new Element("PropertyName", ogcNs);                  // NOI18N
-                                propName.setText("crisma:the_geom");                                          // NOI18N
+                                propName.setText(geom);                                                       // NOI18N
                                 intersects.addContent(propName);
                                 final Element pointElement = new Element("Point", gmlNs);                     // NOI18N
                                 intersects.addContent(pointElement);

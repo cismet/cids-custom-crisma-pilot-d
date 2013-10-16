@@ -7,7 +7,10 @@
 ****************************************************/
 package de.cismet.cids.custom.crisma.pilotD.model;
 
+import Sirius.navigator.connection.SessionManager;
 import Sirius.navigator.ui.ComponentRegistry;
+
+import Sirius.server.middleware.types.MetaObject;
 
 import org.openide.DialogDisplayer;
 import org.openide.WizardDescriptor;
@@ -38,8 +41,10 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.event.ChangeListener;
 
-import de.cismet.cids.custom.crisma.pilotD.model.AreaEditorWizardPanel.AreaEditor;
+import de.cismet.cids.custom.crisma.ScenarioView;
 import de.cismet.cids.custom.crisma.worldstate.editor.NotEditableEditor;
+
+import de.cismet.cids.dynamics.CidsBean;
 
 import de.cismet.cids.utils.abstracts.AbstractCidsBeanAction;
 
@@ -71,7 +76,14 @@ public final class ExecModelWizardAction extends AbstractCidsBeanAction {
      * Creates a new ExecModelWizardAction object.
      */
     public ExecModelWizardAction() {
-        super("Transition Wizard");
+        super(
+            "Transition Wizard",
+            ImageUtilities.loadImageIcon(
+                ExecModelWizardAction.class.getPackage().getName().replaceAll(
+                    "\\.",
+                    "/")
+                        + "/world_transition_16.png",
+                false));
 
         final Image i = ImageUtilities.loadImage(ExecModelWizardAction.class.getPackage().getName().replaceAll(
                     "\\.",
@@ -190,6 +202,7 @@ public final class ExecModelWizardAction extends AbstractCidsBeanAction {
         }
 
         p.setStatusMessage("Step " + step++ + ": Finalising...");
+
         Thread.sleep(2500);
 
         EventQueue.invokeLater(new Runnable() {
@@ -198,6 +211,7 @@ public final class ExecModelWizardAction extends AbstractCidsBeanAction {
                 public void run() {
                     dialog.setVisible(false);
                     dialog.dispose();
+//                    ComponentRegistry.getRegistry().getCatalogueTree().requestRefreshNode(ws.getMetaObject().getClassID() + "@" + ws.getMetaObject().getID());
                 }
             });
     }

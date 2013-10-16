@@ -5,7 +5,7 @@
 *              ... and it just works.
 *
 ****************************************************/
-package de.cismet.cids.custom.crisma.pilotD.model;
+package de.cismet.cids.custom.crisma.pilotD;
 
 import Sirius.server.middleware.types.MetaClass;
 import Sirius.server.middleware.types.MetaObject;
@@ -15,6 +15,9 @@ import org.openide.util.lookup.ServiceProvider;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import de.cismet.cids.custom.crisma.pilotD.model.ExecModelWizardAction;
+import de.cismet.cids.custom.crisma.pilotD.worldstate.TakeoverAsRootAction;
 
 import de.cismet.cids.dynamics.CidsBean;
 
@@ -30,21 +33,23 @@ import de.cismet.ext.CExtProvider;
  * @version  1.0, 2013/08/13
  */
 @ServiceProvider(service = CExtProvider.class)
-public final class ExecModelActionCExtProvider implements CExtProvider<CidsBeanAction> {
+public final class WorldstateActionCExtProvider implements CExtProvider<CidsBeanAction> {
 
     //~ Instance fields --------------------------------------------------------
 
     private final String ifaceClass;
-    private final String concreteClass;
+    private final String concreteClass1;
+    private final String concreteClass2;
 
     //~ Constructors -----------------------------------------------------------
 
     /**
      * Creates a new RainfallActionCExtProvider object.
      */
-    public ExecModelActionCExtProvider() {
-        ifaceClass = "de.cismet.cids.utils.interfaces.CidsBeanAction";                     // NOI18N
-        concreteClass = "de.cismet.cids.custom.crisma.pilotD.model.ExecModelWizardAction"; // NOI18N
+    public WorldstateActionCExtProvider() {
+        ifaceClass = "de.cismet.cids.utils.interfaces.CidsBeanAction";                          // NOI18N
+        concreteClass1 = "de.cismet.cids.custom.crisma.pilotD.model.ExecModelWizardAction";     // NOI18N
+        concreteClass2 = "de.cismet.cids.custom.crisma.pilotD.worldstate.TakeoverAsRootAction"; // NOI18N
     }
 
     //~ Methods ----------------------------------------------------------------
@@ -93,9 +98,12 @@ public final class ExecModelActionCExtProvider implements CExtProvider<CidsBeanA
 
             if (((mc != null) && (ctxBean != null))
                         && ("worldstates".equals(mc.getTableName()))) {
-                final CidsBeanAction action = new ExecModelWizardAction();
-                action.setCidsBean(ctxBean);
-                actions.add(action);
+                final CidsBeanAction action1 = new ExecModelWizardAction();
+                final CidsBeanAction action2 = new TakeoverAsRootAction();
+                action1.setCidsBean(ctxBean);
+                action2.setCidsBean(ctxBean);
+                actions.add(action1);
+                actions.add(action2);
             }
         }
 
@@ -111,6 +119,7 @@ public final class ExecModelActionCExtProvider implements CExtProvider<CidsBeanA
     public boolean canProvide(final Class<?> c) {
         final String cName = c.getCanonicalName();
 
-        return (cName == null) ? false : (ifaceClass.equals(cName) || concreteClass.equals(cName));
+        return (cName == null)
+            ? false : (ifaceClass.equals(cName) || concreteClass1.equals(cName) || concreteClass2.equals(cName));
     }
 }

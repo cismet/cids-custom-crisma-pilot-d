@@ -54,11 +54,13 @@ public class PeopleImpactView extends AbstractDetailView implements MapSync {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -108,10 +110,12 @@ public class PeopleImpactView extends AbstractDetailView implements MapSync {
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
-        jLabel13 = new ColorLabel(new Color(9023451));
-        jLabel14 = new ColorLabel(new Color(13033627));
-        jLabel15 = new ColorLabel(new Color(15979335));
-        jLabel16 = new ColorLabel(new Color(14110278));
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new ColorLabel(new Color(15595771));
+        jLabel20 = new ColorLabel(new Color(11783651));
+        jLabel22 = new ColorLabel(new Color(9213638));
+        jLabel24 = new ColorLabel(new Color(8935079));
+        jLabel26 = new ColorLabel(new Color(8458108));
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -129,10 +133,10 @@ public class PeopleImpactView extends AbstractDetailView implements MapSync {
         jPanel1.add(mappingComponent1, gridBagConstraints);
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                NbBundle.getMessage(PeopleImpactView.class, "BuildingsVulnerabilityClassesView.jPanel2.border.title"))); // NOI18N
+                NbBundle.getMessage(PeopleImpactView.class, "PeopleImpactView.jPanel2.border.title"))); // NOI18N
         jPanel2.setLayout(new java.awt.GridBagLayout());
 
-        jLabel1.setText(NbBundle.getMessage(PeopleImpactView.class, "BuildingsVulnerabilityClassesView.jLabel1.text")); // NOI18N
+        jLabel1.setText(NbBundle.getMessage(PeopleImpactView.class, "PeopleImpactView.jLabel1.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -141,7 +145,7 @@ public class PeopleImpactView extends AbstractDetailView implements MapSync {
         jPanel2.add(jLabel1, gridBagConstraints);
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel2.setText(NbBundle.getMessage(PeopleImpactView.class, "BuildingsVulnerabilityClassesView.jLabel2.text")); // NOI18N
+        jLabel2.setText(NbBundle.getMessage(PeopleImpactView.class, "PeopleImpactView.jLabel2.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -150,7 +154,7 @@ public class PeopleImpactView extends AbstractDetailView implements MapSync {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel2.add(jLabel2, gridBagConstraints);
 
-        jLabel3.setText(NbBundle.getMessage(PeopleImpactView.class, "BuildingsVulnerabilityClassesView.jLabel3.text")); // NOI18N
+        jLabel3.setText(NbBundle.getMessage(PeopleImpactView.class, "PeopleImpactView.jLabel3.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -159,7 +163,7 @@ public class PeopleImpactView extends AbstractDetailView implements MapSync {
         jPanel2.add(jLabel3, gridBagConstraints);
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel4.setText(NbBundle.getMessage(PeopleImpactView.class, "BuildingsVulnerabilityClassesView.jLabel4.text")); // NOI18N
+        jLabel4.setText(NbBundle.getMessage(PeopleImpactView.class, "PeopleImpactView.jLabel4.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -167,7 +171,7 @@ public class PeopleImpactView extends AbstractDetailView implements MapSync {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel2.add(jLabel4, gridBagConstraints);
 
-        jLabel5.setText(NbBundle.getMessage(PeopleImpactView.class, "BuildingsVulnerabilityClassesView.jLabel5.text")); // NOI18N
+        jLabel5.setText(NbBundle.getMessage(PeopleImpactView.class, "PeopleImpactView.jLabel5.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -176,7 +180,7 @@ public class PeopleImpactView extends AbstractDetailView implements MapSync {
         jPanel2.add(jLabel5, gridBagConstraints);
 
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel6.setText(NbBundle.getMessage(PeopleImpactView.class, "BuildingsVulnerabilityClassesView.jLabel6.text")); // NOI18N
+        jLabel6.setText(NbBundle.getMessage(PeopleImpactView.class, "PeopleImpactView.jLabel6.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
@@ -184,7 +188,7 @@ public class PeopleImpactView extends AbstractDetailView implements MapSync {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel2.add(jLabel6, gridBagConstraints);
 
-        jLabel7.setText(NbBundle.getMessage(PeopleImpactView.class, "BuildingsVulnerabilityClassesView.jLabel7.text")); // NOI18N
+        jLabel7.setText(NbBundle.getMessage(PeopleImpactView.class, "PeopleImpactView.jLabel7.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -193,7 +197,7 @@ public class PeopleImpactView extends AbstractDetailView implements MapSync {
         jPanel2.add(jLabel7, gridBagConstraints);
 
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel8.setText(NbBundle.getMessage(PeopleImpactView.class, "BuildingsVulnerabilityClassesView.jLabel8.text")); // NOI18N
+        jLabel8.setText(NbBundle.getMessage(PeopleImpactView.class, "PeopleImpactView.jLabel8.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
@@ -207,10 +211,10 @@ public class PeopleImpactView extends AbstractDetailView implements MapSync {
         jPanel1.add(jPanel2, gridBagConstraints);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                NbBundle.getMessage(PeopleImpactView.class, "BuildingsVulnerabilityClassesView.jPanel3.border.title"))); // NOI18N
+                NbBundle.getMessage(PeopleImpactView.class, "PeopleImpactView.jPanel3.border.title"))); // NOI18N
         jPanel3.setLayout(new java.awt.GridBagLayout());
 
-        jLabel9.setText(NbBundle.getMessage(PeopleImpactView.class, "BuildingsVulnerabilityClassesView.jLabel9.text")); // NOI18N
+        jLabel9.setText(NbBundle.getMessage(PeopleImpactView.class, "PeopleImpactView.jLabel9.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -218,9 +222,7 @@ public class PeopleImpactView extends AbstractDetailView implements MapSync {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel3.add(jLabel9, gridBagConstraints);
 
-        jLabel10.setText(NbBundle.getMessage(
-                PeopleImpactView.class,
-                "BuildingsVulnerabilityClassesView.jLabel10.text")); // NOI18N
+        jLabel10.setText(NbBundle.getMessage(PeopleImpactView.class, "PeopleImpactView.jLabel10.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -228,9 +230,7 @@ public class PeopleImpactView extends AbstractDetailView implements MapSync {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel3.add(jLabel10, gridBagConstraints);
 
-        jLabel11.setText(NbBundle.getMessage(
-                PeopleImpactView.class,
-                "BuildingsVulnerabilityClassesView.jLabel11.text")); // NOI18N
+        jLabel11.setText(NbBundle.getMessage(PeopleImpactView.class, "PeopleImpactView.jLabel11.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -238,9 +238,7 @@ public class PeopleImpactView extends AbstractDetailView implements MapSync {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel3.add(jLabel11, gridBagConstraints);
 
-        jLabel12.setText(NbBundle.getMessage(
-                PeopleImpactView.class,
-                "BuildingsVulnerabilityClassesView.jLabel12.text")); // NOI18N
+        jLabel12.setText(NbBundle.getMessage(PeopleImpactView.class, "PeopleImpactView.jLabel12.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -248,38 +246,49 @@ public class PeopleImpactView extends AbstractDetailView implements MapSync {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel3.add(jLabel12, gridBagConstraints);
 
-        jLabel13.setText(NbBundle.getMessage(
-                PeopleImpactView.class,
-                "BuildingsVulnerabilityClassesView.jLabel13.text")); // NOI18N
+        jLabel17.setText(NbBundle.getMessage(PeopleImpactView.class, "PeopleImpactView.jLabel17.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        jPanel3.add(jLabel17, gridBagConstraints);
+
+        jLabel18.setText(NbBundle.getMessage(PeopleImpactView.class, "PeopleImpactView.jLabel18.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.weightx = 1.0;
-        jPanel3.add(jLabel13, gridBagConstraints);
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel3.add(jLabel18, gridBagConstraints);
 
-        jLabel14.setText(NbBundle.getMessage(
-                PeopleImpactView.class,
-                "BuildingsVulnerabilityClassesView.jLabel14.text")); // NOI18N
+        jLabel20.setText(NbBundle.getMessage(PeopleImpactView.class, "PeopleImpactView.jLabel20.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
-        jPanel3.add(jLabel14, gridBagConstraints);
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel3.add(jLabel20, gridBagConstraints);
 
-        jLabel15.setText(NbBundle.getMessage(
-                PeopleImpactView.class,
-                "BuildingsVulnerabilityClassesView.jLabel15.text")); // NOI18N
+        jLabel22.setText(NbBundle.getMessage(PeopleImpactView.class, "PeopleImpactView.jLabel22.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
-        jPanel3.add(jLabel15, gridBagConstraints);
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel3.add(jLabel22, gridBagConstraints);
 
-        jLabel16.setText(NbBundle.getMessage(
-                PeopleImpactView.class,
-                "BuildingsVulnerabilityClassesView.jLabel16.text")); // NOI18N
+        jLabel24.setText(NbBundle.getMessage(PeopleImpactView.class, "PeopleImpactView.jLabel24.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
-        jPanel3.add(jLabel16, gridBagConstraints);
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel3.add(jLabel24, gridBagConstraints);
+
+        jLabel26.setText(NbBundle.getMessage(PeopleImpactView.class, "PeopleImpactView.jLabel26.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        jPanel3.add(jLabel26, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -333,7 +342,7 @@ public class PeopleImpactView extends AbstractDetailView implements MapSync {
         try {
             ShakemapView.initPilotDMap(
                 mappingComponent1,
-                "buildVulCl",
+                "peopleImpact",
                 getWorldstate(),
                 0.8f,
                 new WFSRequestListener(
@@ -343,6 +352,18 @@ public class PeopleImpactView extends AbstractDetailView implements MapSync {
             ShakemapView.activateLayerWidget(mappingComponent1);
         } catch (final Exception e) {
             LOG.error("cannot initialise building impact view", e);
+            this.removeAll();
+            final java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 0;
+            gridBagConstraints.gridheight = 1;
+            gridBagConstraints.gridwidth = 1;
+            gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+            gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+            gridBagConstraints.weightx = 1.0;
+            gridBagConstraints.weighty = 1.0;
+            gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 0);
+            this.add(new NoContentPanel(), gridBagConstraints);
         }
     }
 
@@ -369,21 +390,28 @@ public class PeopleImpactView extends AbstractDetailView implements MapSync {
             String b;
             String c;
             String d;
-            a = b = c = d = null;
+            String e;
+            a = b = c = d = e = null;
             try {
                 for (final FeatureProperty fp : f.getProperties()) {
                     if (fp.getName().equals(
-                                    new QualifiedName("crisma", "a", new URI("de:cismet:cids:custom:crisma")))) {
+                                    new QualifiedName(
+                                        "crisma",
+                                        "tot_comp_c",
+                                        new URI("de:cismet:cids:custom:crisma")))) {
                         a = fp.getValue().toString();
                     } else if (fp.getName().equals(
-                                    new QualifiedName("crisma", "b", new URI("de:cismet:cids:custom:crisma")))) {
+                                    new QualifiedName("crisma", "homeless", new URI("de:cismet:cids:custom:crisma")))) {
                         b = fp.getValue().toString();
                     } else if (fp.getName().equals(
-                                    new QualifiedName("crisma", "c", new URI("de:cismet:cids:custom:crisma")))) {
+                                    new QualifiedName("crisma", "injured", new URI("de:cismet:cids:custom:crisma")))) {
                         c = fp.getValue().toString();
                     } else if (fp.getName().equals(
-                                    new QualifiedName("crisma", "d", new URI("de:cismet:cids:custom:crisma")))) {
+                                    new QualifiedName("crisma", "dead", new URI("de:cismet:cids:custom:crisma")))) {
                         d = fp.getValue().toString();
+                    } else if (fp.getName().equals(
+                                    new QualifiedName("crisma", "affected", new URI("de:cismet:cids:custom:crisma")))) {
+                        e = fp.getValue().toString();
                     }
                 }
 
@@ -391,7 +419,7 @@ public class PeopleImpactView extends AbstractDetailView implements MapSync {
                 final String bb;
                 final String cc;
                 final String dd;
-                aa = String.valueOf(Math.round(Double.parseDouble(a) * 100) / 100d);
+                aa = String.valueOf(Math.round((Double.parseDouble(a) - Double.parseDouble(e)) * 100) / 100d);
                 bb = String.valueOf(Math.round(Double.parseDouble(b) * 100) / 100d);
                 cc = String.valueOf(Math.round(Double.parseDouble(c) * 100) / 100d);
                 dd = String.valueOf(Math.round(Double.parseDouble(d) * 100) / 100d);
@@ -400,10 +428,10 @@ public class PeopleImpactView extends AbstractDetailView implements MapSync {
 
                         @Override
                         public void run() {
-                            jLabel2.setText(aa + " Buildings");
-                            jLabel4.setText(bb + " Buildings");
-                            jLabel6.setText(cc + " Buildings");
-                            jLabel8.setText(dd + " Buildings");
+                            jLabel2.setText(aa + " People");
+                            jLabel4.setText(bb + " People");
+                            jLabel6.setText(cc + " People");
+                            jLabel8.setText(dd + " People");
                         }
                     });
             } catch (Exception ex) {

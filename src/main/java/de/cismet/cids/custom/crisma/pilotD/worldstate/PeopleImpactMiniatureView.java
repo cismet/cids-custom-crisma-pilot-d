@@ -98,10 +98,22 @@ public class PeopleImpactMiniatureView extends javax.swing.JPanel implements Wor
      */
     private void init() {
         try {
-            ShakemapView.initPilotDMap(mappingComponent1, "buildVulCl", worldstate, 0.8f, new WFSRequestListener());
+            ShakemapView.initPilotDMap(mappingComponent1, "peopleImpact", worldstate, 0.8f, new WFSRequestListener());
             mappingComponent1.setInteractionMode("MUTE");
         } catch (final Exception e) {
             LOG.error("cannot initialise shakemap miniature view", e);
+            this.removeAll();
+            final java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 0;
+            gridBagConstraints.gridheight = 1;
+            gridBagConstraints.gridwidth = 1;
+            gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+            gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+            gridBagConstraints.weightx = 1.0;
+            gridBagConstraints.weighty = 1.0;
+            gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 0);
+            this.add(new NoContentPanel(), gridBagConstraints);
         }
     }
 }

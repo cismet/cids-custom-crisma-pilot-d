@@ -129,10 +129,10 @@ public class RoadImpactView extends AbstractDetailView implements MapSync {
         jPanel1.add(mappingComponent1, gridBagConstraints);
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                NbBundle.getMessage(RoadImpactView.class, "BuildingsVulnerabilityClassesView.jPanel2.border.title"))); // NOI18N
+                NbBundle.getMessage(RoadImpactView.class, "RoadImpactView.jPanel2.border.title"))); // NOI18N
         jPanel2.setLayout(new java.awt.GridBagLayout());
 
-        jLabel1.setText(NbBundle.getMessage(RoadImpactView.class, "BuildingsVulnerabilityClassesView.jLabel1.text")); // NOI18N
+        jLabel1.setText(NbBundle.getMessage(RoadImpactView.class, "RoadImpactView.jLabel1.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -141,7 +141,7 @@ public class RoadImpactView extends AbstractDetailView implements MapSync {
         jPanel2.add(jLabel1, gridBagConstraints);
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel2.setText(NbBundle.getMessage(RoadImpactView.class, "BuildingsVulnerabilityClassesView.jLabel2.text")); // NOI18N
+        jLabel2.setText(NbBundle.getMessage(RoadImpactView.class, "RoadImpactView.jLabel2.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
@@ -150,7 +150,7 @@ public class RoadImpactView extends AbstractDetailView implements MapSync {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel2.add(jLabel2, gridBagConstraints);
 
-        jLabel3.setText(NbBundle.getMessage(RoadImpactView.class, "BuildingsVulnerabilityClassesView.jLabel3.text")); // NOI18N
+        jLabel3.setText(NbBundle.getMessage(RoadImpactView.class, "RoadImpactView.jLabel3.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -159,7 +159,7 @@ public class RoadImpactView extends AbstractDetailView implements MapSync {
         jPanel2.add(jLabel3, gridBagConstraints);
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel4.setText(NbBundle.getMessage(RoadImpactView.class, "BuildingsVulnerabilityClassesView.jLabel4.text")); // NOI18N
+        jLabel4.setText(NbBundle.getMessage(RoadImpactView.class, "RoadImpactView.jLabel4.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -167,7 +167,7 @@ public class RoadImpactView extends AbstractDetailView implements MapSync {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel2.add(jLabel4, gridBagConstraints);
 
-        jLabel5.setText(NbBundle.getMessage(RoadImpactView.class, "BuildingsVulnerabilityClassesView.jLabel5.text")); // NOI18N
+        jLabel5.setText(NbBundle.getMessage(RoadImpactView.class, "RoadImpactView.jLabel5.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -176,7 +176,7 @@ public class RoadImpactView extends AbstractDetailView implements MapSync {
         jPanel2.add(jLabel5, gridBagConstraints);
 
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel6.setText(NbBundle.getMessage(RoadImpactView.class, "BuildingsVulnerabilityClassesView.jLabel6.text")); // NOI18N
+        jLabel6.setText(NbBundle.getMessage(RoadImpactView.class, "RoadImpactView.jLabel6.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
@@ -184,7 +184,7 @@ public class RoadImpactView extends AbstractDetailView implements MapSync {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel2.add(jLabel6, gridBagConstraints);
 
-        jLabel7.setText(NbBundle.getMessage(RoadImpactView.class, "BuildingsVulnerabilityClassesView.jLabel7.text")); // NOI18N
+        jLabel7.setText(NbBundle.getMessage(RoadImpactView.class, "RoadImpactView.jLabel7.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -193,7 +193,7 @@ public class RoadImpactView extends AbstractDetailView implements MapSync {
         jPanel2.add(jLabel7, gridBagConstraints);
 
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel8.setText(NbBundle.getMessage(RoadImpactView.class, "BuildingsVulnerabilityClassesView.jLabel8.text")); // NOI18N
+        jLabel8.setText(NbBundle.getMessage(RoadImpactView.class, "RoadImpactView.jLabel8.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
@@ -207,10 +207,10 @@ public class RoadImpactView extends AbstractDetailView implements MapSync {
         jPanel1.add(jPanel2, gridBagConstraints);
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                NbBundle.getMessage(RoadImpactView.class, "BuildingsVulnerabilityClassesView.jPanel3.border.title"))); // NOI18N
+                NbBundle.getMessage(RoadImpactView.class, "RoadImpactView.jPanel3.border.title"))); // NOI18N
         jPanel3.setLayout(new java.awt.GridBagLayout());
 
-        jLabel9.setText(NbBundle.getMessage(RoadImpactView.class, "BuildingsVulnerabilityClassesView.jLabel9.text")); // NOI18N
+        jLabel9.setText(NbBundle.getMessage(RoadImpactView.class, "RoadImpactView.jLabel9.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -218,7 +218,7 @@ public class RoadImpactView extends AbstractDetailView implements MapSync {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel3.add(jLabel9, gridBagConstraints);
 
-        jLabel10.setText(NbBundle.getMessage(RoadImpactView.class, "BuildingsVulnerabilityClassesView.jLabel10.text")); // NOI18N
+        jLabel10.setText(NbBundle.getMessage(RoadImpactView.class, "RoadImpactView.jLabel10.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -226,7 +226,7 @@ public class RoadImpactView extends AbstractDetailView implements MapSync {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel3.add(jLabel10, gridBagConstraints);
 
-        jLabel11.setText(NbBundle.getMessage(RoadImpactView.class, "BuildingsVulnerabilityClassesView.jLabel11.text")); // NOI18N
+        jLabel11.setText(NbBundle.getMessage(RoadImpactView.class, "RoadImpactView.jLabel11.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
@@ -234,7 +234,7 @@ public class RoadImpactView extends AbstractDetailView implements MapSync {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel3.add(jLabel11, gridBagConstraints);
 
-        jLabel12.setText(NbBundle.getMessage(RoadImpactView.class, "BuildingsVulnerabilityClassesView.jLabel12.text")); // NOI18N
+        jLabel12.setText(NbBundle.getMessage(RoadImpactView.class, "RoadImpactView.jLabel12.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
@@ -242,26 +242,26 @@ public class RoadImpactView extends AbstractDetailView implements MapSync {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel3.add(jLabel12, gridBagConstraints);
 
-        jLabel13.setText(NbBundle.getMessage(RoadImpactView.class, "BuildingsVulnerabilityClassesView.jLabel13.text")); // NOI18N
+        jLabel13.setText(NbBundle.getMessage(RoadImpactView.class, "RoadImpactView.jLabel13.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.weightx = 1.0;
         jPanel3.add(jLabel13, gridBagConstraints);
 
-        jLabel14.setText(NbBundle.getMessage(RoadImpactView.class, "BuildingsVulnerabilityClassesView.jLabel14.text")); // NOI18N
+        jLabel14.setText(NbBundle.getMessage(RoadImpactView.class, "RoadImpactView.jLabel14.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         jPanel3.add(jLabel14, gridBagConstraints);
 
-        jLabel15.setText(NbBundle.getMessage(RoadImpactView.class, "BuildingsVulnerabilityClassesView.jLabel15.text")); // NOI18N
+        jLabel15.setText(NbBundle.getMessage(RoadImpactView.class, "RoadImpactView.jLabel15.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
         jPanel3.add(jLabel15, gridBagConstraints);
 
-        jLabel16.setText(NbBundle.getMessage(RoadImpactView.class, "BuildingsVulnerabilityClassesView.jLabel16.text")); // NOI18N
+        jLabel16.setText(NbBundle.getMessage(RoadImpactView.class, "RoadImpactView.jLabel16.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;

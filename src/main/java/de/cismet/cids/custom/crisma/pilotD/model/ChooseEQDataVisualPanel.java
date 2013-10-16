@@ -68,12 +68,15 @@ public class ChooseEQDataVisualPanel extends javax.swing.JPanel {
     private final transient DocL docL;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.Box.Filler filler1;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JSlider jSlider1;
@@ -139,6 +142,8 @@ public class ChooseEQDataVisualPanel extends javax.swing.JPanel {
             model.getWorldstate(),
             1f,
             new WFSRequestListener());
+        mappingComponent1.addInputListener("eq", new AddEpicenterListener());
+        mappingComponent1.setInteractionMode("eq");
         ShakemapView.activateLayerWidget(mappingComponent1);
     }
 
@@ -165,6 +170,11 @@ public class ChooseEQDataVisualPanel extends javax.swing.JPanel {
         jSlider1 = new javax.swing.JSlider();
         jLabel4 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0),
+                new java.awt.Dimension(0, 0),
+                new java.awt.Dimension(32767, 0));
 
         setPreferredSize(new java.awt.Dimension(1024, 768));
         setLayout(new java.awt.GridBagLayout());
@@ -290,6 +300,7 @@ public class ChooseEQDataVisualPanel extends javax.swing.JPanel {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         jPanel2.add(jSlider1, gridBagConstraints);
@@ -305,6 +316,26 @@ public class ChooseEQDataVisualPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
         jPanel2.add(jLabel6, gridBagConstraints);
+
+        jLabel7.setText(NbBundle.getMessage(ChooseEQDataVisualPanel.class, "ChooseEQDataVisualPanel.jLabel7.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridy = 1;
+        jPanel2.add(jLabel7, gridBagConstraints);
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Blake" }));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(0, 2, 0, 5);
+        jPanel2.add(jComboBox1, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        jPanel2.add(filler1, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;

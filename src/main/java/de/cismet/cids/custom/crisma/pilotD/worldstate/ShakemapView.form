@@ -45,7 +45,7 @@
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                <TitledBorder title="Legend">
+                <TitledBorder title="Categories">
                   <ResourceString PropertyName="titleX" bundle="de/cismet/cids/custom/crisma/pilotD/worldstate/Bundle.properties" key="ShakemapView.jPanel2.border.title" replaceFormat="NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
                 </TitledBorder>
               </Border>
