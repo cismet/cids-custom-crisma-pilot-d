@@ -97,7 +97,7 @@ public final class WorldstateActionCExtProvider implements CExtProvider<CidsBean
             }
 
             if (((mc != null) && (ctxBean != null))
-                        && ("worldstates".equals(mc.getTableName()))) {
+                        && ("worldstates".equalsIgnoreCase(mc.getTableName()))) {
                 final CidsBeanAction action1 = new ExecModelWizardAction();
                 final CidsBeanAction action2 = new TakeoverAsRootAction();
                 action1.setCidsBean(ctxBean);

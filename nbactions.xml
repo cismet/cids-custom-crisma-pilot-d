@@ -10,7 +10,7 @@
             <jalopy.skip>true</jalopy.skip>
             <exec.classpathScope>runtime</exec.classpathScope>
             <exec.workingdir>${de.cismet.cids.navigator.workingDir}</exec.workingdir>
-            <exec.args>-Duser.variant=crisma -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8899 -Xms512m -Xmx1024m -XX:MaxPermSize=128m -ea -classpath "${de.cismet.cids.classpath}" Sirius.navigator.Navigator ${de.cismet.cids.navigator.workingDir}/config/log4j.debug.properties ${de.cismet.cids.navigator.workingDir}/config/navigator.cfg ${de.cismet.cids.navigator.workingDir} ${de.cismet.cids.navigator.workingDir}/plugins ${de.cismet.cids.navigator.workingDir}/search ${de.cismet.cids.navigator.workingDir}/profiles</exec.args>
+            <exec.args>-Duser.variant=crisma -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8899 -Xms512m -Xmx4096m -XX:MaxPermSize=128m -ea -classpath "${de.cismet.cids.classpath}" Sirius.navigator.Navigator file://${de.cismet.cids.navigator.workingDir}/config/log4j.debug.properties ${de.cismet.cids.navigator.workingDir}/config/navigator.cfg ${de.cismet.cids.navigator.workingDir} ${de.cismet.cids.navigator.workingDir}/plugins ${de.cismet.cids.navigator.workingDir}/search ${de.cismet.cids.navigator.workingDir}/profiles</exec.args>
             <exec.executable>java</exec.executable>
         </properties>
         <activatedProfiles>
@@ -27,7 +27,7 @@
             <jalopy.skip>true</jalopy.skip>
             <exec.classpathScope>runtime</exec.classpathScope>
             <exec.workingdir>${de.cismet.cids.navigator.workingDir}</exec.workingdir>
-            <exec.args>-Duser.variant=crisma -Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -Xms512m -Xmx1024m -XX:MaxPermSize=128m -ea -classpath ${de.cismet.cids.classpath} Sirius.navigator.Navigator ${de.cismet.cids.navigator.workingDir}/config/log4j.debug.properties ${de.cismet.cids.navigator.workingDir}/config/navigator.cfg ${de.cismet.cids.navigator.workingDir} ${de.cismet.cids.navigator.workingDir}/plugins ${de.cismet.cids.navigator.workingDir}/search ${de.cismet.cids.navigator.workingDir}/profiles</exec.args>
+            <exec.args>-Duser.variant=crisma -Xdebug -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -Xms512m -Xmx4096m -XX:MaxPermSize=128m -ea -classpath ${de.cismet.cids.classpath} Sirius.navigator.Navigator file://${de.cismet.cids.navigator.workingDir}/config/log4j.debug.properties ${de.cismet.cids.navigator.workingDir}/config/navigator.cfg ${de.cismet.cids.navigator.workingDir} ${de.cismet.cids.navigator.workingDir}/plugins ${de.cismet.cids.navigator.workingDir}/search ${de.cismet.cids.navigator.workingDir}/profiles</exec.args>
             <jpda.listen>true</jpda.listen>
             <exec.executable>java</exec.executable>
         </properties>
@@ -36,16 +36,33 @@
         </activatedProfiles>
     </action>
     <action>
-            <actionName>run.single.main</actionName>
-            <goals>
-                <goal>process-classes</goal>
-                <goal>org.codehaus.mojo:exec-maven-plugin:1.2:exec</goal>
-            </goals>
-            <properties>
-                <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8899 -classpath %classpath ${packageClassName}</exec.args>
-                <exec.executable>java</exec.executable>
-                <exec.classpathScope>${classPathScope}</exec.classpathScope>
-                <jalopy.skip>true</jalopy.skip>
-            </properties>
-        </action>
+        <actionName>run.single.main</actionName>
+        <goals>
+            <goal>process-classes</goal>
+            <goal>org.codehaus.mojo:exec-maven-plugin:1.2:exec</goal>
+        </goals>
+        <properties>
+            <exec.args>-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8899 -classpath %classpath ${packageClassName}</exec.args>
+            <exec.executable>java</exec.executable>
+            <exec.classpathScope>${classPathScope}</exec.classpathScope>
+            <jalopy.skip>true</jalopy.skip>
+        </properties>
+    </action>
+    <action>
+        <actionName>profile</actionName>
+        <goals>
+            <goal>process-classes</goal>
+            <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
+        </goals>
+        <properties>
+            <jalopy.skip>true</jalopy.skip>
+            <exec.classpathScope>runtime</exec.classpathScope>
+            <exec.workingdir>${de.cismet.cids.navigator.workingDir}</exec.workingdir>
+            <exec.args>-Duser.variant=crisma -Xms512m -Xmx4096m -XX:MaxPermSize=128m -ea -classpath "${de.cismet.cids.classpath}" Sirius.navigator.Navigator file://${de.cismet.cids.navigator.workingDir}/config/log4j.debug.properties ${de.cismet.cids.navigator.workingDir}/config/navigator.cfg ${de.cismet.cids.navigator.workingDir} ${de.cismet.cids.navigator.workingDir}/plugins ${de.cismet.cids.navigator.workingDir}/search ${de.cismet.cids.navigator.workingDir}/profiles</exec.args>
+            <exec.executable>java</exec.executable>
+        </properties>
+        <activatedProfiles>
+            <activatedProfile>cismet-dev-exec</activatedProfile>
+        </activatedProfiles>
+    </action>
 </actions>

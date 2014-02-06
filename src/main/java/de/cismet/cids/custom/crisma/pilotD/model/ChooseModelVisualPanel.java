@@ -11,10 +11,18 @@ import org.jdesktop.swingx.decorator.SortOrder;
 
 import org.openide.util.NbBundle;
 
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
@@ -39,8 +47,10 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JToolBar jToolBar1;
@@ -60,17 +70,63 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
 
         initComponents();
 
-        final DefaultListModel<String> allModel = new DefaultListModel<String>();
-        allModel.addElement("Building Hazard [Model]");
-        allModel.addElement("Building Impact [Model]");
-        allModel.addElement("Population Impact [Model]");
-        allModel.addElement("Road Network Impact [Model]");
-        allModel.addElement("Building Resistance [Mitigation]");
-        allModel.addElement("People Congestion Reduction [Mitigation]");
+        final DefaultListModel<Percs> allModel = new DefaultListModel<Percs>();
+        allModel.addElement(new Percs("Building Hazard [Model]", 0));
+        allModel.addElement(new Percs("Forest Fire Hazard [Model]", 0));
+        allModel.addElement(new Percs("Building Impact [Model]", -1));
+        allModel.addElement(new Percs("Population Impact [Model]", -1));
+        allModel.addElement(new Percs("Road Network Impact [Model]", -1));
+        allModel.addElement(new Percs("Building Resistance [Mitigation]", -1));
+        allModel.addElement(new Percs("People Congestion Reduction [Mitigation]", -1));
 
         jXList1.setModel(allModel);
 
         jXList1.setSortOrder(SortOrder.ASCENDING);
+        jXList1.setCellRenderer(new DefaultListCellRenderer() {
+
+                @Override
+                public Component getListCellRendererComponent(final JList<?> arg0,
+                        final Object arg1,
+                        final int arg2,
+                        final boolean arg3,
+                        final boolean arg4) {
+                    final JLabel l = (JLabel)super.getListCellRendererComponent(arg0, arg1, arg2, arg3, arg4); // To change body of generated methods, choose Tools | Templates.
+
+                    if (jCheckBox1.isSelected()) {
+                        if (((Percs)arg1).name.contains("Hazard")) {
+                            l.setText(((Percs)arg1).name + " ( " + ((Percs)arg1).perc + " % )");
+                        } else {
+                            l.setText(((Percs)arg1).name);
+                            l.setEnabled(false);
+                        }
+                    } else {
+                        l.setText(((Percs)arg1).name);
+                    }
+
+                    return l;
+                }
+            });
+        jXList2.setCellRenderer(new DefaultListCellRenderer() {
+
+                @Override
+                public Component getListCellRendererComponent(final JList<?> arg0,
+                        final Object arg1,
+                        final int arg2,
+                        final boolean arg3,
+                        final boolean arg4) {
+                    final JLabel l = (JLabel)super.getListCellRendererComponent(arg0, arg1, arg2, arg3, arg4); // To change body of generated methods, choose Tools | Templates.
+                    l.setText(((Percs)arg1).name);
+
+                    return l;
+                }
+            });
+        jCheckBox1.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(final ActionEvent e) {
+                    jXList1.repaint();
+                }
+            });
 
         final DefaultListModel<String> selModel = new DefaultListModel<String>();
         jXList2.setModel(selModel);
@@ -89,8 +145,19 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
 
                 @Override
                 public void contentsChanged(final ListDataEvent e) {
-                    model.setSelectedModels(
-                        Arrays.asList(((DefaultListModel)jXList2.getModel()).toArray()));
+                    final ArrayList l = new ArrayList();
+                    for (final Object o : ((DefaultListModel)jXList2.getModel()).toArray()) {
+                        l.add(((Percs)o).name);
+                    }
+                    model.setSelectedModels(l);
+                    if (l.isEmpty()) {
+                        allModel.get(0).perc = 0;
+                        allModel.get(1).perc = 0;
+                    } else {
+                        allModel.get(0).perc = Math.round(Math.random() * 100);
+                        allModel.get(1).perc = Math.round(Math.random() * 100);
+                    }
+                    jXList1.repaint();
                 }
             });
 
@@ -117,6 +184,7 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        jPanel3 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jXList1 = new org.jdesktop.swingx.JXList();
@@ -136,9 +204,12 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
         filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0),
                 new java.awt.Dimension(0, 0),
                 new java.awt.Dimension(0, 32767));
+        jCheckBox1 = new javax.swing.JCheckBox();
 
         setPreferredSize(new java.awt.Dimension(1024, 768));
         setLayout(new java.awt.GridBagLayout());
+
+        jPanel3.setLayout(new java.awt.GridBagLayout());
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(
                 NbBundle.getMessage(ChooseModelVisualPanel.class, "ChooseModelVisualPanel.jPanel1.border.title"))); // NOI18N
@@ -161,7 +232,7 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
         gridBagConstraints.gridheight = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.5;
-        add(jPanel1, gridBagConstraints);
+        jPanel3.add(jPanel1, gridBagConstraints);
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(
                 NbBundle.getMessage(ChooseModelVisualPanel.class, "ChooseModelVisualPanel.jPanel2.border.title"))); // NOI18N
@@ -220,7 +291,7 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
         gridBagConstraints.gridheight = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.5;
-        add(jPanel2, gridBagConstraints);
+        jPanel3.add(jPanel2, gridBagConstraints);
 
         jButton1.setText(NbBundle.getMessage(ChooseModelVisualPanel.class, "ChooseModelVisualPanel.jButton1.text")); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -234,7 +305,7 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 10, 5);
-        add(jButton1, gridBagConstraints);
+        jPanel3.add(jButton1, gridBagConstraints);
 
         jButton2.setText(NbBundle.getMessage(ChooseModelVisualPanel.class, "ChooseModelVisualPanel.jButton2.text")); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -248,7 +319,7 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(jButton2, gridBagConstraints);
+        jPanel3.add(jButton2, gridBagConstraints);
 
         jButton3.setText(NbBundle.getMessage(ChooseModelVisualPanel.class, "ChooseModelVisualPanel.jButton3.text")); // NOI18N
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -262,7 +333,7 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        add(jButton3, gridBagConstraints);
+        jPanel3.add(jButton3, gridBagConstraints);
 
         jButton4.setText(NbBundle.getMessage(ChooseModelVisualPanel.class, "ChooseModelVisualPanel.jButton4.text")); // NOI18N
         jButton4.addActionListener(new java.awt.event.ActionListener() {
@@ -276,20 +347,37 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.insets = new java.awt.Insets(10, 5, 5, 5);
-        add(jButton4, gridBagConstraints);
+        jPanel3.add(jButton4, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         gridBagConstraints.weighty = 0.5;
-        add(filler1, gridBagConstraints);
+        jPanel3.add(filler1, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
         gridBagConstraints.weighty = 0.5;
-        add(filler2, gridBagConstraints);
-    } // </editor-fold>//GEN-END:initComponents
+        jPanel3.add(filler2, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(jPanel3, gridBagConstraints);
+
+        jCheckBox1.setText(NbBundle.getMessage(
+                ChooseModelVisualPanel.class,
+                "ChooseModelVisualPanel.jCheckBox1.text",
+                new Object[] {})); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        add(jCheckBox1, gridBagConstraints);
+    }                              // </editor-fold>//GEN-END:initComponents
 
     /**
      * DOCUMENT ME!
@@ -363,4 +451,32 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
     {                                                                          //GEN-HEADEREND:event_jButton4ActionPerformed
         ((DefaultListModel<String>)jXList2.getModel()).clear();
     }                                                                          //GEN-LAST:event_jButton4ActionPerformed
+
+    //~ Inner Classes ----------------------------------------------------------
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @version  $Revision$, $Date$
+     */
+    private static final class Percs {
+
+        //~ Instance fields ----------------------------------------------------
+
+        String name;
+        long perc;
+
+        //~ Constructors -------------------------------------------------------
+
+        /**
+         * Creates a new Percs object.
+         *
+         * @param  name  DOCUMENT ME!
+         * @param  perc  DOCUMENT ME!
+         */
+        public Percs(final String name, final long perc) {
+            this.name = name;
+            this.perc = perc;
+        }
+    }
 }
