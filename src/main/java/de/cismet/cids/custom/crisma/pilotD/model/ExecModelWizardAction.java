@@ -377,6 +377,9 @@ public final class ExecModelWizardAction extends AbstractCidsBeanAction {
                     } else if ("People Congestion Reduction [Mitigation]".equals(s)) {
                         steps.add(allPanels[3].getComponent().getName());
                         panels.add(allPanels[3]);
+                    } else if ("Forest Fire Hazard [Model]".equals(s)) {
+                        steps.add(allPanels[9].getComponent().getName());
+                        panels.add(allPanels[9]);
                     }
                 }
 
