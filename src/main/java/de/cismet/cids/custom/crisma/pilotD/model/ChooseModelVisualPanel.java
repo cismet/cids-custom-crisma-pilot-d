@@ -181,8 +181,7 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents()
-    {
+    private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
         jPanel3 = new javax.swing.JPanel();
@@ -199,8 +198,12 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
-        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
-        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 32767));
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0),
+                new java.awt.Dimension(0, 0),
+                new java.awt.Dimension(0, 32767));
+        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0),
+                new java.awt.Dimension(0, 0),
+                new java.awt.Dimension(0, 32767));
         jCheckBox1 = new javax.swing.JCheckBox();
 
         setPreferredSize(new java.awt.Dimension(1024, 768));
@@ -208,7 +211,8 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
 
         jPanel3.setLayout(new java.awt.GridBagLayout());
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(NbBundle.getMessage(ChooseModelVisualPanel.class, "ChooseModelVisualPanel.jPanel1.border.title"))); // NOI18N
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                NbBundle.getMessage(ChooseModelVisualPanel.class, "ChooseModelVisualPanel.jPanel1.border.title"))); // NOI18N
         jPanel1.setLayout(new java.awt.GridBagLayout());
 
         jScrollPane1.setViewportView(jXList1);
@@ -230,7 +234,8 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 0.5;
         jPanel3.add(jPanel1, gridBagConstraints);
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(NbBundle.getMessage(ChooseModelVisualPanel.class, "ChooseModelVisualPanel.jPanel2.border.title"))); // NOI18N
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(
+                NbBundle.getMessage(ChooseModelVisualPanel.class, "ChooseModelVisualPanel.jPanel2.border.title"))); // NOI18N
         jPanel2.setLayout(new java.awt.GridBagLayout());
 
         jXList2.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -251,26 +256,26 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
         jButton5.setFocusable(false);
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton5.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jButton5ActionPerformed(evt);
-            }
-        });
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+
+                @Override
+                public void actionPerformed(final java.awt.event.ActionEvent evt) {
+                    jButton5ActionPerformed(evt);
+                }
+            });
         jToolBar1.add(jButton5);
 
         jButton6.setText(NbBundle.getMessage(ChooseModelVisualPanel.class, "ChooseModelVisualPanel.jButton6.text")); // NOI18N
         jButton6.setFocusable(false);
         jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton6.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jButton6ActionPerformed(evt);
-            }
-        });
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+
+                @Override
+                public void actionPerformed(final java.awt.event.ActionEvent evt) {
+                    jButton6ActionPerformed(evt);
+                }
+            });
         jToolBar1.add(jButton6);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -289,13 +294,13 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
         jPanel3.add(jPanel2, gridBagConstraints);
 
         jButton1.setText(NbBundle.getMessage(ChooseModelVisualPanel.class, "ChooseModelVisualPanel.jButton1.text")); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jButton1ActionPerformed(evt);
-            }
-        });
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+
+                @Override
+                public void actionPerformed(final java.awt.event.ActionEvent evt) {
+                    jButton1ActionPerformed(evt);
+                }
+            });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -303,13 +308,13 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
         jPanel3.add(jButton1, gridBagConstraints);
 
         jButton2.setText(NbBundle.getMessage(ChooseModelVisualPanel.class, "ChooseModelVisualPanel.jButton2.text")); // NOI18N
-        jButton2.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jButton2ActionPerformed(evt);
-            }
-        });
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+
+                @Override
+                public void actionPerformed(final java.awt.event.ActionEvent evt) {
+                    jButton2ActionPerformed(evt);
+                }
+            });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
@@ -317,13 +322,13 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
         jPanel3.add(jButton2, gridBagConstraints);
 
         jButton3.setText(NbBundle.getMessage(ChooseModelVisualPanel.class, "ChooseModelVisualPanel.jButton3.text")); // NOI18N
-        jButton3.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jButton3ActionPerformed(evt);
-            }
-        });
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+
+                @Override
+                public void actionPerformed(final java.awt.event.ActionEvent evt) {
+                    jButton3ActionPerformed(evt);
+                }
+            });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
@@ -331,13 +336,13 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
         jPanel3.add(jButton3, gridBagConstraints);
 
         jButton4.setText(NbBundle.getMessage(ChooseModelVisualPanel.class, "ChooseModelVisualPanel.jButton4.text")); // NOI18N
-        jButton4.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                jButton4ActionPerformed(evt);
-            }
-        });
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+
+                @Override
+                public void actionPerformed(final java.awt.event.ActionEvent evt) {
+                    jButton4ActionPerformed(evt);
+                }
+            });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
@@ -362,87 +367,90 @@ public class ChooseModelVisualPanel extends javax.swing.JPanel {
         gridBagConstraints.weighty = 1.0;
         add(jPanel3, gridBagConstraints);
 
-        jCheckBox1.setText(NbBundle.getMessage(ChooseModelVisualPanel.class, "ChooseModelVisualPanel.jCheckBox1.text", new Object[] {})); // NOI18N
+        jCheckBox1.setText(NbBundle.getMessage(
+                ChooseModelVisualPanel.class,
+                "ChooseModelVisualPanel.jCheckBox1.text",
+                new Object[] {})); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         add(jCheckBox1, gridBagConstraints);
-    }// </editor-fold>//GEN-END:initComponents
+    }                              // </editor-fold>//GEN-END:initComponents
 
     /**
      * DOCUMENT ME!
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void jButton5ActionPerformed(final java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton5ActionPerformed
-    {//GEN-HEADEREND:event_jButton5ActionPerformed
+    private void jButton5ActionPerformed(final java.awt.event.ActionEvent evt) //GEN-FIRST:event_jButton5ActionPerformed
+    {                                                                          //GEN-HEADEREND:event_jButton5ActionPerformed
         final int selI = jXList2.getSelectedIndex();
         if (selI != (jXList2.getElementCount() - 1)) {
             ((DefaultListModel)jXList2.getModel()).add(selI + 1, ((DefaultListModel)jXList2.getModel()).remove(selI));
         }
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }                                                                          //GEN-LAST:event_jButton5ActionPerformed
 
     /**
      * DOCUMENT ME!
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void jButton6ActionPerformed(final java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton6ActionPerformed
-    {//GEN-HEADEREND:event_jButton6ActionPerformed
+    private void jButton6ActionPerformed(final java.awt.event.ActionEvent evt) //GEN-FIRST:event_jButton6ActionPerformed
+    {                                                                          //GEN-HEADEREND:event_jButton6ActionPerformed
         final int selI = jXList2.getSelectedIndex();
         if (selI != 0) {
             ((DefaultListModel)jXList2.getModel()).add(selI - 1, ((DefaultListModel)jXList2.getModel()).remove(selI));
         }
-    }//GEN-LAST:event_jButton6ActionPerformed
+    }                                                                          //GEN-LAST:event_jButton6ActionPerformed
 
     /**
      * DOCUMENT ME!
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void jButton1ActionPerformed(final java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
-    {//GEN-HEADEREND:event_jButton1ActionPerformed
+    private void jButton1ActionPerformed(final java.awt.event.ActionEvent evt) //GEN-FIRST:event_jButton1ActionPerformed
+    {                                                                          //GEN-HEADEREND:event_jButton1ActionPerformed
         final Enumeration<String> en = ((DefaultListModel<String>)jXList1.getModel()).elements();
         while (en.hasMoreElements()) {
             ((DefaultListModel<String>)jXList2.getModel()).addElement(en.nextElement());
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }                                                                          //GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * DOCUMENT ME!
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void jButton2ActionPerformed(final java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton2ActionPerformed
-    {//GEN-HEADEREND:event_jButton2ActionPerformed
+    private void jButton2ActionPerformed(final java.awt.event.ActionEvent evt) //GEN-FIRST:event_jButton2ActionPerformed
+    {                                                                          //GEN-HEADEREND:event_jButton2ActionPerformed
         for (final Object o : jXList1.getSelectedValuesList()) {
             ((DefaultListModel)jXList2.getModel()).addElement(o);
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }                                                                          //GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * DOCUMENT ME!
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void jButton3ActionPerformed(final java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton3ActionPerformed
-    {//GEN-HEADEREND:event_jButton3ActionPerformed
+    private void jButton3ActionPerformed(final java.awt.event.ActionEvent evt) //GEN-FIRST:event_jButton3ActionPerformed
+    {                                                                          //GEN-HEADEREND:event_jButton3ActionPerformed
         for (final Object o : jXList2.getSelectedValuesList()) {
             ((DefaultListModel)jXList2.getModel()).removeElement(o);
         }
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }                                                                          //GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * DOCUMENT ME!
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void jButton4ActionPerformed(final java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton4ActionPerformed
-    {//GEN-HEADEREND:event_jButton4ActionPerformed
+    private void jButton4ActionPerformed(final java.awt.event.ActionEvent evt) //GEN-FIRST:event_jButton4ActionPerformed
+    {                                                                          //GEN-HEADEREND:event_jButton4ActionPerformed
         ((DefaultListModel<String>)jXList2.getModel()).clear();
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }                                                                          //GEN-LAST:event_jButton4ActionPerformed
 
     //~ Inner Classes ----------------------------------------------------------
 

@@ -379,6 +379,7 @@ public class ShakemapView extends AbstractDetailView implements MapSync {
                 mappingModel.setSrs(crs);
                 CismapBroker.getInstance().setSrs(crs);
                 mappingModel.addHome(bbox);
+                mappingComponent1.setMappingModel(mappingModel);
 
                 final ObjectMapper m = new ObjectMapper(new JsonFactory());
                 final TypeReference<Map<String, String>> ref = new TypeReference<Map<String, String>>() {

@@ -1,0 +1,568 @@
+/***************************************************
+*
+* cismet GmbH, Saarbruecken, Germany
+*
+*              ... and it just works.
+*
+****************************************************/
+package de.cismet.cids.custom.crisma.pilotD.cascadeeffects;
+
+import com.vividsolutions.jts.geom.Polygon;
+
+import edu.umd.cs.piccolo.event.PInputEvent;
+
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.Binding;
+import org.jdesktop.beansbinding.BindingGroup;
+import org.jdesktop.beansbinding.Bindings;
+import org.jdesktop.beansbinding.ELProperty;
+
+import org.openide.util.ImageUtilities;
+import org.openide.util.NbBundle;
+
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import java.io.IOException;
+
+import java.text.DateFormat;
+
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
+
+import de.cismet.cids.custom.crisma.pilotD.worldstate.ShakemapView;
+import de.cismet.cids.custom.crisma.pilotD.worldstate.ShakemapView.WFSRequestListener;
+
+import de.cismet.cismap.commons.gui.MappingComponent;
+import de.cismet.cismap.commons.gui.piccolo.eventlistener.CreateNewGeometryListener;
+
+/**
+ * DOCUMENT ME!
+ *
+ * @author   mscholl
+ * @version  $Revision$, $Date$
+ */
+public class EQSTFVisualPanel extends javax.swing.JPanel {
+
+    //~ Instance fields --------------------------------------------------------
+
+    private final ImageIcon moveIcon = ImageUtilities.loadImageIcon(this.getClass().getPackage().getName().replaceAll(
+                "\\.",
+                "/")
+                    + "/moveNodes.png",
+            false);
+
+    private final EQSTFWizardPanel model;
+
+    private int pCount = 0;
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private ButtonGroup buttonGroup1;
+    private DateTimePicker dateTimePicker1;
+    private DateTimePicker dateTimePicker2;
+    private JLabel jLabel1;
+    private JLabel jLabel10;
+    private JLabel jLabel2;
+    private JLabel jLabel3;
+    private JLabel jLabel4;
+    private JLabel jLabel5;
+    private JLabel jLabel6;
+    private JLabel jLabel7;
+    private JLabel jLabel8;
+    private JLabel jLabel9;
+    private JPanel jPanel1;
+    private JSpinner jSpinner1;
+    private JSpinner jSpinner2;
+    private JSpinner jSpinner3;
+    private JSpinner jSpinner4;
+    private JSpinner jSpinner5;
+    private JSpinner jSpinner6;
+    private JTextField jTextField1;
+    private JToggleButton jToggleButton2;
+    private JToggleButton jToggleButton3;
+    private JToolBar jToolBar2;
+    private MappingComponent mappingComponent1;
+    private JPanel pnlArea;
+    private JPanel pnlRate;
+    private JPanel pnlSizeDist;
+    private JToggleButton tbnPoly;
+    private BindingGroup bindingGroup;
+    // End of variables declaration//GEN-END:variables
+
+    //~ Constructors -----------------------------------------------------------
+
+    /**
+     * Creates new form EQSTFVisualPanel.
+     *
+     * @param  model  DOCUMENT ME!
+     */
+    public EQSTFVisualPanel(final EQSTFWizardPanel model) {
+        this.model = model;
+
+        initComponents();
+
+        dateTimePicker1.setFormats(DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT));
+        dateTimePicker1.setTimeFormat(DateFormat.getTimeInstance(DateFormat.SHORT));
+        dateTimePicker2.setFormats(DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT));
+        dateTimePicker2.setTimeFormat(DateFormat.getTimeInstance(DateFormat.SHORT));
+
+        setName("Earthquake: Short-term forecast");
+    }
+
+    //~ Methods ----------------------------------------------------------------
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @throws  IOException  DOCUMENT ME!
+     */
+    void init() throws IOException {
+        pCount = 0;
+        ShakemapView.initPilotDMap(
+            mappingComponent1,
+            "comune_aq",
+            model.getWorldstate(),
+            1f,
+            new WFSRequestListener());
+        mappingComponent1.addInputListener("eq", new BoxL(mappingComponent1));
+        mappingComponent1.setInteractionMode("eq");
+        ShakemapView.activateLayerWidget(mappingComponent1);
+        mappingComponent1.setReadOnly(false);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    public EQSTFWizardPanel getModel() {
+        return model;
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The
+     * content of this method is always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents()
+    {
+        GridBagConstraints gridBagConstraints;
+        bindingGroup = new BindingGroup();
+
+        jTextField1 = new JTextField();
+        jLabel2 = new JLabel();
+        buttonGroup1 = new ButtonGroup();
+        pnlRate = new JPanel();
+        jLabel1 = new JLabel();
+        jLabel3 = new JLabel();
+        jLabel4 = new JLabel();
+        dateTimePicker1 = new DateTimePicker();
+        dateTimePicker2 = new DateTimePicker();
+        jLabel5 = new JLabel();
+        jSpinner1 = new JSpinner();
+        jSpinner2 = new JSpinner();
+        pnlSizeDist = new JPanel();
+        jLabel6 = new JLabel();
+        jSpinner3 = new JSpinner();
+        jLabel7 = new JLabel();
+        jSpinner4 = new JSpinner();
+        pnlArea = new JPanel();
+        jLabel8 = new JLabel();
+        jSpinner5 = new JSpinner();
+        jLabel9 = new JLabel();
+        jSpinner6 = new JSpinner();
+        jPanel1 = new JPanel();
+        mappingComponent1 = new MappingComponent();
+        jToolBar2 = new JToolBar();
+        tbnPoly = new JToggleButton();
+        jToggleButton2 = new JToggleButton();
+        jToggleButton3 = new JToggleButton();
+        jLabel10 = new JLabel();
+
+        jTextField1.setText(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.jTextField1.text")); // NOI18N
+
+        jLabel2.setText(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.jLabel2.text")); // NOI18N
+
+        setLayout(new GridBagLayout());
+
+        pnlRate.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.pnlRate.border.title"))); // NOI18N
+        pnlRate.setLayout(new GridBagLayout());
+
+        jLabel1.setText(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.jLabel1.text")); // NOI18N
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new Insets(5, 5, 5, 5);
+        pnlRate.add(jLabel1, gridBagConstraints);
+
+        jLabel3.setText(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.jLabel3.text")); // NOI18N
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new Insets(5, 5, 5, 5);
+        pnlRate.add(jLabel3, gridBagConstraints);
+
+        jLabel4.setText(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.jLabel4.text")); // NOI18N
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new Insets(5, 5, 5, 5);
+        pnlRate.add(jLabel4, gridBagConstraints);
+
+        Binding binding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, this, ELProperty.create("${model.timespanStart}"), dateTimePicker1, BeanProperty.create("date"));
+        bindingGroup.addBinding(binding);
+
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new Insets(5, 5, 5, 5);
+        pnlRate.add(dateTimePicker1, gridBagConstraints);
+
+        binding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, this, ELProperty.create("${model.timespanEnd}"), dateTimePicker2, BeanProperty.create("date"));
+        bindingGroup.addBinding(binding);
+
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new Insets(5, 5, 5, 5);
+        pnlRate.add(dateTimePicker2, gridBagConstraints);
+
+        jLabel5.setText(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.jLabel5.text")); // NOI18N
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new Insets(5, 5, 5, 5);
+        pnlRate.add(jLabel5, gridBagConstraints);
+
+        jSpinner1.setModel(new SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+
+        binding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, this, ELProperty.create("${model.noOfOccurStart}"), jSpinner1, BeanProperty.create("value"));
+        bindingGroup.addBinding(binding);
+
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.insets = new Insets(5, 5, 5, 5);
+        pnlRate.add(jSpinner1, gridBagConstraints);
+
+        jSpinner2.setModel(new SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+
+        binding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, this, ELProperty.create("${model.noOfOccurEnd}"), jSpinner2, BeanProperty.create("value"));
+        bindingGroup.addBinding(binding);
+
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.insets = new Insets(5, 5, 5, 5);
+        pnlRate.add(jSpinner2, gridBagConstraints);
+
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.5;
+        add(pnlRate, gridBagConstraints);
+
+        pnlSizeDist.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.pnlSizeDist.border.title"))); // NOI18N
+        pnlSizeDist.setPreferredSize(new Dimension(325, 100));
+        pnlSizeDist.setLayout(new GridBagLayout());
+
+        jLabel6.setText(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.jLabel6.text")); // NOI18N
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new Insets(5, 5, 5, 5);
+        pnlSizeDist.add(jLabel6, gridBagConstraints);
+
+        jSpinner3.setModel(new SpinnerNumberModel());
+
+        binding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, this, ELProperty.create("${model.bValue}"), jSpinner3, BeanProperty.create("value"));
+        bindingGroup.addBinding(binding);
+
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new Insets(5, 5, 5, 5);
+        pnlSizeDist.add(jSpinner3, gridBagConstraints);
+
+        jLabel7.setText(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.jLabel7.text")); // NOI18N
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new Insets(5, 5, 5, 5);
+        pnlSizeDist.add(jLabel7, gridBagConstraints);
+
+        jSpinner4.setModel(new SpinnerNumberModel());
+
+        binding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, this, ELProperty.create("${model.aValue}"), jSpinner4, BeanProperty.create("value"));
+        bindingGroup.addBinding(binding);
+
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.insets = new Insets(5, 5, 5, 5);
+        pnlSizeDist.add(jSpinner4, gridBagConstraints);
+
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.5;
+        add(pnlSizeDist, gridBagConstraints);
+
+        pnlArea.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.pnlArea.border.title"))); // NOI18N
+        pnlArea.setLayout(new GridBagLayout());
+
+        jLabel8.setText(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.jLabel8.text")); // NOI18N
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new Insets(5, 5, 5, 5);
+        pnlArea.add(jLabel8, gridBagConstraints);
+
+        jSpinner5.setModel(new SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+
+        binding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, this, ELProperty.create("${model.depthStart}"), jSpinner5, BeanProperty.create("value"));
+        bindingGroup.addBinding(binding);
+
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.insets = new Insets(5, 5, 5, 5);
+        pnlArea.add(jSpinner5, gridBagConstraints);
+
+        jLabel9.setText(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.jLabel9.text")); // NOI18N
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new Insets(5, 5, 5, 5);
+        pnlArea.add(jLabel9, gridBagConstraints);
+
+        jSpinner6.setModel(new SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
+
+        binding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, this, ELProperty.create("${model.depthEnd}"), jSpinner6, BeanProperty.create("value"));
+        bindingGroup.addBinding(binding);
+
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.insets = new Insets(5, 5, 5, 5);
+        pnlArea.add(jSpinner6, gridBagConstraints);
+
+        jPanel1.setLayout(new GridBagLayout());
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new Insets(5, 5, 5, 5);
+        jPanel1.add(mappingComponent1, gridBagConstraints);
+
+        jToolBar2.setRollover(true);
+
+        buttonGroup1.add(tbnPoly);
+        tbnPoly.setIcon(new ImageIcon(getClass().getResource("/de/cismet/cids/custom/crisma/pilotD/cascadeeffects/newPolygon.png"))); // NOI18N
+        tbnPoly.setSelected(true);
+        tbnPoly.setText(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.tbnPoly.text")); // NOI18N
+        tbnPoly.setFocusable(false);
+        tbnPoly.setHorizontalTextPosition(SwingConstants.CENTER);
+        tbnPoly.setVerticalTextPosition(SwingConstants.BOTTOM);
+        tbnPoly.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent evt)
+            {
+                tbnPolyActionPerformed(evt);
+            }
+        });
+        jToolBar2.add(tbnPoly);
+
+        buttonGroup1.add(jToggleButton2);
+        jToggleButton2.setIcon(new ImageIcon(getClass().getResource("/de/cismet/cids/custom/crisma/pilotD/cascadeeffects/zoom.gif"))); // NOI18N
+        jToggleButton2.setText(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.jToggleButton2.text")); // NOI18N
+        jToggleButton2.setFocusable(false);
+        jToggleButton2.setHorizontalTextPosition(SwingConstants.CENTER);
+        jToggleButton2.setVerticalTextPosition(SwingConstants.BOTTOM);
+        jToggleButton2.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent evt)
+            {
+                jToggleButton2ActionPerformed(evt);
+            }
+        });
+        jToolBar2.add(jToggleButton2);
+
+        buttonGroup1.add(jToggleButton3);
+        jToggleButton3.setIcon(new ImageIcon(getClass().getResource("/de/cismet/cids/custom/crisma/pilotD/cascadeeffects/pan.gif"))); // NOI18N
+        jToggleButton3.setText(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.jToggleButton3.text")); // NOI18N
+        jToggleButton3.setFocusable(false);
+        jToggleButton3.setHorizontalTextPosition(SwingConstants.CENTER);
+        jToggleButton3.setVerticalTextPosition(SwingConstants.BOTTOM);
+        jToggleButton3.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent evt)
+            {
+                jToggleButton3ActionPerformed(evt);
+            }
+        });
+        jToolBar2.add(jToggleButton3);
+
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        jPanel1.add(jToolBar2, gridBagConstraints);
+
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        pnlArea.add(jPanel1, gridBagConstraints);
+
+        jLabel10.setText(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.jLabel10.text")); // NOI18N
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.insets = new Insets(5, 5, 5, 5);
+        pnlArea.add(jLabel10, gridBagConstraints);
+
+        gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 0.5;
+        gridBagConstraints.weighty = 1.0;
+        add(pnlArea, gridBagConstraints);
+
+        bindingGroup.bind();
+    }// </editor-fold>//GEN-END:initComponents
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  evt  DOCUMENT ME!
+     */
+    private void tbnPolyActionPerformed(final ActionEvent evt)//GEN-FIRST:event_tbnPolyActionPerformed
+    {//GEN-HEADEREND:event_tbnPolyActionPerformed
+        if (pCount >= 4) {
+            mappingComponent1.setHandleInteractionMode(MappingComponent.MOVE_HANDLE);
+            mappingComponent1.setInteractionMode(MappingComponent.SELECT);
+        } else {
+            mappingComponent1.setInteractionMode("eq");
+        }
+    }//GEN-LAST:event_tbnPolyActionPerformed
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  evt  DOCUMENT ME!
+     */
+    private void jToggleButton2ActionPerformed(final ActionEvent evt)//GEN-FIRST:event_jToggleButton2ActionPerformed
+    {//GEN-HEADEREND:event_jToggleButton2ActionPerformed
+        mappingComponent1.setInteractionMode(MappingComponent.ZOOM);
+    }//GEN-LAST:event_jToggleButton2ActionPerformed
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param  evt  DOCUMENT ME!
+     */
+    private void jToggleButton3ActionPerformed(final ActionEvent evt)//GEN-FIRST:event_jToggleButton3ActionPerformed
+    {//GEN-HEADEREND:event_jToggleButton3ActionPerformed
+        mappingComponent1.setInteractionMode(MappingComponent.PAN);
+    }//GEN-LAST:event_jToggleButton3ActionPerformed
+
+    //~ Inner Classes ----------------------------------------------------------
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @version  $Revision$, $Date$
+     */
+    private final class BoxL extends CreateNewGeometryListener {
+
+        //~ Constructors -------------------------------------------------------
+
+        /**
+         * Creates a new BoxL object.
+         *
+         * @param  mc  DOCUMENT ME!
+         */
+        public BoxL(final MappingComponent mc) {
+            super(mc);
+            setMode(CreateNewGeometryListener.POLYGON);
+        }
+
+        //~ Methods ------------------------------------------------------------
+
+        @Override
+        public void mousePressed(final PInputEvent pInputEvent) {
+            if (pInputEvent.isLeftMouseButton()) {
+                if (pInputEvent.getClickCount() == 1) {
+                    pCount++;
+                    super.mousePressed(pInputEvent);
+                }
+            }
+        }
+
+        @Override
+        public void mouseReleased(final PInputEvent arg0) {
+            super.mouseReleased(arg0);
+            if (pCount >= 4) {
+                createCurrentNewFeature(null);
+                finishGeometry(getCurrentNewFeature());
+                mappingComponent1.getFeatureCollection().select(mappingComponent1.getFeatureCollection().getFeature(0));
+                tbnPoly.setIcon(moveIcon);
+                model.setRange((Polygon)mappingComponent1.getFeatureCollection().getFeature(0).getGeometry());
+
+                EventQueue.invokeLater(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            mappingComponent1.setHandleInteractionMode(MappingComponent.MOVE_HANDLE);
+                            mappingComponent1.setInteractionMode(MappingComponent.SELECT);
+                        }
+                    });
+            }
+        }
+    }
+}

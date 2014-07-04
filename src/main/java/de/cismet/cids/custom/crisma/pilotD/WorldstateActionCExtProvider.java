@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import de.cismet.cids.custom.crisma.pilotD.cascadeeffects.CascadeEffectsWizardAction;
 import de.cismet.cids.custom.crisma.pilotD.model.ExecModelWizardAction;
 import de.cismet.cids.custom.crisma.pilotD.worldstate.TakeoverAsRootAction;
 
@@ -40,6 +41,7 @@ public final class WorldstateActionCExtProvider implements CExtProvider<CidsBean
     private final String ifaceClass;
     private final String concreteClass1;
     private final String concreteClass2;
+    private final String concreteClass3;
 
     //~ Constructors -----------------------------------------------------------
 
@@ -47,9 +49,10 @@ public final class WorldstateActionCExtProvider implements CExtProvider<CidsBean
      * Creates a new RainfallActionCExtProvider object.
      */
     public WorldstateActionCExtProvider() {
-        ifaceClass = "de.cismet.cids.utils.interfaces.CidsBeanAction";                          // NOI18N
-        concreteClass1 = "de.cismet.cids.custom.crisma.pilotD.model.ExecModelWizardAction";     // NOI18N
-        concreteClass2 = "de.cismet.cids.custom.crisma.pilotD.worldstate.TakeoverAsRootAction"; // NOI18N
+        ifaceClass = "de.cismet.cids.utils.interfaces.CidsBeanAction";                                    // NOI18N
+        concreteClass1 = "de.cismet.cids.custom.crisma.pilotD.model.ExecModelWizardAction";               // NOI18N
+        concreteClass2 = "de.cismet.cids.custom.crisma.pilotD.worldstate.TakeoverAsRootAction";           // NOI18N
+        concreteClass3 = "de.cismet.cids.custom.crisma.pilotD.cascadeeffects.CascadeEffectsWizardAction"; // NOI18N
     }
 
     //~ Methods ----------------------------------------------------------------
@@ -100,10 +103,13 @@ public final class WorldstateActionCExtProvider implements CExtProvider<CidsBean
                         && ("worldstates".equalsIgnoreCase(mc.getTableName()))) {
                 final CidsBeanAction action1 = new ExecModelWizardAction();
                 final CidsBeanAction action2 = new TakeoverAsRootAction();
+                final CidsBeanAction action3 = new CascadeEffectsWizardAction();
                 action1.setCidsBean(ctxBean);
                 action2.setCidsBean(ctxBean);
+                action3.setCidsBean(ctxBean);
                 actions.add(action1);
                 actions.add(action2);
+                actions.add(action3);
             }
         }
 
@@ -120,6 +126,8 @@ public final class WorldstateActionCExtProvider implements CExtProvider<CidsBean
         final String cName = c.getCanonicalName();
 
         return (cName == null)
-            ? false : (ifaceClass.equals(cName) || concreteClass1.equals(cName) || concreteClass2.equals(cName));
+            ? false
+            : (ifaceClass.equals(cName) || concreteClass1.equals(cName) || concreteClass2.equals(cName)
+                        || concreteClass3.equals(cName));
     }
 }
