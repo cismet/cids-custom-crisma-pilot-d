@@ -160,8 +160,7 @@ public class EQSTFVisualPanel extends javax.swing.JPanel {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents()
-    {
+    private void initComponents() {
         GridBagConstraints gridBagConstraints;
         bindingGroup = new BindingGroup();
 
@@ -201,7 +200,8 @@ public class EQSTFVisualPanel extends javax.swing.JPanel {
 
         setLayout(new GridBagLayout());
 
-        pnlRate.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.pnlRate.border.title"))); // NOI18N
+        pnlRate.setBorder(BorderFactory.createTitledBorder(
+                NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.pnlRate.border.title"))); // NOI18N
         pnlRate.setLayout(new GridBagLayout());
 
         jLabel1.setText(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.jLabel1.text")); // NOI18N
@@ -227,7 +227,12 @@ public class EQSTFVisualPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new Insets(5, 5, 5, 5);
         pnlRate.add(jLabel4, gridBagConstraints);
 
-        Binding binding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, this, ELProperty.create("${model.timespanStart}"), dateTimePicker1, BeanProperty.create("date"));
+        Binding binding = Bindings.createAutoBinding(
+                UpdateStrategy.READ_WRITE,
+                this,
+                ELProperty.create("${model.timespanStart}"),
+                dateTimePicker1,
+                BeanProperty.create("date"));
         bindingGroup.addBinding(binding);
 
         gridBagConstraints = new GridBagConstraints();
@@ -237,7 +242,12 @@ public class EQSTFVisualPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new Insets(5, 5, 5, 5);
         pnlRate.add(dateTimePicker1, gridBagConstraints);
 
-        binding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, this, ELProperty.create("${model.timespanEnd}"), dateTimePicker2, BeanProperty.create("date"));
+        binding = Bindings.createAutoBinding(
+                UpdateStrategy.READ_WRITE,
+                this,
+                ELProperty.create("${model.timespanEnd}"),
+                dateTimePicker2,
+                BeanProperty.create("date"));
         bindingGroup.addBinding(binding);
 
         gridBagConstraints = new GridBagConstraints();
@@ -257,7 +267,12 @@ public class EQSTFVisualPanel extends javax.swing.JPanel {
 
         jSpinner1.setModel(new SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
 
-        binding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, this, ELProperty.create("${model.noOfOccurStart}"), jSpinner1, BeanProperty.create("value"));
+        binding = Bindings.createAutoBinding(
+                UpdateStrategy.READ_WRITE,
+                this,
+                ELProperty.create("${model.noOfOccurStart}"),
+                jSpinner1,
+                BeanProperty.create("value"));
         bindingGroup.addBinding(binding);
 
         gridBagConstraints = new GridBagConstraints();
@@ -270,7 +285,12 @@ public class EQSTFVisualPanel extends javax.swing.JPanel {
 
         jSpinner2.setModel(new SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
 
-        binding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, this, ELProperty.create("${model.noOfOccurEnd}"), jSpinner2, BeanProperty.create("value"));
+        binding = Bindings.createAutoBinding(
+                UpdateStrategy.READ_WRITE,
+                this,
+                ELProperty.create("${model.noOfOccurEnd}"),
+                jSpinner2,
+                BeanProperty.create("value"));
         bindingGroup.addBinding(binding);
 
         gridBagConstraints = new GridBagConstraints();
@@ -288,7 +308,8 @@ public class EQSTFVisualPanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 0.5;
         add(pnlRate, gridBagConstraints);
 
-        pnlSizeDist.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.pnlSizeDist.border.title"))); // NOI18N
+        pnlSizeDist.setBorder(BorderFactory.createTitledBorder(
+                NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.pnlSizeDist.border.title"))); // NOI18N
         pnlSizeDist.setPreferredSize(new Dimension(325, 100));
         pnlSizeDist.setLayout(new GridBagLayout());
 
@@ -301,7 +322,12 @@ public class EQSTFVisualPanel extends javax.swing.JPanel {
 
         jSpinner3.setModel(new SpinnerNumberModel());
 
-        binding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, this, ELProperty.create("${model.bValue}"), jSpinner3, BeanProperty.create("value"));
+        binding = Bindings.createAutoBinding(
+                UpdateStrategy.READ_WRITE,
+                this,
+                ELProperty.create("${model.bValue}"),
+                jSpinner3,
+                BeanProperty.create("value"));
         bindingGroup.addBinding(binding);
 
         gridBagConstraints = new GridBagConstraints();
@@ -321,7 +347,12 @@ public class EQSTFVisualPanel extends javax.swing.JPanel {
 
         jSpinner4.setModel(new SpinnerNumberModel());
 
-        binding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, this, ELProperty.create("${model.aValue}"), jSpinner4, BeanProperty.create("value"));
+        binding = Bindings.createAutoBinding(
+                UpdateStrategy.READ_WRITE,
+                this,
+                ELProperty.create("${model.aValue}"),
+                jSpinner4,
+                BeanProperty.create("value"));
         bindingGroup.addBinding(binding);
 
         gridBagConstraints = new GridBagConstraints();
@@ -339,7 +370,8 @@ public class EQSTFVisualPanel extends javax.swing.JPanel {
         gridBagConstraints.weightx = 0.5;
         add(pnlSizeDist, gridBagConstraints);
 
-        pnlArea.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.pnlArea.border.title"))); // NOI18N
+        pnlArea.setBorder(BorderFactory.createTitledBorder(
+                NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.pnlArea.border.title"))); // NOI18N
         pnlArea.setLayout(new GridBagLayout());
 
         jLabel8.setText(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.jLabel8.text")); // NOI18N
@@ -351,7 +383,12 @@ public class EQSTFVisualPanel extends javax.swing.JPanel {
 
         jSpinner5.setModel(new SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
 
-        binding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, this, ELProperty.create("${model.depthStart}"), jSpinner5, BeanProperty.create("value"));
+        binding = Bindings.createAutoBinding(
+                UpdateStrategy.READ_WRITE,
+                this,
+                ELProperty.create("${model.depthStart}"),
+                jSpinner5,
+                BeanProperty.create("value"));
         bindingGroup.addBinding(binding);
 
         gridBagConstraints = new GridBagConstraints();
@@ -371,7 +408,12 @@ public class EQSTFVisualPanel extends javax.swing.JPanel {
 
         jSpinner6.setModel(new SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
 
-        binding = Bindings.createAutoBinding(UpdateStrategy.READ_WRITE, this, ELProperty.create("${model.depthEnd}"), jSpinner6, BeanProperty.create("value"));
+        binding = Bindings.createAutoBinding(
+                UpdateStrategy.READ_WRITE,
+                this,
+                ELProperty.create("${model.depthEnd}"),
+                jSpinner6,
+                BeanProperty.create("value"));
         bindingGroup.addBinding(binding);
 
         gridBagConstraints = new GridBagConstraints();
@@ -396,49 +438,52 @@ public class EQSTFVisualPanel extends javax.swing.JPanel {
         jToolBar2.setRollover(true);
 
         buttonGroup1.add(tbnPoly);
-        tbnPoly.setIcon(new ImageIcon(getClass().getResource("/de/cismet/cids/custom/crisma/pilotD/cascadeeffects/newPolygon.png"))); // NOI18N
+        tbnPoly.setIcon(new ImageIcon(
+                getClass().getResource("/de/cismet/cids/custom/crisma/pilotD/cascadeeffects/newPolygon.png"))); // NOI18N
         tbnPoly.setSelected(true);
-        tbnPoly.setText(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.tbnPoly.text")); // NOI18N
+        tbnPoly.setText(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.tbnPoly.text"));          // NOI18N
         tbnPoly.setFocusable(false);
         tbnPoly.setHorizontalTextPosition(SwingConstants.CENTER);
         tbnPoly.setVerticalTextPosition(SwingConstants.BOTTOM);
-        tbnPoly.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent evt)
-            {
-                tbnPolyActionPerformed(evt);
-            }
-        });
+        tbnPoly.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(final ActionEvent evt) {
+                    tbnPolyActionPerformed(evt);
+                }
+            });
         jToolBar2.add(tbnPoly);
 
         buttonGroup1.add(jToggleButton2);
-        jToggleButton2.setIcon(new ImageIcon(getClass().getResource("/de/cismet/cids/custom/crisma/pilotD/cascadeeffects/zoom.gif"))); // NOI18N
+        jToggleButton2.setIcon(new ImageIcon(
+                getClass().getResource("/de/cismet/cids/custom/crisma/pilotD/cascadeeffects/zoom.gif")));            // NOI18N
         jToggleButton2.setText(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.jToggleButton2.text")); // NOI18N
         jToggleButton2.setFocusable(false);
         jToggleButton2.setHorizontalTextPosition(SwingConstants.CENTER);
         jToggleButton2.setVerticalTextPosition(SwingConstants.BOTTOM);
-        jToggleButton2.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent evt)
-            {
-                jToggleButton2ActionPerformed(evt);
-            }
-        });
+        jToggleButton2.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(final ActionEvent evt) {
+                    jToggleButton2ActionPerformed(evt);
+                }
+            });
         jToolBar2.add(jToggleButton2);
 
         buttonGroup1.add(jToggleButton3);
-        jToggleButton3.setIcon(new ImageIcon(getClass().getResource("/de/cismet/cids/custom/crisma/pilotD/cascadeeffects/pan.gif"))); // NOI18N
+        jToggleButton3.setIcon(new ImageIcon(
+                getClass().getResource("/de/cismet/cids/custom/crisma/pilotD/cascadeeffects/pan.gif")));             // NOI18N
         jToggleButton3.setText(NbBundle.getMessage(EQSTFVisualPanel.class, "EQSTFVisualPanel.jToggleButton3.text")); // NOI18N
         jToggleButton3.setFocusable(false);
         jToggleButton3.setHorizontalTextPosition(SwingConstants.CENTER);
         jToggleButton3.setVerticalTextPosition(SwingConstants.BOTTOM);
-        jToggleButton3.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent evt)
-            {
-                jToggleButton3ActionPerformed(evt);
-            }
-        });
+        jToggleButton3.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(final ActionEvent evt) {
+                    jToggleButton3ActionPerformed(evt);
+                }
+            });
         jToolBar2.add(jToggleButton3);
 
         gridBagConstraints = new GridBagConstraints();
@@ -474,42 +519,42 @@ public class EQSTFVisualPanel extends javax.swing.JPanel {
         add(pnlArea, gridBagConstraints);
 
         bindingGroup.bind();
-    }// </editor-fold>//GEN-END:initComponents
+    } // </editor-fold>//GEN-END:initComponents
 
     /**
      * DOCUMENT ME!
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void tbnPolyActionPerformed(final ActionEvent evt)//GEN-FIRST:event_tbnPolyActionPerformed
-    {//GEN-HEADEREND:event_tbnPolyActionPerformed
+    private void tbnPolyActionPerformed(final ActionEvent evt) //GEN-FIRST:event_tbnPolyActionPerformed
+    {                                                          //GEN-HEADEREND:event_tbnPolyActionPerformed
         if (pCount >= 4) {
             mappingComponent1.setHandleInteractionMode(MappingComponent.MOVE_HANDLE);
             mappingComponent1.setInteractionMode(MappingComponent.SELECT);
         } else {
             mappingComponent1.setInteractionMode("eq");
         }
-    }//GEN-LAST:event_tbnPolyActionPerformed
+    }                                                          //GEN-LAST:event_tbnPolyActionPerformed
 
     /**
      * DOCUMENT ME!
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void jToggleButton2ActionPerformed(final ActionEvent evt)//GEN-FIRST:event_jToggleButton2ActionPerformed
-    {//GEN-HEADEREND:event_jToggleButton2ActionPerformed
+    private void jToggleButton2ActionPerformed(final ActionEvent evt) //GEN-FIRST:event_jToggleButton2ActionPerformed
+    {                                                                 //GEN-HEADEREND:event_jToggleButton2ActionPerformed
         mappingComponent1.setInteractionMode(MappingComponent.ZOOM);
-    }//GEN-LAST:event_jToggleButton2ActionPerformed
+    }                                                                 //GEN-LAST:event_jToggleButton2ActionPerformed
 
     /**
      * DOCUMENT ME!
      *
      * @param  evt  DOCUMENT ME!
      */
-    private void jToggleButton3ActionPerformed(final ActionEvent evt)//GEN-FIRST:event_jToggleButton3ActionPerformed
-    {//GEN-HEADEREND:event_jToggleButton3ActionPerformed
+    private void jToggleButton3ActionPerformed(final ActionEvent evt) //GEN-FIRST:event_jToggleButton3ActionPerformed
+    {                                                                 //GEN-HEADEREND:event_jToggleButton3ActionPerformed
         mappingComponent1.setInteractionMode(MappingComponent.PAN);
-    }//GEN-LAST:event_jToggleButton3ActionPerformed
+    }                                                                 //GEN-LAST:event_jToggleButton3ActionPerformed
 
     //~ Inner Classes ----------------------------------------------------------
 

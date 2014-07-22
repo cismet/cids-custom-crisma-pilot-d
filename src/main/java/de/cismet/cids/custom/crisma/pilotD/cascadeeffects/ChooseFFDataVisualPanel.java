@@ -140,20 +140,20 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
         propLayer.setName("Ignition Probability");
         ((SimpleWMS)mappingComponent1.getMappingModel().getRasterServices().firstEntry().getValue()).setTranslucency(
             0.1f);
-        ((SimpleWMS)mappingComponent1.getMappingModel().getRasterServices().firstEntry().getValue()).getPNode().setTransparency(0.1f);
-        ((SimpleWMS)mappingComponent1.getMappingModel().getRasterServices().firstEntry().getValue()).getPNode().repaint();
+        ((SimpleWMS)mappingComponent1.getMappingModel().getRasterServices().firstEntry().getValue()).getPNode()
+                .setTransparency(0.1f);
+        ((SimpleWMS)mappingComponent1.getMappingModel().getRasterServices().firstEntry().getValue()).getPNode()
+                .repaint();
         mappingComponent1.getMappingModel().addLayer(propLayer);
         mappingComponent1.addInputListener("eq", new AddFFIgnitionListener());
         mappingComponent1.setInteractionMode("eq");
-        EventQueue.invokeLater(new Runnable()
-        {
+        EventQueue.invokeLater(new Runnable() {
 
-            @Override
-            public void run()
-            {
-                mappingComponent1.repaint();
-            }
-        });
+                @Override
+                public void run() {
+                    mappingComponent1.repaint();
+                }
+            });
         ShakemapView.activateLayerWidget(mappingComponent1);
     }
 
