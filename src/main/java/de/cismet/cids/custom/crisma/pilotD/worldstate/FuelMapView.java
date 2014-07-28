@@ -7,32 +7,79 @@
 ****************************************************/
 package de.cismet.cids.custom.crisma.pilotD.worldstate;
 
-import org.deegree.datatypes.QualifiedName;
-import org.deegree.model.feature.Feature;
-import org.deegree.model.feature.FeatureCollection;
-import org.deegree.model.feature.FeatureProperty;
-
-import org.openide.util.NbBundle;
+import gov.nasa.worldwind.Factory;
+import gov.nasa.worldwind.Model;
+import gov.nasa.worldwind.WorldWind;
+import gov.nasa.worldwind.WorldWindow;
+import gov.nasa.worldwind.avlist.AVKey;
+import gov.nasa.worldwind.avlist.AVList;
+import gov.nasa.worldwind.avlist.AVListImpl;
+import gov.nasa.worldwind.awt.WorldWindowGLCanvas;
+import gov.nasa.worldwind.data.BufferWrapperRaster;
+import gov.nasa.worldwind.data.DataRaster;
+import gov.nasa.worldwind.data.DataRasterReader;
+import gov.nasa.worldwind.data.DataRasterReaderFactory;
+import gov.nasa.worldwind.data.TiledElevationProducer;
+import gov.nasa.worldwind.event.RenderingExceptionListener;
+import gov.nasa.worldwind.geom.Extent;
+import gov.nasa.worldwind.geom.Sector;
+import gov.nasa.worldwind.globes.ElevationModel;
+import gov.nasa.worldwind.layers.CompassLayer;
+import gov.nasa.worldwind.layers.Layer;
+import gov.nasa.worldwind.layers.LayerList;
+import gov.nasa.worldwind.layers.RenderableLayer;
+import gov.nasa.worldwind.layers.ViewControlsLayer;
+import gov.nasa.worldwind.layers.ViewControlsSelectListener;
+import gov.nasa.worldwind.layers.WorldMapLayer;
+import gov.nasa.worldwind.layers.placename.PlaceNameLayer;
+import gov.nasa.worldwind.ogc.wms.WMSCapabilities;
+import gov.nasa.worldwind.ogc.wms.WMSLayerCapabilities;
+import gov.nasa.worldwind.ogc.wms.WMSLayerStyle;
+import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.render.Renderable;
+import gov.nasa.worldwind.terrain.CompoundElevationModel;
+import gov.nasa.worldwind.util.WWBufferUtil;
+import gov.nasa.worldwind.util.WWMath;
+import gov.nasa.worldwind.util.WWUtil;
+import gov.nasa.worldwind.util.WWXML;
+import gov.nasa.worldwindx.examples.analytics.AnalyticSurface;
+import gov.nasa.worldwindx.examples.analytics.AnalyticSurfaceAttributes;
+import gov.nasa.worldwindx.examples.analytics.AnalyticSurfaceLegend;
+import gov.nasa.worldwindx.examples.dataimport.DataInstallUtil;
+import gov.nasa.worldwindx.examples.util.ExampleUtil;
+import gov.nasa.worldwindx.examples.util.LayerManagerLayer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.Color;
+import org.w3c.dom.Document;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Point;
+
+import java.io.File;
 
 import java.net.URI;
 
-import javax.swing.JComponent;
+import java.text.DecimalFormat;
+import java.text.Format;
 
-import de.cismet.cids.custom.crisma.MapSync;
-import de.cismet.cids.custom.crisma.pilotD.worldstate.BuildingsVulnerabilityClassesView.ColorLabel;
-import de.cismet.cids.custom.crisma.pilotD.worldstate.ShakemapView.WFSCallback;
-import de.cismet.cids.custom.crisma.pilotD.worldstate.ShakemapView.WFSRequestListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
+
 import de.cismet.cids.custom.crisma.worldstate.viewer.AbstractDetailView;
 
-import de.cismet.cids.dynamics.CidsBean;
-
-import de.cismet.cismap.commons.gui.MappingComponent;
+import de.cismet.tools.gui.log4jquickconfig.Log4JQuickConfig;
 
 /**
  * DOCUMENT ME!
@@ -40,60 +87,630 @@ import de.cismet.cismap.commons.gui.MappingComponent;
  * @author   mscholl
  * @version  $Revision$, $Date$
  */
-public class FuelMapView extends AbstractDetailView implements MapSync {
+public class FuelMapView extends AbstractDetailView {
+
+    //~ Static fields/initializers ---------------------------------------------
+
+    /** LOGGER. */
+    private static final transient Logger LOG = LoggerFactory.getLogger(FuelMapView.class);
+
+    protected static final double HUE_BLUE = 240d / 360d;
+    protected static final double HUE_RED = 0d / 360d;
 
     //~ Instance fields --------------------------------------------------------
 
-    private final transient FuelMapMiniatureView miniatureView = new FuelMapMiniatureView();
+    private Sector demSector;
 
-    private final transient Logger LOG = LoggerFactory.getLogger(ShakemapMiniatureView.class);
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.Box.Filler filler1;
-    private javax.swing.Box.Filler filler2;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel20;
-    private javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel23;
-    private javax.swing.JLabel jLabel24;
-    private javax.swing.JLabel jLabel25;
-    private javax.swing.JLabel jLabel26;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JSeparator jSeparator1;
-    private de.cismet.cismap.commons.gui.MappingComponent mappingComponent1;
-    // End of variables declaration//GEN-END:variables
+    private volatile boolean added;
 
     //~ Constructors -----------------------------------------------------------
 
     /**
-     * Creates new form ShakemapView.
+     * Creates new form DEMView.
+     *
+     * @throws  Exception  DOCUMENT ME!
      */
-    public FuelMapView() {
+    public FuelMapView() throws Exception {
         initComponents();
+
+        final WorldWindowGLCanvas c = new WorldWindowGLCanvas();
+
+        // Create the default model as described in the current worldwind properties.
+        final Model m = (Model)WorldWind.createConfigurationComponent(AVKey.MODEL_CLASS_NAME);
+        c.setModel(m);
+        final ViewControlsLayer viewControlsLayer = new ViewControlsLayer();
+        // Insert the layer into the layer list just before the compass.
+        int pos = 0;
+        LayerList layers = c.getModel().getLayers();
+        for (final Layer l : layers) {
+            if (l instanceof CompassLayer) {
+                pos = layers.indexOf(l);
+            }
+        }
+        layers.add(pos, viewControlsLayer);
+
+        final ArrayList<Layer> toRemove = new ArrayList<Layer>();
+        final ListIterator<Layer> li = layers.listIterator();
+        while (li.hasNext()) {
+            final Layer l = li.next();
+            if ((l instanceof WorldMapLayer)
+                        || l.getName().contains("USDA")
+                        || l.getName().contains("USGS")
+                        || l.getName().equalsIgnoreCase("MS Virtual Earth Aerial")
+                        || l.getName().equalsIgnoreCase("Bing Imagery")
+                        || l.getName().equalsIgnoreCase("Political Boundaries")
+                        || l.getName().equalsIgnoreCase("Open Street Map")
+                        || l.getName().equalsIgnoreCase("Earth at Night")) {
+                toRemove.add(l);
+            }
+        }
+        for (final Layer l : toRemove) {
+            layers.remove(l);
+        }
+
+        final LayerManagerLayer lml = new LayerManagerLayer(c);
+        lml.setPosition(AVKey.NORTHWEST);
+        lml.setEnabled(false);
+        // Insert the layer into the layer list just before the compass.
+        pos = 0;
+        layers = c.getModel().getLayers();
+        for (final Layer l : layers) {
+            if (l instanceof CompassLayer) {
+                pos = layers.indexOf(l);
+            }
+        }
+        layers.add(pos, lml);
+
+        c.addSelectListener(new ViewControlsSelectListener(c, viewControlsLayer));
+
+        c.addRenderingExceptionListener(new RenderingExceptionListener() {
+
+                @Override
+                public void exceptionThrown(final Throwable thrwbl) {
+                    LOG.error("rendering exception", thrwbl);
+                }
+            });
+
+        try {
+            final Document d = addElevation(
+                    c,
+                    new File("/Users/mscholl/projects/crisma/SP5/WP55/layers/dtm_and_fuel.rar_folder/dem_wgs84.asc"));
+
+            // Set the view to look at the imported elevations, although they might be hard to detect. To
+            // make them easier to detect, replace the globe's CompoundElevationModel with the new elevation
+            // model rather than adding it.
+            demSector = WWXML.getSector(d.getDocumentElement(), "Sector", null);
+        } catch (final Exception ex) {
+            LOG.error("cannot add elevation model", ex);
+        }
+
+        final Thread t = new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        // ugly winning :)
+                        added = false;
+                        addLayer(
+                            c,
+                            "http://geoportale2.regione.abruzzo.it/ecwp/ecw_wms.dll",
+                            "IMAGES_ORTO_AQUILA_2010.ECW");
+                        for (;;) {
+                            if (added) {
+                                break;
+                            }
+                            try {
+                                Thread.sleep(50);
+                            } catch (InterruptedException ex) {
+                                // noop
+                            }
+                        }
+                        added = false;
+                        addLayer(c, "http://crisma.cismet.de/geoserver/ows", "crisma:planet_osm_line");
+                        for (;;) {
+                            if (added) {
+                                break;
+                            }
+                            try {
+                                Thread.sleep(50);
+                            } catch (InterruptedException ex) {
+                                // noop
+                            }
+                        }
+
+                        added = false;
+                        addLayer(
+                            c,
+                            "http://crisma.cismet.de/geoserver251/ows",
+                            "crisma:CRISMA_PilotD_FuelMap",
+                            "fuelmap_style");
+                        for (;;) {
+                            if (added) {
+                                break;
+                            }
+                            try {
+                                Thread.sleep(50);
+                            } catch (InterruptedException ex) {
+                                // noop
+                            }
+                        }
+
+                        added = false;
+                        addLayer(
+                            c,
+                            "http://crisma.cismet.de/geoserver/ows",
+                            "crisma:comune_aq",
+                            "pilot_d_boundaries_alt");
+                        for (;;) {
+                            if (added) {
+                                break;
+                            }
+                            try {
+                                Thread.sleep(50);
+                            } catch (InterruptedException ex) {
+                                // noop
+                            }
+                        }
+                    }
+                });
+        t.setPriority(Thread.MIN_PRIORITY);
+        t.start();
+
+        this.add(c);
+        this.addAncestorListener(new AncestorListener() {
+
+                @Override
+                public void ancestorAdded(final AncestorEvent event) {
+                    final Thread t = new Thread(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    try {
+                                        Thread.currentThread().sleep(1500);
+                                    } catch (final Exception e) {
+                                        // noop
+                                    }
+                                    EventQueue.invokeLater(new Runnable() {
+
+                                            @Override
+                                            public void run() {
+                                                ExampleUtil.goTo(c, demSector);
+                                            }
+                                        });
+                                }
+                            });
+                    t.start();
+                }
+
+                @Override
+                public void ancestorRemoved(final AncestorEvent event) {
+                }
+
+                @Override
+                public void ancestorMoved(final AncestorEvent event) {
+                }
+            });
     }
 
     //~ Methods ----------------------------------------------------------------
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   ww    DOCUMENT ME!
+     * @param   file  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     *
+     * @throws  Exception  DOCUMENT ME!
+     */
+    private Document addElevation(final WorldWindow ww, final File file) throws Exception {
+        final TiledElevationProducer producer = new TiledElevationProducer();
+        Document doc = null;
+
+        try {
+            final String datasetName = "belmonte_DEM";
+
+            final AVList params = new AVListImpl();
+            params.setValue(AVKey.DATASET_NAME, datasetName);
+            params.setValue(AVKey.DATA_CACHE_NAME, datasetName);
+            params.setValue(
+                AVKey.FILE_STORE_LOCATION,
+                DataInstallUtil.getDefaultInstallLocation(WorldWind.getDataFileStore()).getAbsolutePath());
+            params.setValue(AVKey.PRODUCER_ENABLE_FULL_PYRAMID, true);
+
+            producer.setStoreParameters(params);
+            producer.offerDataSource(file, null);
+            producer.startProduction();
+
+            doc = (Document)producer.getProductionResults().iterator().next();
+
+            final Factory factory = (Factory)WorldWind.createConfigurationComponent(AVKey.ELEVATION_MODEL_FACTORY);
+            final ElevationModel em = (ElevationModel)factory.createFromConfigSource(doc.getDocumentElement(), params);
+
+            final ElevationModel defaultElevationModel = ww.getModel().getGlobe().getElevationModel();
+
+            if (defaultElevationModel instanceof CompoundElevationModel) {
+                if (!((CompoundElevationModel)defaultElevationModel).containsElevationModel(em)) {
+                    ((CompoundElevationModel)defaultElevationModel).addElevationModel(em);
+                }
+            } else {
+                final CompoundElevationModel cm = new CompoundElevationModel();
+                cm.addElevationModel(defaultElevationModel);
+                cm.addElevationModel(em);
+                ww.getModel().getGlobe().setElevationModel(cm);
+            }
+        } catch (final Exception e) {
+            LOG.error("cannot create elevation from file: " + file, e);
+        } finally {
+            producer.removeAllDataSources();
+        }
+
+        return doc;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   ww    DOCUMENT ME!
+     * @param   uri   DOCUMENT ME!
+     * @param   name  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    private Layer addLayer(final WorldWindow ww, final String uri, final String name) {
+        return addLayer(ww, uri, name, null);
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   ww         DOCUMENT ME!
+     * @param   uri        DOCUMENT ME!
+     * @param   name       DOCUMENT ME!
+     * @param   styleName  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    private Layer addLayer(final WorldWindow ww, final String uri, final String name, final String styleName) {
+        Layer layer = null;
+        try {
+            final WMSCapabilities caps = WMSCapabilities.retrieve(URI.create(uri));
+            caps.parse();
+            final List<WMSLayerCapabilities> namedLayerCaps = caps.getNamedLayers();
+
+            LayerInfo li = null;
+            for (final WMSLayerCapabilities lc : namedLayerCaps) {
+                if (name.equals(lc.getName())) {
+                    if (styleName == null) {
+                        li = createLayerInfo(
+                                caps,
+                                lc,
+                                lc.getStyles().isEmpty() ? null : lc.getStyles().iterator().next());
+                    } else {
+                        for (final WMSLayerStyle ls : lc.getStyles()) {
+                            if (ls.getName().equalsIgnoreCase(styleName)) {
+                                li = createLayerInfo(caps, lc, ls);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            final AVList configParams = li.params.copy();
+
+            // Some wms servers are slow, so increase the timeouts and limits used by world wind's retrievers.
+            configParams.setValue(AVKey.URL_CONNECT_TIMEOUT, 30000);
+            configParams.setValue(AVKey.URL_READ_TIMEOUT, 30000);
+            configParams.setValue(AVKey.RETRIEVAL_QUEUE_STALE_REQUEST_LIMIT, 60000);
+
+            final Factory factory = (Factory)WorldWind.createConfigurationComponent(AVKey.LAYER_FACTORY);
+            layer = (Layer)factory.createFromConfigSource(caps, configParams);
+            final LayerList layers = ww.getModel().getLayers();
+
+            layer.setEnabled(true);
+
+            int pos = 0;
+            for (final Layer l : layers) {
+                if (l instanceof PlaceNameLayer) {
+                    pos = layers.indexOf(l);
+                }
+            }
+
+            final int insert = pos;
+            final Layer insertLayer = layer;
+            EventQueue.invokeLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        layers.add(insert, insertLayer);
+                        added = true;
+                    }
+                });
+        } catch (Exception e) {
+            LOG.error("cannot add layer texture", e);
+        }
+
+        return layer;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   ww    DOCUMENT ME!
+     * @param   file  DOCUMENT ME!
+     *
+     * @throws  Exception  DOCUMENT ME!
+     */
+    private void addFuelMap(final WorldWindow ww, final File file) throws Exception {
+        final RenderableLayer surfaceLayer = new RenderableLayer();
+        surfaceLayer.setPickEnabled(false);
+        surfaceLayer.setName("Fuelmap");
+        // Insert the layer into the layer list just before the placenames.
+        int pos = 0;
+        final LayerList layers = ww.getModel().getLayers();
+        for (final Layer l : layers) {
+            if (l instanceof PlaceNameLayer) {
+                pos = layers.indexOf(l);
+            }
+        }
+        final int insert = pos;
+        EventQueue.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    layers.add(insert, surfaceLayer);
+                }
+            });
+
+//            createRandomAltitudeSurface(HUE_BLUE, HUE_RED, 40, 40, surfaceLayer);
+//            createRandomColorSurface(HUE_BLUE, HUE_RED, 40, 40, surfaceLayer);
+        final DataRasterReaderFactory readerFactory = (DataRasterReaderFactory)WorldWind.createConfigurationComponent(
+                AVKey.DATA_RASTER_READER_FACTORY_CLASS_NAME);
+        final DataRasterReader reader = readerFactory.findReaderFor(file, null);
+        final DataRaster[] rasters = reader.read(file, null);
+        final Sector sector = (Sector)rasters[0].getValue(AVKey.SECTOR);
+        final int width = rasters[0].getWidth();
+        final int height = rasters[0].getHeight();
+
+        final BufferWrapperRaster raster = (BufferWrapperRaster)rasters[0].getSubRaster(
+                width,
+                height,
+                sector,
+                rasters[0]);
+        final double[] extremes = WWBufferUtil.computeExtremeValues(raster.getBuffer(), raster.getTransparentValue());
+        final AnalyticSurface surface = new AnalyticSurface();
+        surface.setSector(raster.getSector());
+        surface.setDimensions(raster.getWidth(), raster.getHeight());
+        surface.setValues(AnalyticSurface.createColorGradientValues(
+                raster.getBuffer(),
+                raster.getTransparentValue(),
+                extremes[0],
+                extremes[1],
+                HUE_BLUE,
+                HUE_RED));
+        surface.setVerticalScale(1);
+        surface.setAltitude(1000);
+
+        final AnalyticSurfaceAttributes attr = new AnalyticSurfaceAttributes();
+        attr.setDrawOutline(false);
+        attr.setDrawShadow(false);
+        attr.setInteriorOpacity(0.6);
+        surface.setSurfaceAttributes(attr);
+
+        final Format legendLabelFormat = new DecimalFormat("# kg/m\u00b2");
+
+        final AnalyticSurfaceLegend legend = AnalyticSurfaceLegend.fromColorGradient(
+                extremes[0],
+                extremes[1],
+                HUE_BLUE,
+                HUE_RED,
+                AnalyticSurfaceLegend.createDefaultColorGradientLabels(extremes[0], extremes[1], legendLabelFormat),
+                AnalyticSurfaceLegend.createDefaultTitle("Fuel"));
+        legend.setOpacity(0.8);
+        legend.setScreenLocation(new Point(100, 300));
+
+        EventQueue.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    surface.setClientLayer(surfaceLayer);
+                    surfaceLayer.addRenderable(surface);
+                    surfaceLayer.addRenderable(new Renderable() {
+
+                            @Override
+                            public void render(final DrawContext dc) {
+                                final Extent extent = surface.getExtent(dc);
+                                if (!extent.intersects(dc.getView().getFrustumInModelCoordinates())) {
+                                    return;
+                                }
+
+                                if (WWMath.computeSizeInWindowCoordinates(dc, extent) < 300) {
+                                    return;
+                                }
+
+                                legend.render(dc);
+                            }
+                        });
+                }
+            });
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   ww    DOCUMENT ME!
+     * @param   file  DOCUMENT ME!
+     *
+     * @throws  Exception  DOCUMENT ME!
+     */
+    private void addTextureFuelMap(final WorldWindow ww, final File file) throws Exception {
+        final RenderableLayer surfaceLayer = new RenderableLayer();
+        surfaceLayer.setPickEnabled(false);
+        surfaceLayer.setName("Fuelmap");
+        // Insert the layer into the layer list just before the placenames.
+        int pos = 0;
+        final LayerList layers = ww.getModel().getLayers();
+        for (final Layer l : layers) {
+            if (l instanceof PlaceNameLayer) {
+                pos = layers.indexOf(l);
+            }
+        }
+        final int insert = pos;
+        EventQueue.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    layers.add(insert, surfaceLayer);
+                }
+            });
+
+//            createRandomAltitudeSurface(HUE_BLUE, HUE_RED, 40, 40, surfaceLayer);
+//            createRandomColorSurface(HUE_BLUE, HUE_RED, 40, 40, surfaceLayer);
+        final DataRasterReaderFactory readerFactory = (DataRasterReaderFactory)WorldWind.createConfigurationComponent(
+                AVKey.DATA_RASTER_READER_FACTORY_CLASS_NAME);
+        final DataRasterReader reader = readerFactory.findReaderFor(file, null);
+        final DataRaster[] rasters = reader.read(file, null);
+        final Sector sector = (Sector)rasters[0].getValue(AVKey.SECTOR);
+        final int width = rasters[0].getWidth();
+        final int height = rasters[0].getHeight();
+
+        final BufferWrapperRaster raster = (BufferWrapperRaster)rasters[0].getSubRaster(
+                width,
+                height,
+                sector,
+                rasters[0]);
+        final double[] extremes = WWBufferUtil.computeExtremeValues(raster.getBuffer(), raster.getTransparentValue());
+        final AnalyticSurface surface = new AnalyticSurface();
+        surface.setSector(raster.getSector());
+        surface.setDimensions(raster.getWidth(), raster.getHeight());
+        surface.setValues(AnalyticSurface.createColorGradientValues(
+                raster.getBuffer(),
+                raster.getTransparentValue(),
+                extremes[0],
+                extremes[1],
+                HUE_BLUE,
+                HUE_RED));
+        surface.setVerticalScale(1);
+        surface.setAltitude(1000);
+
+        final AnalyticSurfaceAttributes attr = new AnalyticSurfaceAttributes();
+        attr.setDrawOutline(false);
+        attr.setDrawShadow(false);
+        attr.setInteriorOpacity(0.6);
+        surface.setSurfaceAttributes(attr);
+
+        final Format legendLabelFormat = new DecimalFormat("# kg/m\u00b2");
+
+        final AnalyticSurfaceLegend legend = AnalyticSurfaceLegend.fromColorGradient(
+                extremes[0],
+                extremes[1],
+                HUE_BLUE,
+                HUE_RED,
+                AnalyticSurfaceLegend.createDefaultColorGradientLabels(extremes[0], extremes[1], legendLabelFormat),
+                AnalyticSurfaceLegend.createDefaultTitle("Fuel"));
+        legend.setOpacity(0.8);
+        legend.setScreenLocation(new Point(100, 300));
+
+        EventQueue.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    surface.setClientLayer(surfaceLayer);
+                    surfaceLayer.addRenderable(surface);
+                    surfaceLayer.addRenderable(new Renderable() {
+
+                            @Override
+                            public void render(final DrawContext dc) {
+                                final Extent extent = surface.getExtent(dc);
+                                if (!extent.intersects(dc.getView().getFrustumInModelCoordinates())) {
+                                    return;
+                                }
+
+                                if (WWMath.computeSizeInWindowCoordinates(dc, extent) < 300) {
+                                    return;
+                                }
+
+                                legend.render(dc);
+                            }
+                        });
+                }
+            });
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   caps       DOCUMENT ME!
+     * @param   layerCaps  DOCUMENT ME!
+     * @param   style      DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    protected LayerInfo createLayerInfo(final WMSCapabilities caps,
+            final WMSLayerCapabilities layerCaps,
+            final WMSLayerStyle style) {
+        // Create the layer info specified by the layer's capabilities entry and the selected style.
+
+        final LayerInfo linfo = new LayerInfo();
+        linfo.caps = caps;
+        linfo.params = new AVListImpl();
+        linfo.params.setValue(AVKey.LAYER_NAMES, layerCaps.getName());
+        if (style != null) {
+            linfo.params.setValue(AVKey.STYLE_NAMES, style.getName());
+        }
+        final String abs = layerCaps.getLayerAbstract();
+        if (!WWUtil.isEmpty(abs)) {
+            linfo.params.setValue(AVKey.LAYER_ABSTRACT, abs);
+        }
+
+        linfo.params.setValue(AVKey.DISPLAY_NAME, makeTitle(caps, linfo));
+
+        return linfo;
+    }
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @param   caps       DOCUMENT ME!
+     * @param   layerInfo  DOCUMENT ME!
+     *
+     * @return  DOCUMENT ME!
+     */
+    protected static String makeTitle(final WMSCapabilities caps, final LayerInfo layerInfo) {
+        final String layerNames = layerInfo.params.getStringValue(AVKey.LAYER_NAMES);
+        final String styleNames = layerInfo.params.getStringValue(AVKey.STYLE_NAMES);
+        final String[] lNames = layerNames.split(",");
+        final String[] sNames = (styleNames != null) ? styleNames.split(",") : null;
+
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < lNames.length; i++) {
+            if (sb.length() > 0) {
+                sb.append(", ");
+            }
+
+            final String layerName = lNames[i];
+            final WMSLayerCapabilities lc = caps.getLayerByName(layerName);
+            final String layerTitle = lc.getTitle();
+            sb.append((layerTitle != null) ? layerTitle : layerName);
+
+            if ((sNames == null) || (sNames.length <= i)) {
+                continue;
+            }
+
+            final String styleName = sNames[i];
+            final WMSLayerStyle style = lc.getStyleByName(styleName);
+            if (style == null) {
+                continue;
+            }
+
+            sb.append(" : ");
+            final String styleTitle = style.getTitle();
+            sb.append((styleTitle != null) ? styleTitle : styleName);
+        }
+
+        return sb.toString();
+    }
 
     /**
      * This method is called from within the constructor to initialize the form. WARNING: Do NOT modify this code. The
@@ -102,309 +719,13 @@ public class FuelMapView extends AbstractDetailView implements MapSync {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
-
-        jPanel1 = new javax.swing.JPanel();
-        mappingComponent1 = new de.cismet.cismap.commons.gui.MappingComponent();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0),
-                new java.awt.Dimension(0, 0),
-                new java.awt.Dimension(0, 32767));
-        jPanel3 = new javax.swing.JPanel();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        jLabel13 = new ColorLabel(new Color(9023451));
-        jLabel14 = new ColorLabel(new Color(13033627));
-        jLabel15 = new ColorLabel(new Color(15979335));
-        jLabel16 = new ColorLabel(new Color(14110278));
-        jSeparator1 = new javax.swing.JSeparator();
-        jLabel17 = new javax.swing.JLabel();
-        jLabel18 = new ColorLabel(new Color(15595771));
-        jLabel19 = new javax.swing.JLabel();
-        jLabel20 = new ColorLabel(new Color(11783651));
-        jLabel21 = new javax.swing.JLabel();
-        jLabel22 = new ColorLabel(new Color(9213638));
-        jLabel23 = new javax.swing.JLabel();
-        jLabel24 = new ColorLabel(new Color(8935079));
-        jLabel25 = new javax.swing.JLabel();
-        jLabel26 = new ColorLabel(new Color(8458108));
-        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0),
-                new java.awt.Dimension(0, 0),
-                new java.awt.Dimension(0, 32767));
-
-        setLayout(new java.awt.GridBagLayout());
-
-        jPanel1.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(153, 153, 153)));
-        jPanel1.setLayout(new java.awt.GridBagLayout());
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridheight = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(3, 3, 3, 3);
-        jPanel1.add(mappingComponent1, gridBagConstraints);
-
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                NbBundle.getMessage(FuelMapView.class, "FuelMapView.jPanel2.border.title"))); // NOI18N
-        jPanel2.setLayout(new java.awt.GridBagLayout());
-
-        jLabel1.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel1.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel2.add(jLabel1, gridBagConstraints);
-
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel2.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel2.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel2.add(jLabel2, gridBagConstraints);
-
-        jLabel3.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel3.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel2.add(jLabel3, gridBagConstraints);
-
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel4.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel4.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel2.add(jLabel4, gridBagConstraints);
-
-        jLabel5.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel5.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel2.add(jLabel5, gridBagConstraints);
-
-        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel6.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel6.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel2.add(jLabel6, gridBagConstraints);
-
-        jLabel7.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel7.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel2.add(jLabel7, gridBagConstraints);
-
-        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel8.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel8.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel2.add(jLabel8, gridBagConstraints);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.weighty = 1.0;
-        jPanel2.add(filler1, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        jPanel1.add(jPanel2, gridBagConstraints);
-
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(
-                NbBundle.getMessage(FuelMapView.class, "FuelMapView.jPanel3.border.title"))); // NOI18N
-        jPanel3.setLayout(new java.awt.GridBagLayout());
-
-        jLabel9.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel9.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel3.add(jLabel9, gridBagConstraints);
-
-        jLabel10.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel10.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel3.add(jLabel10, gridBagConstraints);
-
-        jLabel11.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel11.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel3.add(jLabel11, gridBagConstraints);
-
-        jLabel12.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel12.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel3.add(jLabel12, gridBagConstraints);
-
-        jLabel13.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel13.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.weightx = 1.0;
-        jPanel3.add(jLabel13, gridBagConstraints);
-
-        jLabel14.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel14.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        jPanel3.add(jLabel14, gridBagConstraints);
-
-        jLabel15.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel15.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        jPanel3.add(jLabel15, gridBagConstraints);
-
-        jLabel16.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel16.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
-        jPanel3.add(jLabel16, gridBagConstraints);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        jPanel3.add(jSeparator1, gridBagConstraints);
-
-        jLabel17.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel17.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel3.add(jLabel17, gridBagConstraints);
-
-        jLabel18.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel18.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 5;
-        gridBagConstraints.weightx = 1.0;
-        jPanel3.add(jLabel18, gridBagConstraints);
-
-        jLabel19.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel19.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 6;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel3.add(jLabel19, gridBagConstraints);
-
-        jLabel20.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel20.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 6;
-        gridBagConstraints.weightx = 1.0;
-        jPanel3.add(jLabel20, gridBagConstraints);
-
-        jLabel21.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel21.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 7;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel3.add(jLabel21, gridBagConstraints);
-
-        jLabel22.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel22.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 7;
-        gridBagConstraints.weightx = 1.0;
-        jPanel3.add(jLabel22, gridBagConstraints);
-
-        jLabel23.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel23.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 8;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel3.add(jLabel23, gridBagConstraints);
-
-        jLabel24.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel24.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 8;
-        gridBagConstraints.weightx = 1.0;
-        jPanel3.add(jLabel24, gridBagConstraints);
-
-        jLabel25.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel25.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 9;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
-        jPanel3.add(jLabel25, gridBagConstraints);
-
-        jLabel26.setText(NbBundle.getMessage(FuelMapView.class, "FuelMapView.jLabel26.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 9;
-        gridBagConstraints.weightx = 1.0;
-        jPanel3.add(jLabel26, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        jPanel1.add(jPanel3, gridBagConstraints);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.VERTICAL;
-        gridBagConstraints.weighty = 1.0;
-        jPanel1.add(filler2, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
-        add(jPanel1, gridBagConstraints);
+        setMinimumSize(new Dimension(100, 100));
+        setPreferredSize(new Dimension(200, 200));
+        setLayout(new BorderLayout());
     } // </editor-fold>//GEN-END:initComponents
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // End of variables declaration//GEN-END:variables
 
     @Override
     public JComponent getView() {
@@ -413,59 +734,98 @@ public class FuelMapView extends AbstractDetailView implements MapSync {
 
     @Override
     public JComponent getMiniatureView() {
-        return miniatureView;
+        return new IconPanel(FuelMapView.class.getPackage().getName().replaceAll("\\.", "/") + "/world_256.png",
+                256,
+                256);
     }
 
     @Override
     public String getId() {
-        return "fuel_map_detailview";
+        return "fuelmap_view";
     }
 
     @Override
     public String getDisplayName() {
-        return "Fuel map";
-    }
-
-    @Override
-    public void setWorldstate(final CidsBean worldstate) {
-        super.setWorldstate(worldstate);
-
-        miniatureView.setWorldstate(worldstate);
-
-        init();
+        return "Fuel Map";
     }
 
     /**
      * DOCUMENT ME!
+     *
+     * @param  args  DOCUMENT ME!
      */
-    private void init() {
-        try {
-            ShakemapView.initPilotDMap(
-                mappingComponent1,
-                "fuel_map",
-                getWorldstate(),
-                0.8f,
-                new WFSRequestListener());
-            ShakemapView.activateLayerWidget(mappingComponent1);
-        } catch (final Exception e) {
-            LOG.error("cannot initialise fuel map view", e);
-            this.removeAll();
-            final java.awt.GridBagConstraints gridBagConstraints = new java.awt.GridBagConstraints();
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 0;
-            gridBagConstraints.gridheight = 1;
-            gridBagConstraints.gridwidth = 1;
-            gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-            gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-            gridBagConstraints.weightx = 1.0;
-            gridBagConstraints.weighty = 1.0;
-            gridBagConstraints.insets = new java.awt.Insets(0, 0, 0, 0);
-            this.add(new NoContentPanel(), gridBagConstraints);
+    public static void main(final String[] args) {
+        Log4JQuickConfig.configure4LumbermillOnLocalhost();
+        EventQueue.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
+                        final JFrame frame = new JFrame("wwtest");
+                        frame.setLayout(new BorderLayout());
+                        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                        final FuelMapView view = new FuelMapView();
+                        frame.add(view);
+                        frame.pack();
+                        frame.setSize(800, 600);
+                        frame.setVisible(true);
+                        frame.toFront();
+                    } catch (final Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+    }
+
+    //~ Inner Classes ----------------------------------------------------------
+
+    /**
+     * DOCUMENT ME!
+     *
+     * @version  $Revision$, $Date$
+     */
+    protected static class LayerInfo {
+
+        //~ Instance fields ----------------------------------------------------
+
+        protected WMSCapabilities caps;
+        protected AVListImpl params = new AVListImpl();
+
+        //~ Methods ------------------------------------------------------------
+
+        /**
+         * DOCUMENT ME!
+         *
+         * @return  DOCUMENT ME!
+         */
+        protected String getTitle() {
+            return params.getStringValue(AVKey.DISPLAY_NAME);
+        }
+
+        /**
+         * DOCUMENT ME!
+         *
+         * @return  DOCUMENT ME!
+         */
+        protected String getName() {
+            return params.getStringValue(AVKey.LAYER_NAMES);
+        }
+
+        /**
+         * DOCUMENT ME!
+         *
+         * @return  DOCUMENT ME!
+         */
+        protected String getAbstract() {
+            return params.getStringValue(AVKey.LAYER_ABSTRACT);
         }
     }
 
-    @Override
-    public MappingComponent getMap() {
-        return mappingComponent1;
+    /**
+     * DOCUMENT ME!
+     *
+     * @version  $Revision$, $Date$
+     */
+    private static final class FireOpacityLayer extends RenderableLayer {
     }
 }

@@ -53,6 +53,7 @@
     <properties>
         <de.cismet.libDir>lib/localCrisma</de.cismet.libDir>
         <netbeans.version>RELEASE691</netbeans.version>
+        <td>/Users/mscholl/Downloads/worldwind-2.0.0/</td>
     </properties>
 
     <dependencies>
@@ -151,6 +152,41 @@
             <artifactId>gt-main</artifactId>
             <version>2.7.4</version>
         </dependency>
+        <dependency>
+            <groupId>threeD</groupId>
+            <artifactId>ww</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${td}worldwind.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>threeD</groupId>
+            <artifactId>wwx</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${td}worldwindx.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>threeD</groupId>
+            <artifactId>jogl</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${td}jogl-all.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>threeD</groupId>
+            <artifactId>gluegen</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${td}gluegen-rt.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>threeD</groupId>
+            <artifactId>gdal</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${td}gdal.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <repositories>
@@ -215,7 +251,7 @@
                         <configuration>
                             <compilerArguments>
                                 <sourcepath>${basedir}/src/main/java</sourcepath>
-                                <classpath>${classpath.directDependencies}</classpath>
+                                <classpath>${classpath.directDependencies}:${td}/worldwind.jar:${td}/worldwindx.jar:${td}/jogl-all.jar:${td}/gluegen-rt.jar:${td}/gdal.jar</classpath>
                             </compilerArguments>
                         </configuration>
                     </execution>
