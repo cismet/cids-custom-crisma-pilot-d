@@ -53,7 +53,6 @@
     <properties>
         <de.cismet.libDir>lib/localCrisma</de.cismet.libDir>
         <netbeans.version>RELEASE691</netbeans.version>
-        <td>/Users/mscholl/Downloads/worldwind-2.0.0/</td>
     </properties>
 
     <dependencies>
@@ -153,39 +152,24 @@
             <version>2.7.4</version>
         </dependency>
         <dependency>
-            <groupId>threeD</groupId>
-            <artifactId>ww</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>${td}worldwind.jar</systemPath>
+            <groupId>gov.nasa</groupId>
+            <artifactId>worldwind</artifactId>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
-            <groupId>threeD</groupId>
-            <artifactId>wwx</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>${td}worldwindx.jar</systemPath>
+            <groupId>gov.nasa</groupId>
+            <artifactId>worldwindx</artifactId>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
-            <groupId>threeD</groupId>
-            <artifactId>jogl</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>${td}jogl-all.jar</systemPath>
+            <groupId>org.jogamp.jogl</groupId>
+            <artifactId>jogl-all-main</artifactId>
+            <version>2.1.4</version>
         </dependency>
         <dependency>
-            <groupId>threeD</groupId>
-            <artifactId>gluegen</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>${td}gluegen-rt.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>threeD</groupId>
-            <artifactId>gdal</artifactId>
-            <version>1</version>
-            <scope>system</scope>
-            <systemPath>${td}gdal.jar</systemPath>
+            <groupId>org.jogamp.gluegen</groupId>
+            <artifactId>gluegen-rt-main</artifactId>
+            <version>2.1.4</version>
         </dependency>
     </dependencies>
 

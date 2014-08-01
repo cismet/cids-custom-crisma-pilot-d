@@ -9,6 +9,7 @@ package de.cismet.cids.custom.crisma.pilotD.worldstate;
 
 import org.openide.util.ImageUtilities;
 
+import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -19,7 +20,6 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 
 import de.cismet.cids.custom.crisma.worldstate.editor.NotEditableEditor;
-import java.awt.BorderLayout;
 
 /**
  * DOCUMENT ME!
@@ -60,11 +60,9 @@ public class IconPanel extends javax.swing.JPanel {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents()
-    {
-
+    private void initComponents() {
         setLayout(new BorderLayout());
-    }// </editor-fold>//GEN-END:initComponents
+    } // </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables

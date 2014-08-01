@@ -72,7 +72,6 @@ import java.util.ListIterator;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
@@ -94,14 +93,14 @@ public class FuelMapView extends AbstractDetailView {
     /** LOGGER. */
     private static final transient Logger LOG = LoggerFactory.getLogger(FuelMapView.class);
 
-    protected static final double HUE_BLUE = 240d / 360d;
-    protected static final double HUE_RED = 0d / 360d;
+    public static final double HUE_BLUE = 240d / 360d;
+    public static final double HUE_RED = 0d / 360d;
+
+    public static volatile boolean added;
 
     //~ Instance fields --------------------------------------------------------
 
     private Sector demSector;
-
-    private volatile boolean added;
 
     //~ Constructors -----------------------------------------------------------
 
@@ -303,7 +302,7 @@ public class FuelMapView extends AbstractDetailView {
      *
      * @throws  Exception  DOCUMENT ME!
      */
-    private Document addElevation(final WorldWindow ww, final File file) throws Exception {
+    public static Document addElevation(final WorldWindow ww, final File file) throws Exception {
         final TiledElevationProducer producer = new TiledElevationProducer();
         Document doc = null;
 
@@ -357,7 +356,7 @@ public class FuelMapView extends AbstractDetailView {
      *
      * @return  DOCUMENT ME!
      */
-    private Layer addLayer(final WorldWindow ww, final String uri, final String name) {
+    public static Layer addLayer(final WorldWindow ww, final String uri, final String name) {
         return addLayer(ww, uri, name, null);
     }
 
@@ -371,7 +370,7 @@ public class FuelMapView extends AbstractDetailView {
      *
      * @return  DOCUMENT ME!
      */
-    private Layer addLayer(final WorldWindow ww, final String uri, final String name, final String styleName) {
+    public static Layer addLayer(final WorldWindow ww, final String uri, final String name, final String styleName) {
         Layer layer = null;
         try {
             final WMSCapabilities caps = WMSCapabilities.retrieve(URI.create(uri));
@@ -647,7 +646,7 @@ public class FuelMapView extends AbstractDetailView {
      *
      * @return  DOCUMENT ME!
      */
-    protected LayerInfo createLayerInfo(final WMSCapabilities caps,
+    public static LayerInfo createLayerInfo(final WMSCapabilities caps,
             final WMSLayerCapabilities layerCaps,
             final WMSLayerStyle style) {
         // Create the layer info specified by the layer's capabilities entry and the selected style.
