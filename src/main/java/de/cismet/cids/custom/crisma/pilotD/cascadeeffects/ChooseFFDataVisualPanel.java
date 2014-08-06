@@ -8,13 +8,9 @@
 package de.cismet.cids.custom.crisma.pilotD.cascadeeffects;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
-import com.vividsolutions.jts.geom.impl.CoordinateArraySequence;
 
 import edu.umd.cs.piccolo.event.PInputEvent;
 
@@ -31,13 +27,12 @@ import gov.nasa.worldwind.event.RenderingExceptionListener;
 import gov.nasa.worldwind.formats.shapefile.Shapefile;
 import gov.nasa.worldwind.formats.shapefile.ShapefileRecord;
 import gov.nasa.worldwind.formats.shapefile.ShapefileRecordPoint;
-import gov.nasa.worldwind.formats.shapefile.ShapefileRecordPolygon;
 import gov.nasa.worldwind.geom.Angle;
-import gov.nasa.worldwind.geom.Extent;
-import gov.nasa.worldwind.geom.LatLon;
+import gov.nasa.worldwind.geom.Matrix;
 import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.geom.Sector;
-import gov.nasa.worldwind.layers.AirspaceLayer;
+import gov.nasa.worldwind.geom.Vec4;
+import gov.nasa.worldwind.globes.Globe;
 import gov.nasa.worldwind.layers.CompassLayer;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
@@ -46,16 +41,16 @@ import gov.nasa.worldwind.layers.ViewControlsLayer;
 import gov.nasa.worldwind.layers.ViewControlsSelectListener;
 import gov.nasa.worldwind.layers.WorldMapLayer;
 import gov.nasa.worldwind.layers.placename.PlaceNameLayer;
-import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.render.BasicShapeAttributes;
+import gov.nasa.worldwind.render.Cone;
+import gov.nasa.worldwind.render.Cylinder;
 import gov.nasa.worldwind.render.Material;
+import gov.nasa.worldwind.render.Offset;
 import gov.nasa.worldwind.render.PointPlacemark;
 import gov.nasa.worldwind.render.PointPlacemarkAttributes;
-import gov.nasa.worldwind.render.Renderable;
-import gov.nasa.worldwind.render.airspaces.BasicAirspaceAttributes;
-import gov.nasa.worldwind.render.airspaces.Polygon;
+import gov.nasa.worldwind.render.ShapeAttributes;
 import gov.nasa.worldwind.util.BufferWrapper;
 import gov.nasa.worldwind.util.WWBufferUtil;
-import gov.nasa.worldwind.util.WWMath;
 import gov.nasa.worldwind.util.WWXML;
 import gov.nasa.worldwindx.examples.analytics.AnalyticSurface;
 import gov.nasa.worldwindx.examples.analytics.AnalyticSurface.GridPointAttributes;
@@ -86,15 +81,13 @@ import java.text.DecimalFormat;
 import java.text.Format;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -108,6 +101,8 @@ import de.cismet.tools.gui.log4jquickconfig.Log4JQuickConfig;
 
 import static de.cismet.cids.custom.crisma.pilotD.worldstate.FuelMapView.HUE_BLUE;
 import static de.cismet.cids.custom.crisma.pilotD.worldstate.FuelMapView.HUE_RED;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
 
 /**
  * DOCUMENT ME!
@@ -127,6 +122,13 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
     private final transient DocL docL;
 
     private Sector demSector;
+
+    private Cone windDirCone;
+    private RenderableLayer featureLayer;
+    private WorldWindowGLCanvas c;
+    private PointPlacemark ignitionPP;
+
+    private final Object lock = new Object();
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler1;
@@ -158,6 +160,14 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
     public ChooseFFDataVisualPanel(final ChooseFFDataWizardPanel model) {
         this.model = model;
         this.docL = new DocL();
+        try
+        {
+            this.texture = ImageIO.read(getClass().getResourceAsStream("/" + getClass().getPackage().getName().replaceAll("\\.", "/") + "/smoke_texture.jpeg"));
+        }catch(final IOException e)
+        {
+            LOG.warn("cannot load smoke texture", e);
+            this.texture = null;
+        }
 
         initComponents();
 
@@ -167,6 +177,8 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
         setName("Forest Fire: Electrical discharge ignition");
     }
 
+    private BufferedImage texture;
+    
     //~ Methods ----------------------------------------------------------------
 
     /**
@@ -186,8 +198,108 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
         jSlider1.setValue(Math.round(model.getWindDirection()));
         try {
             initMap();
+            jSlider1.addChangeListener(new ChangeListener() {
+
+                    @Override
+                    public void stateChanged(final ChangeEvent e) {
+                        if (!jSlider1.getValueIsAdjusting()) {
+                            createSmokeCone();
+                        }
+                    }
+                });
+            jSpinner1.addChangeListener(new ChangeListener() {
+
+                    @Override
+                    public void stateChanged(final ChangeEvent e) {
+                        createSmokeCone();
+                    }
+                });
         } catch (final Exception e) {
             LOG.error("cannot initialise epi map", e);
+        }
+    }
+
+    /**
+     * DOCUMENT ME!
+     */
+    private void createSmokeCone() {
+        if (ignitionPP != null) {
+            final int direction = jSlider1.getValue();
+            final int speed = ((Float)jSpinner1.getValue()).intValue();
+            final int vradius = (speed == 0) ? 400 : (speed * 800);
+            final Position pos;
+
+            synchronized (lock) {
+                pos = ignitionPP.getPosition();
+            }
+
+            if (windDirCone != null) {
+                featureLayer.removeRenderable(windDirCone);
+            }
+
+            final Globe globe = c.getModel().getGlobe();
+            final Vec4 posVec = globe.computePointFromPosition(pos);
+            final double angle = Math.toRadians(-direction);
+            final Vec4 normPos = posVec.normalize3();
+            final double cos = Math.cos(angle);
+            final double cos1 = 1 - cos;
+            final double sin = Math.sin(angle);
+            final double x = normPos.x;
+            final double y = normPos.y;
+            final double z = normPos.z;
+
+            //J-
+            final Matrix directRotate = new Matrix(
+                    x * x * cos1 + cos    , x * y * cos1 - z * sin, x * z * cos1 + y * sin, 0,
+                    y * x * cos1 + z * sin, y * y * cos1 + cos    , y * z * cos1 - x * sin, 0,
+                    z * x * cos1 - y * sin, z * y * cos1 + x * sin, z * z * cos1 + cos    , 0,
+                    0                     , 0                     , 0                     , 1
+            );
+
+            final Vec4 normNorthVec = new Vec4(
+                    -posVec.x,
+                    posVec.getLength3() / Math.cos(posVec.y) - posVec.y,
+                    -posVec.z
+            ).normalize3();
+            //J+
+            final Vec4 windVec = normNorthVec.transformBy3(directRotate).multiply3(vradius);
+            final Position pos5 = globe.computePositionFromPoint(posVec.add3(windVec));
+            final Position pos6 = new Position(pos5.latitude, pos5.longitude, pos.elevation);
+
+            Vec4 distance = globe.computePointFromPosition(pos6).subtract3(posVec);
+            if (distance.getLength3() != vradius) {
+                distance = distance.normalize3().multiply3(vradius);
+            }
+
+            System.out.println(posVec);
+            System.out.println(globe.computePointFromPosition(pos5));
+            System.out.println(globe.computePointFromPosition(pos6));
+            System.out.println(globe.computePointFromPosition(pos6).subtract3(posVec).getLength3());
+            System.out.println(distance.getLength3());
+            System.out.println(vradius);
+            final Position pos7 = globe.computePositionFromPoint(posVec.add3(distance));
+            final Vec4 posVec7 = globe.computePointFromPosition(pos7);
+            final Vec4 posVec7_2 = posVec.add3(distance);
+            System.out.println(posVec7);
+            System.out.println(posVec7_2);
+            System.out.println(posVec7.subtract3(posVec7_2));
+
+            windDirCone = new Cone(
+                    globe.computePositionFromPoint(posVec.add3(distance)),
+                    1000,
+                    vradius,
+                    2000,
+                    Angle.fromDegrees(90),
+                    Angle.fromDegrees(direction - 90), // wind direction angle
+                    Angle.fromDegrees(90));
+            windDirCone.setAltitudeMode(WorldWind.ABSOLUTE);
+            windDirCone.setImageSources(texture);
+            final BasicShapeAttributes attrs = new BasicShapeAttributes();
+            attrs.setDrawOutline(false);
+            attrs.setDrawInterior(true);
+            windDirCone.setAttributes(attrs);
+            featureLayer.addRenderable(windDirCone);
+            c.redrawNow();
         }
     }
 
@@ -202,7 +314,7 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
             LOG.error("not called in EDT");
         }
 
-        final WorldWindowGLCanvas c = new WorldWindowGLCanvas();
+        c = new WorldWindowGLCanvas();
 
         // Create the default model as described in the current worldwind properties.
         final Model m = (Model)WorldWind.createConfigurationComponent(AVKey.MODEL_CLASS_NAME);
@@ -250,8 +362,8 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
         }
         layers.add(pos, lml);
 
-        final RenderableLayer rl = new RenderableLayer();
-        rl.setName("Points");
+        featureLayer = new RenderableLayer();
+        featureLayer.setName("Features");
         c.getInputHandler().addMouseListener(new MouseAdapter() {
 
                 @Override
@@ -259,14 +371,19 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
                     final Position p = c.getCurrentPosition();
                     if (p != null) {
 //                    e.consume();
-                        final PointPlacemark pp = new PointPlacemark(p);
-                        final PointPlacemarkAttributes attr = new PointPlacemarkAttributes();
-                        attr.setImageAddress("de/cismet/cids/custom/crisma/pilotD/cascadeeffects/fire_32.png");
-                        pp.setAttributes(attr);
-                        rl.removeAllRenderables();
-                        rl.addRenderable(pp);
+                        synchronized (lock) {
+                            ignitionPP = new PointPlacemark(p);
+                            final PointPlacemarkAttributes attr = new PointPlacemarkAttributes();
+                            attr.setImageAddress("de/cismet/cids/custom/crisma/pilotD/cascadeeffects/fire_32.png");
+                            attr.setImageOffset(Offset.BOTTOM_CENTER);
+                            ignitionPP.setAttributes(attr);
+                        }
+                        featureLayer.removeAllRenderables();
+                        featureLayer.addRenderable(ignitionPP);
                         jTextField1.setText(p.getLatitude().toDMString());
                         jTextField2.setText(p.getLongitude().toDMString());
+
+                        createSmokeCone();
                     }
                 }
             });
@@ -278,7 +395,7 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
                 pos = layers.indexOf(l);
             }
         }
-        layers.add(pos, rl);
+        layers.add(pos, featureLayer);
 
         c.addSelectListener(new ViewControlsSelectListener(c, viewControlsLayer));
 
@@ -378,10 +495,12 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
                         } catch (final Exception e) {
                             e.printStackTrace();
                         }
+
+                        addProb(c);
                     }
                 });
         t.setPriority(Thread.MIN_PRIORITY);
-        t.start();
+//        t.start();
 
         pnl3d.add(c, BorderLayout.CENTER);
         final Thread t2 = new Thread(new Runnable() {
@@ -402,33 +521,7 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
                             });
                     }
                 });
-        t2.start();
-//        ShakemapView.initPilotDMap(
-//            mappingComponent1,
-//            "comune_aq",
-//            model.getWorldstate(),
-//            1f,
-//            new WFSRequestListener());
-//        final SimpleWMS propLayer = new SimpleWMS(new SimpleWmsGetMapUrl(
-//                    "http://sudplan.cismet.de/geoserver251/crisma/wms?service=WMS&version=1.1.0&request=GetMap&layers=crisma:power_tower_cc_demo2&bbox=<cismap:boundingBox>&width=<cismap:width>&height=<cismap:height>&srs=EPSG:32633&format=image/png&transparent=true"));
-//        propLayer.setName("Ignition Probability");
-//        ((SimpleWMS)mappingComponent1.getMappingModel().getRasterServices().firstEntry().getValue()).setTranslucency(
-//            0.1f);
-//        ((SimpleWMS)mappingComponent1.getMappingModel().getRasterServices().firstEntry().getValue()).getPNode()
-//                .setTransparency(0.1f);
-//        ((SimpleWMS)mappingComponent1.getMappingModel().getRasterServices().firstEntry().getValue()).getPNode()
-//                .repaint();
-//        mappingComponent1.getMappingModel().addLayer(propLayer);
-//        mappingComponent1.addInputListener("eq", new AddFFIgnitionListener());
-//        mappingComponent1.setInteractionMode("eq");
-//        EventQueue.invokeLater(new Runnable() {
-//
-//                @Override
-//                public void run() {
-//                    mappingComponent1.repaint();
-//                }
-//            });
-//        ShakemapView.activateLayerWidget(mappingComponent1);
+//        t2.start();
     }
 
     /**
@@ -584,11 +677,10 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(
                 org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE,
                 this,
-                org.jdesktop.beansbinding.ELProperty.create("${model.magnitude}"),
+                org.jdesktop.beansbinding.ELProperty.create("${model.windDirection}"),
                 jSlider1,
                 org.jdesktop.beansbinding.BeanProperty.create("value"),
                 "mag_bind_float");
-        binding.setConverter(new Conv2());
         bindingGroup.addBinding(binding);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -758,22 +850,22 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
                 public void run() {
                     surface.setClientLayer(surfaceLayer);
                     surfaceLayer.addRenderable(surface);
-                    surfaceLayer.addRenderable(new Renderable() {
-
-                            @Override
-                            public void render(final DrawContext dc) {
-                                final Extent extent = surface.getExtent(dc);
-                                if (!extent.intersects(dc.getView().getFrustumInModelCoordinates())) {
-                                    return;
-                                }
-
-                                if (WWMath.computeSizeInWindowCoordinates(dc, extent) < 300) {
-                                    return;
-                                }
-
-                                legend.render(dc);
-                            }
-                        });
+//                    surfaceLayer.addRenderable(new Renderable() {
+//
+//                            @Override
+//                            public void render(final DrawContext dc) {
+//                                final Extent extent = surface.getExtent(dc);
+//                                if (!extent.intersects(dc.getView().getFrustumInModelCoordinates())) {
+//                                    return;
+//                                }
+//
+//                                if (WWMath.computeSizeInWindowCoordinates(dc, extent) < 300) {
+//                                    return;
+//                                }
+//
+//                                legend.render(dc);
+//                            }
+//                        });
                 }
             });
     }
@@ -801,104 +893,102 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
     /**
      * DOCUMENT ME!
      *
-     * @param   ww  DOCUMENT ME!
-     *
-     * @throws  UnsupportedOperationException  DOCUMENT ME!
+     * @param  ww  DOCUMENT ME!
      */
-    private void addEq(final WorldWindow ww) {
-        final AirspaceLayer eqLayer = new AirspaceLayer();
-        eqLayer.setName("Earthquake");
-        final Shapefile eqFile = new Shapefile(new File(
-                    "/Users/mscholl/projects/crisma/SP5/WP55/layers/Intensity_MainEvent_NEzone_Mw5.6/Shakemap_MainEvent.shp"));
-        final Polygon pol = new Polygon();
-
-        final GeometryFactory gf = new GeometryFactory(new PrecisionModel(), 4326);
-        final Map<Material, ArrayList<Geometry>> mp = new HashMap<Material, ArrayList<Geometry>>(14);
-
-        while (eqFile.hasNext()) {
-            final ShapefileRecord record = eqFile.nextRecord();
-            final double[] bbox = ((ShapefileRecordPolygon)record).getBoundingRectangle();
-            final Sector sector = Sector.fromDegrees(bbox);
-            final Coordinate[] coords = new Coordinate[5];
-            final List<LatLon> llList = sector.asList();
-            for (int i = 0; i < llList.size(); ++i) {
-                final LatLon ll = llList.get(i);
-                final Coordinate coord = new Coordinate(ll.longitude.degrees, ll.latitude.degrees);
-                coords[i] = coord;
-            }
-            coords[4] = new Coordinate(llList.get(0).longitude.degrees, llList.get(0).latitude.degrees);
-            final com.vividsolutions.jts.geom.Polygon p = new com.vividsolutions.jts.geom.Polygon(new LinearRing(
-                        new CoordinateArraySequence(coords),
-                        gf),
-                    null,
-                    gf);
-
-            Material mat = null;
-            for (final Entry<String, Object> entry : record.getAttributes().getEntries()) {
-                if (entry.getKey().equalsIgnoreCase("intensity")) {
-                    final Double intensity = (Double)entry.getValue();
-                    mat = getMaterial(intensity);
-                }
-            }
-
-            ArrayList<Geometry> coll = mp.get(mat);
-            if (coll == null) {
-                coll = new ArrayList<Geometry>();
-                mp.put(mat, coll);
-            }
-            coll.add(p);
-        }
-
-        for (final Entry<Material, ArrayList<Geometry>> entry : mp.entrySet()) {
-            final BasicAirspaceAttributes baa = new BasicAirspaceAttributes();
-            baa.setDrawInterior(true);
-            baa.setDrawOutline(true);
-            baa.setMaterial(entry.getKey());
-            baa.setOutlineMaterial(entry.getKey());
-            baa.setOutlineWidth(1d);
-            final ArrayList<Geometry> list = entry.getValue();
-            final GeometryCollection g = new GeometryCollection(list.toArray(new Geometry[list.size()]), gf);
-            final Geometry geom = g.buffer(0);
-
-            final Iterable<? extends LatLon> it = new Iterable<LatLon>() {
-
-                    final Coordinate[] coords = geom.getCoordinates();
-
-                    @Override
-                    public Iterator<LatLon> iterator() {
-                        return new Iterator<LatLon>() {
-
-                                int index = 0;
-
-                                @Override
-                                public boolean hasNext() {
-                                    return index < (coords.length - 1);
-                                }
-
-                                @Override
-                                public LatLon next() {
-                                    index++;
-                                    return new LatLon(Angle.fromDegreesLatitude(coords[index].y),
-                                            Angle.fromDegreesLongitude(coords[index].x));
-                                }
-
-                                @Override
-                                public void remove() {
-                                    throw new UnsupportedOperationException("Not supported yet."); // To change body of
-                                                                                                   // generated methods,
-                                                                                                   // choose Tools |
-                                                                                                   // Templates.
-                                }
-                            };
-                    }
-                };
-
-            final Polygon p = new Polygon(it);
-            p.setAttributes(pol.getAttributes());
-            p.setAltitude(3000);
-
-            eqLayer.addAirspace(p);
-        }
+    private void addProb(final WorldWindow ww) {
+//        final AirspaceLayer eqLayer = new AirspaceLayer();
+//        eqLayer.setName("Earthquake");
+//        final Shapefile eqFile = new Shapefile(new File(
+//                    "/Users/mscholl/projects/crisma/SP5/WP55/layers/Intensity_MainEvent_NEzone_Mw5.6/Shakemap_MainEvent.shp"));
+//        final Polygon pol = new Polygon();
+//
+//        final GeometryFactory gf = new GeometryFactory(new PrecisionModel(), 4326);
+//        final Map<Material, ArrayList<Geometry>> mp = new HashMap<Material, ArrayList<Geometry>>(14);
+//
+//        while (eqFile.hasNext()) {
+//            final ShapefileRecord record = eqFile.nextRecord();
+//            final double[] bbox = ((ShapefileRecordPolygon)record).getBoundingRectangle();
+//            final Sector sector = Sector.fromDegrees(bbox);
+//            final Coordinate[] coords = new Coordinate[5];
+//            final List<LatLon> llList = sector.asList();
+//            for (int i = 0; i < llList.size(); ++i) {
+//                final LatLon ll = llList.get(i);
+//                final Coordinate coord = new Coordinate(ll.longitude.degrees, ll.latitude.degrees);
+//                coords[i] = coord;
+//            }
+//            coords[4] = new Coordinate(llList.get(0).longitude.degrees, llList.get(0).latitude.degrees);
+//            final com.vividsolutions.jts.geom.Polygon p = new com.vividsolutions.jts.geom.Polygon(new LinearRing(
+//                        new CoordinateArraySequence(coords),
+//                        gf),
+//                    null,
+//                    gf);
+//
+//            Material mat = null;
+//            for (final Entry<String, Object> entry : record.getAttributes().getEntries()) {
+//                if (entry.getKey().equalsIgnoreCase("intensity")) {
+//                    final Double intensity = (Double)entry.getValue();
+//                    mat = getMaterial(intensity);
+//                }
+//            }
+//
+//            ArrayList<Geometry> coll = mp.get(mat);
+//            if (coll == null) {
+//                coll = new ArrayList<Geometry>();
+//                mp.put(mat, coll);
+//            }
+//            coll.add(p);
+//        }
+//
+//        for (final Entry<Material, ArrayList<Geometry>> entry : mp.entrySet()) {
+//            final BasicAirspaceAttributes baa = new BasicAirspaceAttributes();
+//            baa.setDrawInterior(true);
+//            baa.setDrawOutline(true);
+//            baa.setMaterial(entry.getKey());
+//            baa.setOutlineMaterial(entry.getKey());
+//            baa.setOutlineWidth(1d);
+//            final ArrayList<Geometry> list = entry.getValue();
+//            final GeometryCollection g = new GeometryCollection(list.toArray(new Geometry[list.size()]), gf);
+//            final Geometry geom = g.buffer(0);
+//
+//            final Iterable<? extends LatLon> it = new Iterable<LatLon>() {
+//
+//                    final Coordinate[] coords = geom.getCoordinates();
+//
+//                    @Override
+//                    public Iterator<LatLon> iterator() {
+//                        return new Iterator<LatLon>() {
+//
+//                                int index = 0;
+//
+//                                @Override
+//                                public boolean hasNext() {
+//                                    return index < (coords.length - 1);
+//                                }
+//
+//                                @Override
+//                                public LatLon next() {
+//                                    index++;
+//                                    return new LatLon(Angle.fromDegreesLatitude(coords[index].y),
+//                                            Angle.fromDegreesLongitude(coords[index].x));
+//                                }
+//
+//                                @Override
+//                                public void remove() {
+//                                    throw new UnsupportedOperationException("Not supported yet."); // To change body of
+//                                                                                                   // generated methods,
+//                                                                                                   // choose Tools |
+//                                                                                                   // Templates.
+//                                }
+//                            };
+//                    }
+//                };
+//
+//            final Polygon p = new Polygon(it);
+//            p.setAttributes(pol.getAttributes());
+//            p.setAltitude(3000);
+//
+//            eqLayer.addAirspace(p);
+//        }
 
         final RenderableLayer poleLayer = new RenderableLayer();
         poleLayer.setName("Poles");
@@ -906,18 +996,26 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
                     "/Users/mscholl/projects/crisma/SP5/WP55/layers/elec_poles_prob_shape.rar_folder/ElecPoles_probability.shp"));
         while (poleFile.hasNext()) {
             final ShapefileRecord record = poleFile.nextRecord();
-            final PointPlacemarkAttributes attrs = new PointPlacemarkAttributes();
-            attrs.setUsePointAsDefaultImage(true);
-            attrs.setImageAddress("de/cismet/cids/custom/crisma/pilotD/cascadeeffects/electrical_tower1.png");
-            attrs.setLineMaterial(Material.BLACK);
-            attrs.setScale(0.1d);
+            final ShapeAttributes attrs = new BasicShapeAttributes();
 
             final double[] point = ((ShapefileRecordPoint)record).getPoint();
-            final PointPlacemark placemark = new PointPlacemark(Position.fromDegrees(point[1], point[0], 0));
-            placemark.setAltitudeMode(WorldWind.CLAMP_TO_GROUND);
-            placemark.setApplyVerticalExaggeration(true);
-            placemark.setAttributes(attrs);
-            poleLayer.addRenderable(placemark);
+            final Position pos = Position.fromDegrees(point[1], point[0], 2000);
+            Double prob = 0d;
+            for (final Entry<String, Object> entry : record.getAttributes().getEntries()) {
+                if (entry.getKey().equalsIgnoreCase("Pig_EQ")) {
+                    prob = (Double)entry.getValue();
+                }
+            }
+            final Cylinder cyl = new Cylinder(pos, 5000 * prob, 30);
+            attrs.setInteriorMaterial(getMaterial(prob * 15));
+            attrs.setOutlineMaterial(getMaterial(prob * 15));
+            cyl.setAttributes(attrs);
+
+//            final PointPlacemark placemark = new PointPlacemark();
+//            placemark.setAltitudeMode(WorldWind.CLAMP_TO_GROUND);
+//            placemark.setApplyVerticalExaggeration(true);
+//            placemark.setAttributes(attrs);
+            poleLayer.addRenderable(cyl);
         }
 
         // Insert the layer into the layer list just before the compass.
@@ -929,7 +1027,7 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
             }
         }
         layers.add(pos, poleLayer);
-        layers.add(pos, eqLayer);
+//        layers.add(pos, eqLayer);
     }
 
     /**

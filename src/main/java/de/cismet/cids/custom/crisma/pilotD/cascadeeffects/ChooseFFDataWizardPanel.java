@@ -61,7 +61,7 @@ public final class ChooseFFDataWizardPanel extends AbstractWizardPanel {
     //~ Instance fields --------------------------------------------------------
 
     private transient float windSpeed;
-    private transient float windDirection;
+    private transient int windDirection;
     private transient AtmosStability atmosStability;
     private transient Point source;
     private transient CidsBean worldstate;
@@ -131,7 +131,7 @@ public final class ChooseFFDataWizardPanel extends AbstractWizardPanel {
      *
      * @return  DOCUMENT ME!
      */
-    public float getWindDirection() {
+    public int getWindDirection() {
         return windDirection;
     }
 
@@ -140,8 +140,10 @@ public final class ChooseFFDataWizardPanel extends AbstractWizardPanel {
      *
      * @param  windDirection  DOCUMENT ME!
      */
-    public void setWindDirection(final float windDirection) {
+    public void setWindDirection(final int windDirection) {
         this.windDirection = windDirection;
+
+        changeSupport.fireChange();
     }
 
     /**
@@ -169,10 +171,10 @@ public final class ChooseFFDataWizardPanel extends AbstractWizardPanel {
 
     @Override
     protected void read(final WizardDescriptor wizard) {
-        Float f = (Float)wizard.getProperty(PROP_WINDSPEED);
+        final Float f = (Float)wizard.getProperty(PROP_WINDSPEED);
         setWindSpeed((f == null) ? 0f : f);
-        f = (Float)wizard.getProperty(PROP_WINDDIRECTION);
-        setWindDirection((f == null) ? 0f : f);
+        final Integer i = (Integer)wizard.getProperty(PROP_WINDDIRECTION);
+        setWindDirection((i == null) ? 0 : i);
         setSource((Point)wizard.getProperty(PROP_SOURCE));
         setAtmosStability((AtmosStability)wizard.getProperty(PROP_ATMOS_STABILITY));
         setWorldstate((CidsBean)wizard.getProperty(CascadeEffectsWizardAction.PROP_WORLDSTATE));
