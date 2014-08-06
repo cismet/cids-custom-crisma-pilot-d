@@ -260,7 +260,7 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
 
             final Vec4 normNorthVec = new Vec4(
                     -posVec.x,
-                    posVec.getLength3() / Math.cos(posVec.y) - posVec.y,
+                    posVec.getLength3() / Math.abs(Math.cos(posVec.y)) - posVec.y,
                     -posVec.z
             ).normalize3();
             //J+
