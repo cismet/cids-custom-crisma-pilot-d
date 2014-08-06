@@ -48,14 +48,13 @@ import gov.nasa.worldwind.render.Material;
 import gov.nasa.worldwind.render.Offset;
 import gov.nasa.worldwind.render.PointPlacemark;
 import gov.nasa.worldwind.render.PointPlacemarkAttributes;
+import gov.nasa.worldwind.render.ScreenImage;
 import gov.nasa.worldwind.render.ShapeAttributes;
 import gov.nasa.worldwind.util.BufferWrapper;
-import gov.nasa.worldwind.util.WWBufferUtil;
 import gov.nasa.worldwind.util.WWXML;
 import gov.nasa.worldwindx.examples.analytics.AnalyticSurface;
 import gov.nasa.worldwindx.examples.analytics.AnalyticSurface.GridPointAttributes;
 import gov.nasa.worldwindx.examples.analytics.AnalyticSurfaceAttributes;
-import gov.nasa.worldwindx.examples.analytics.AnalyticSurfaceLegend;
 import gov.nasa.worldwindx.examples.util.ExampleUtil;
 import gov.nasa.worldwindx.examples.util.LayerManagerLayer;
 
@@ -78,9 +77,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import java.text.DecimalFormat;
-import java.text.Format;
-
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.Map.Entry;
@@ -101,9 +97,6 @@ import de.cismet.cismap.commons.gui.piccolo.eventlistener.BackgroundRefreshingPa
 import de.cismet.cismap.commons.gui.piccolo.eventlistener.RubberBandZoomListener;
 
 import de.cismet.tools.gui.log4jquickconfig.Log4JQuickConfig;
-
-import static de.cismet.cids.custom.crisma.pilotD.worldstate.FuelMapView.HUE_BLUE;
-import static de.cismet.cids.custom.crisma.pilotD.worldstate.FuelMapView.HUE_RED;
 
 /**
  * DOCUMENT ME!
@@ -132,6 +125,7 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
     private final Object lock = new Object();
 
     private BufferedImage texture;
+    private BufferedImage mmiLegend;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler1;
@@ -168,15 +162,16 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
                         "/"
                                 + getClass().getPackage().getName().replaceAll("\\.", "/")
                                 + "/smoke_texture.jpeg"));
+            this.mmiLegend = ImageIO.read(getClass().getResourceAsStream(
+                        "/"
+                                + getClass().getPackage().getName().replaceAll("\\.", "/")
+                                + "/legend_transparent.png"));
         } catch (final IOException e) {
             LOG.warn("cannot load smoke texture", e);
             this.texture = null;
         }
 
         initComponents();
-
-//        jTextField1.getDocument().addDocumentListener(docL);
-//        jTextField2.getDocument().addDocumentListener(docL);
 
         setName("Forest Fire: Electrical discharge ignition");
     }
@@ -272,19 +267,6 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
             if (distance.getLength3() != vradius) {
                 distance = distance.normalize3().multiply3(vradius);
             }
-
-            System.out.println(posVec);
-            System.out.println(globe.computePointFromPosition(pos5));
-            System.out.println(globe.computePointFromPosition(pos6));
-            System.out.println(globe.computePointFromPosition(pos6).subtract3(posVec).getLength3());
-            System.out.println(distance.getLength3());
-            System.out.println(vradius);
-            final Position pos7 = globe.computePositionFromPoint(posVec.add3(distance));
-            final Vec4 posVec7 = globe.computePointFromPosition(pos7);
-            final Vec4 posVec7_2 = posVec.add3(distance);
-            System.out.println(posVec7);
-            System.out.println(posVec7_2);
-            System.out.println(posVec7.subtract3(posVec7_2));
 
             windDirCone = new Cone(
                     globe.computePositionFromPoint(posVec.add3(distance)),
@@ -488,12 +470,11 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
                                 // noop
                             }
                         }
-//                        addEq(c);
                         try {
                             addEq(
                                 c,
                                 new File(
-                                    "/Users/mscholl/projects/crisma/SP5/WP55/layers/Intensity_MainEvent_NEzone_Mw5.6/Shakemap_MainEvent_300px.tif"));
+                                    "/Users/mscholl/projects/crisma/SP5/WP55/layers/Shakemap_mainEvent_Mw5.6_NE_LAquila/Shakemap_MainEvent_NewGrid_tr2000px.tif"));
                         } catch (final Exception e) {
                             e.printStackTrace();
                         }
@@ -502,7 +483,7 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
                     }
                 });
         t.setPriority(Thread.MIN_PRIORITY);
-//        t.start();
+        t.start();
 
         pnl3d.add(c, BorderLayout.CENTER);
         final Thread t2 = new Thread(new Runnable() {
@@ -523,7 +504,7 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
                             });
                     }
                 });
-//        t2.start();
+        t2.start();
     }
 
     /**
@@ -803,8 +784,6 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
                 }
             });
 
-//            createRandomAltitudeSurface(HUE_BLUE, HUE_RED, 40, 40, surfaceLayer);
-//            createRandomColorSurface(HUE_BLUE, HUE_RED, 40, 40, surfaceLayer);
         final DataRasterReaderFactory readerFactory = (DataRasterReaderFactory)WorldWind.createConfigurationComponent(
                 AVKey.DATA_RASTER_READER_FACTORY_CLASS_NAME);
         final DataRasterReader reader = readerFactory.findReaderFor(file, null);
@@ -818,11 +797,9 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
                 height,
                 sector,
                 rasters[0]);
-        final double[] extremes = WWBufferUtil.computeExtremeValues(raster.getBuffer(), raster.getTransparentValue());
         final AnalyticSurface surface = new AnalyticSurface();
         surface.setSector(raster.getSector());
         surface.setDimensions(raster.getWidth(), raster.getHeight());
-//        surface.setValues(AnalyticSurface.createColorGradientValues(raster.getBuffer(), -9999, 0, 13, HUE_BLUE, HUE_RED));
         surface.setValues(createMMIValues(raster.getBuffer()));
         surface.setVerticalScale(0);
         surface.setAltitude(3000);
@@ -830,21 +807,16 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
         final AnalyticSurfaceAttributes attr = new AnalyticSurfaceAttributes();
         attr.setDrawOutline(false);
         attr.setDrawShadow(false);
-//        attr.setInteriorOpacity(0.6);
-        attr.setInteriorOpacity(1);
+        attr.setInteriorOpacity(0.6);
         surface.setSurfaceAttributes(attr);
 
-        final Format legendLabelFormat = new DecimalFormat("MMI");
+        final ScreenImage legend = new ScreenImage();
+        legend.setImageSource(mmiLegend);
+        legend.setOpacity(1);
+        legend.setImageOffset(Offset.RIGHT_CENTER);
+        legend.setScreenOffset(Offset.RIGHT_CENTER);
 
-        final AnalyticSurfaceLegend legend = AnalyticSurfaceLegend.fromColorGradient(
-                extremes[0],
-                extremes[1],
-                HUE_BLUE,
-                HUE_RED,
-                AnalyticSurfaceLegend.createDefaultColorGradientLabels(extremes[0], extremes[1], legendLabelFormat),
-                AnalyticSurfaceLegend.createDefaultTitle("Intensity"));
-        legend.setOpacity(0.8);
-        legend.setScreenLocation(new java.awt.Point(100, 300));
+//        legend.setScreenLocation(new java.awt.Point(pnl3d.getWidth() - 300, 250));
 
         EventQueue.invokeLater(new Runnable() {
 
@@ -852,22 +824,7 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
                 public void run() {
                     surface.setClientLayer(surfaceLayer);
                     surfaceLayer.addRenderable(surface);
-//                    surfaceLayer.addRenderable(new Renderable() {
-//
-//                            @Override
-//                            public void render(final DrawContext dc) {
-//                                final Extent extent = surface.getExtent(dc);
-//                                if (!extent.intersects(dc.getView().getFrustumInModelCoordinates())) {
-//                                    return;
-//                                }
-//
-//                                if (WWMath.computeSizeInWindowCoordinates(dc, extent) < 300) {
-//                                    return;
-//                                }
-//
-//                                legend.render(dc);
-//                            }
-//                        });
+                    surfaceLayer.addRenderable(legend);
                 }
             });
     }
