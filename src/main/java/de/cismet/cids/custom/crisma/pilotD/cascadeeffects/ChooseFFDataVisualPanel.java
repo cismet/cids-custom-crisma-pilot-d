@@ -73,6 +73,7 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 import java.io.File;
 import java.io.IOException;
@@ -83,6 +84,8 @@ import java.text.Format;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.Map.Entry;
+
+import javax.imageio.ImageIO;
 
 import javax.swing.JFrame;
 import javax.swing.WindowConstants;
@@ -101,8 +104,6 @@ import de.cismet.tools.gui.log4jquickconfig.Log4JQuickConfig;
 
 import static de.cismet.cids.custom.crisma.pilotD.worldstate.FuelMapView.HUE_BLUE;
 import static de.cismet.cids.custom.crisma.pilotD.worldstate.FuelMapView.HUE_RED;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
 
 /**
  * DOCUMENT ME!
@@ -129,6 +130,8 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
     private PointPlacemark ignitionPP;
 
     private final Object lock = new Object();
+
+    private BufferedImage texture;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler1;
@@ -160,11 +163,12 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
     public ChooseFFDataVisualPanel(final ChooseFFDataWizardPanel model) {
         this.model = model;
         this.docL = new DocL();
-        try
-        {
-            this.texture = ImageIO.read(getClass().getResourceAsStream("/" + getClass().getPackage().getName().replaceAll("\\.", "/") + "/smoke_texture.jpeg"));
-        }catch(final IOException e)
-        {
+        try {
+            this.texture = ImageIO.read(getClass().getResourceAsStream(
+                        "/"
+                                + getClass().getPackage().getName().replaceAll("\\.", "/")
+                                + "/smoke_texture.jpeg"));
+        } catch (final IOException e) {
             LOG.warn("cannot load smoke texture", e);
             this.texture = null;
         }
@@ -177,8 +181,6 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
         setName("Forest Fire: Electrical discharge ignition");
     }
 
-    private BufferedImage texture;
-    
     //~ Methods ----------------------------------------------------------------
 
     /**
