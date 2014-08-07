@@ -434,6 +434,8 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
                     attrs.setInteriorMaterial(new Material(new Color(Integer.decode("0xF0F0F0"))));
                     attrs.setInteriorOpacity(0.6);
                     attrs.setOutlineMaterial(new Material(new Color(Integer.decode("0x999999"))));
+                    attrs.setLeaderWidth(10);
+                    attrs.setOffset(new Offset(0.5, -25d, AVKey.FRACTION, AVKey.PIXELS));
                     gab.setAttributes(attrs);
 
                     if (currentBallon != null) {
@@ -550,7 +552,7 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
                             addEq(
                                 c,
                                 new File(
-                                    "/Users/mscholl/projects/crisma/SP5/WP55/layers/Shakemap_mainEvent_Mw5.6_NE_LAquila/Shakemap_MainEvent_NewGrid_tr2000px.tif"));
+                                    "/Users/mscholl/projects/crisma/SP5/WP55/layers/Shakemap_mainEvent_Mw5.6_NE_LAquila/shakemap_mainevent_newgrid_clipped_300px.tif"));
                         } catch (final Exception e) {
                             e.printStackTrace();
                         }
