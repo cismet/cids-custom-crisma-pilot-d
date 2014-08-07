@@ -24,6 +24,8 @@ import gov.nasa.worldwind.data.DataRaster;
 import gov.nasa.worldwind.data.DataRasterReader;
 import gov.nasa.worldwind.data.DataRasterReaderFactory;
 import gov.nasa.worldwind.event.RenderingExceptionListener;
+import gov.nasa.worldwind.event.SelectEvent;
+import gov.nasa.worldwind.event.SelectListener;
 import gov.nasa.worldwind.formats.shapefile.Shapefile;
 import gov.nasa.worldwind.formats.shapefile.ShapefileRecord;
 import gov.nasa.worldwind.formats.shapefile.ShapefileRecordPoint;
@@ -41,6 +43,8 @@ import gov.nasa.worldwind.layers.ViewControlsLayer;
 import gov.nasa.worldwind.layers.ViewControlsSelectListener;
 import gov.nasa.worldwind.layers.WorldMapLayer;
 import gov.nasa.worldwind.layers.placename.PlaceNameLayer;
+import gov.nasa.worldwind.pick.PickedObject;
+import gov.nasa.worldwind.pick.PickedObjectList;
 import gov.nasa.worldwind.render.BasicShapeAttributes;
 import gov.nasa.worldwind.render.Cone;
 import gov.nasa.worldwind.render.Cylinder;
@@ -97,6 +101,10 @@ import de.cismet.cismap.commons.gui.piccolo.eventlistener.BackgroundRefreshingPa
 import de.cismet.cismap.commons.gui.piccolo.eventlistener.RubberBandZoomListener;
 
 import de.cismet.tools.gui.log4jquickconfig.Log4JQuickConfig;
+import gov.nasa.worldwind.render.BasicBalloonAttributes;
+import gov.nasa.worldwind.render.GlobeAnnotationBalloon;
+import gov.nasa.worldwind.render.Size;
+import java.awt.Insets;
 
 /**
  * DOCUMENT ME!
@@ -348,29 +356,96 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
 
         featureLayer = new RenderableLayer();
         featureLayer.setName("Features");
-        c.getInputHandler().addMouseListener(new MouseAdapter() {
+        c.addSelectListener(new SelectListener()
+        {
 
+            @Override
+            public void selected(SelectEvent se)
+            {
+                if(se.getTopObject() instanceof Cylinder) {
+                    if(se.isHover() || se.isRollover()) {
+                        final Cylinder cyl = (Cylinder)se.getTopObject();
+                        if (cyl == selectedCylinder) {
+                            return;
+                        }
+
+                        if (selectedCylinder != null) {
+                            selectedCylinder.setHighlighted(false);
+                        }
+
+                        final BasicShapeAttributes bsa = new BasicShapeAttributes();
+                        final Color c = new Color(Integer.decode("0xCCCCCC"));
+                        final Material mat = new Material(c, c, c, c, 100);
+                        bsa.setInteriorMaterial(mat);
+                        bsa.setOutlineMaterial(mat);
+                        cyl.setHighlightAttributes(bsa);
+                        cyl.setHighlighted(true);
+
+                        selectedCylinder = cyl;
+                    }
+                } else {
+                    if (selectedCylinder != null) {
+                        selectedCylinder.setHighlighted(false);
+                    }
+                }
+            }
+                private Cylinder selectedCylinder;
+        });
+        c.getInputHandler().addMouseListener(new MouseAdapter() {
+            
                 @Override
                 public void mouseClicked(final MouseEvent e) {
                     final Position p = c.getCurrentPosition();
                     if (p != null) {
-//                    e.consume();
-                        synchronized (lock) {
+                        final PickedObjectList pol = c.getObjectsAtCurrentPosition();
+                        Cylinder cyl = null;
+                        for(final PickedObject po : pol) {
+                            if(po != null && po.getObject() instanceof Cylinder && po.isOnTop()) {
+                                cyl = (Cylinder)po.getObject();
+                            }
+                        }
+                        if (cyl == null) {
                             ignitionPP = new PointPlacemark(p);
                             final PointPlacemarkAttributes attr = new PointPlacemarkAttributes();
                             attr.setImageAddress("de/cismet/cids/custom/crisma/pilotD/cascadeeffects/fire_32.png");
                             attr.setImageOffset(Offset.BOTTOM_CENTER);
                             ignitionPP.setAttributes(attr);
-                        }
-                        featureLayer.removeAllRenderables();
-                        featureLayer.addRenderable(ignitionPP);
-                        jTextField1.setText(p.getLatitude().toDMString());
-                        jTextField2.setText(p.getLongitude().toDMString());
+                            featureLayer.removeAllRenderables();
+                            featureLayer.addRenderable(ignitionPP);
+                            jTextField1.setText(p.getLatitude().toDMString());
+                            jTextField2.setText(p.getLongitude().toDMString());
 
-                        createSmokeCone();
+                            createSmokeCone();
+                        } else {
+                            doSelect(cyl);
+                        }
                     }
                 }
+                
+                private void doSelect(final Cylinder cyl) {
+                    final Position p = cyl.getCenterPosition();
+                    final GlobeAnnotationBalloon gab = new GlobeAnnotationBalloon(
+                            "<html>Ignition probability:<br/><b>" + (Math.floor(cyl.getVerticalRadius() / 0.25) / 100) + " %</b></html>", 
+                            new Position(p.latitude, p.longitude, p.elevation + cyl.getVerticalRadius()));
+                    final BasicBalloonAttributes attrs = new BasicBalloonAttributes();
+                    attrs.setSize(Size.fromPixels(140, 67));
+                    attrs.setInsets(new Insets(15, 15, 15, 15));
+                    attrs.setInteriorMaterial(new Material(new Color(Integer.decode("0xF0F0F0"))));
+                    attrs.setInteriorOpacity(0.6);
+                    attrs.setOutlineMaterial(new Material(new Color(Integer.decode("0x999999"))));
+                    gab.setAttributes(attrs);
+
+                    if(currentBallon != null) {
+                        featureLayer.removeRenderable(currentBallon);
+                    }
+                    
+                    featureLayer.addRenderable(gab);
+                    currentBallon = gab;
+                }
+
+                private GlobeAnnotationBalloon currentBallon;
             });
+        
         // Insert the layer into the layer list just before the compass.
         pos = 0;
         layers = c.getModel().getLayers();
@@ -855,100 +930,6 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
      * @param  ww  DOCUMENT ME!
      */
     private void addProb(final WorldWindow ww) {
-//        final AirspaceLayer eqLayer = new AirspaceLayer();
-//        eqLayer.setName("Earthquake");
-//        final Shapefile eqFile = new Shapefile(new File(
-//                    "/Users/mscholl/projects/crisma/SP5/WP55/layers/Intensity_MainEvent_NEzone_Mw5.6/Shakemap_MainEvent.shp"));
-//        final Polygon pol = new Polygon();
-//
-//        final GeometryFactory gf = new GeometryFactory(new PrecisionModel(), 4326);
-//        final Map<Material, ArrayList<Geometry>> mp = new HashMap<Material, ArrayList<Geometry>>(14);
-//
-//        while (eqFile.hasNext()) {
-//            final ShapefileRecord record = eqFile.nextRecord();
-//            final double[] bbox = ((ShapefileRecordPolygon)record).getBoundingRectangle();
-//            final Sector sector = Sector.fromDegrees(bbox);
-//            final Coordinate[] coords = new Coordinate[5];
-//            final List<LatLon> llList = sector.asList();
-//            for (int i = 0; i < llList.size(); ++i) {
-//                final LatLon ll = llList.get(i);
-//                final Coordinate coord = new Coordinate(ll.longitude.degrees, ll.latitude.degrees);
-//                coords[i] = coord;
-//            }
-//            coords[4] = new Coordinate(llList.get(0).longitude.degrees, llList.get(0).latitude.degrees);
-//            final com.vividsolutions.jts.geom.Polygon p = new com.vividsolutions.jts.geom.Polygon(new LinearRing(
-//                        new CoordinateArraySequence(coords),
-//                        gf),
-//                    null,
-//                    gf);
-//
-//            Material mat = null;
-//            for (final Entry<String, Object> entry : record.getAttributes().getEntries()) {
-//                if (entry.getKey().equalsIgnoreCase("intensity")) {
-//                    final Double intensity = (Double)entry.getValue();
-//                    mat = getMaterial(intensity);
-//                }
-//            }
-//
-//            ArrayList<Geometry> coll = mp.get(mat);
-//            if (coll == null) {
-//                coll = new ArrayList<Geometry>();
-//                mp.put(mat, coll);
-//            }
-//            coll.add(p);
-//        }
-//
-//        for (final Entry<Material, ArrayList<Geometry>> entry : mp.entrySet()) {
-//            final BasicAirspaceAttributes baa = new BasicAirspaceAttributes();
-//            baa.setDrawInterior(true);
-//            baa.setDrawOutline(true);
-//            baa.setMaterial(entry.getKey());
-//            baa.setOutlineMaterial(entry.getKey());
-//            baa.setOutlineWidth(1d);
-//            final ArrayList<Geometry> list = entry.getValue();
-//            final GeometryCollection g = new GeometryCollection(list.toArray(new Geometry[list.size()]), gf);
-//            final Geometry geom = g.buffer(0);
-//
-//            final Iterable<? extends LatLon> it = new Iterable<LatLon>() {
-//
-//                    final Coordinate[] coords = geom.getCoordinates();
-//
-//                    @Override
-//                    public Iterator<LatLon> iterator() {
-//                        return new Iterator<LatLon>() {
-//
-//                                int index = 0;
-//
-//                                @Override
-//                                public boolean hasNext() {
-//                                    return index < (coords.length - 1);
-//                                }
-//
-//                                @Override
-//                                public LatLon next() {
-//                                    index++;
-//                                    return new LatLon(Angle.fromDegreesLatitude(coords[index].y),
-//                                            Angle.fromDegreesLongitude(coords[index].x));
-//                                }
-//
-//                                @Override
-//                                public void remove() {
-//                                    throw new UnsupportedOperationException("Not supported yet."); // To change body of
-//                                                                                                   // generated methods,
-//                                                                                                   // choose Tools |
-//                                                                                                   // Templates.
-//                                }
-//                            };
-//                    }
-//                };
-//
-//            final Polygon p = new Polygon(it);
-//            p.setAttributes(pol.getAttributes());
-//            p.setAltitude(3000);
-//
-//            eqLayer.addAirspace(p);
-//        }
-
         final RenderableLayer poleLayer = new RenderableLayer();
         poleLayer.setName("Poles");
         final Shapefile poleFile = new Shapefile(new File(
@@ -969,6 +950,7 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
             attrs.setInteriorMaterial(getMaterial(prob * 15));
             attrs.setOutlineMaterial(getMaterial(prob * 15));
             cyl.setAttributes(attrs);
+            cyl.setOutlinePickWidth(60);
 
 //            final PointPlacemark placemark = new PointPlacemark();
 //            placemark.setAltitudeMode(WorldWind.CLAMP_TO_GROUND);
