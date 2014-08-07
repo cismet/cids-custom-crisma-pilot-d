@@ -45,15 +45,18 @@ import gov.nasa.worldwind.layers.WorldMapLayer;
 import gov.nasa.worldwind.layers.placename.PlaceNameLayer;
 import gov.nasa.worldwind.pick.PickedObject;
 import gov.nasa.worldwind.pick.PickedObjectList;
+import gov.nasa.worldwind.render.BasicBalloonAttributes;
 import gov.nasa.worldwind.render.BasicShapeAttributes;
 import gov.nasa.worldwind.render.Cone;
 import gov.nasa.worldwind.render.Cylinder;
+import gov.nasa.worldwind.render.GlobeAnnotationBalloon;
 import gov.nasa.worldwind.render.Material;
 import gov.nasa.worldwind.render.Offset;
 import gov.nasa.worldwind.render.PointPlacemark;
 import gov.nasa.worldwind.render.PointPlacemarkAttributes;
 import gov.nasa.worldwind.render.ScreenImage;
 import gov.nasa.worldwind.render.ShapeAttributes;
+import gov.nasa.worldwind.render.Size;
 import gov.nasa.worldwind.util.BufferWrapper;
 import gov.nasa.worldwind.util.WWXML;
 import gov.nasa.worldwindx.examples.analytics.AnalyticSurface;
@@ -74,6 +77,7 @@ import org.w3c.dom.Document;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -101,10 +105,6 @@ import de.cismet.cismap.commons.gui.piccolo.eventlistener.BackgroundRefreshingPa
 import de.cismet.cismap.commons.gui.piccolo.eventlistener.RubberBandZoomListener;
 
 import de.cismet.tools.gui.log4jquickconfig.Log4JQuickConfig;
-import gov.nasa.worldwind.render.BasicBalloonAttributes;
-import gov.nasa.worldwind.render.GlobeAnnotationBalloon;
-import gov.nasa.worldwind.render.Size;
-import java.awt.Insets;
 
 /**
  * DOCUMENT ME!
@@ -356,51 +356,50 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
 
         featureLayer = new RenderableLayer();
         featureLayer.setName("Features");
-        c.addSelectListener(new SelectListener()
-        {
+        c.addSelectListener(new SelectListener() {
 
-            @Override
-            public void selected(SelectEvent se)
-            {
-                if(se.getTopObject() instanceof Cylinder) {
-                    if(se.isHover() || se.isRollover()) {
-                        final Cylinder cyl = (Cylinder)se.getTopObject();
-                        if (cyl == selectedCylinder) {
-                            return;
+                @Override
+                public void selected(final SelectEvent se) {
+                    if (se.getTopObject() instanceof Cylinder) {
+                        if (se.isHover() || se.isRollover()) {
+                            final Cylinder cyl = (Cylinder)se.getTopObject();
+                            if (cyl == selectedCylinder) {
+                                return;
+                            }
+
+                            if (selectedCylinder != null) {
+                                selectedCylinder.setHighlighted(false);
+                            }
+
+                            final BasicShapeAttributes bsa = new BasicShapeAttributes();
+                            final Color c = new Color(Integer.decode("0xCCCCCC"));
+                            final Material mat = new Material(c, c, c, c, 100);
+                            bsa.setInteriorMaterial(mat);
+                            bsa.setOutlineMaterial(mat);
+                            cyl.setHighlightAttributes(bsa);
+                            cyl.setHighlighted(true);
+
+                            selectedCylinder = cyl;
                         }
-
+                    } else {
                         if (selectedCylinder != null) {
                             selectedCylinder.setHighlighted(false);
                         }
-
-                        final BasicShapeAttributes bsa = new BasicShapeAttributes();
-                        final Color c = new Color(Integer.decode("0xCCCCCC"));
-                        final Material mat = new Material(c, c, c, c, 100);
-                        bsa.setInteriorMaterial(mat);
-                        bsa.setOutlineMaterial(mat);
-                        cyl.setHighlightAttributes(bsa);
-                        cyl.setHighlighted(true);
-
-                        selectedCylinder = cyl;
-                    }
-                } else {
-                    if (selectedCylinder != null) {
-                        selectedCylinder.setHighlighted(false);
                     }
                 }
-            }
+
                 private Cylinder selectedCylinder;
-        });
+            });
         c.getInputHandler().addMouseListener(new MouseAdapter() {
-            
+
                 @Override
                 public void mouseClicked(final MouseEvent e) {
                     final Position p = c.getCurrentPosition();
                     if (p != null) {
                         final PickedObjectList pol = c.getObjectsAtCurrentPosition();
                         Cylinder cyl = null;
-                        for(final PickedObject po : pol) {
-                            if(po != null && po.getObject() instanceof Cylinder && po.isOnTop()) {
+                        for (final PickedObject po : pol) {
+                            if ((po != null) && (po.getObject() instanceof Cylinder) && po.isOnTop()) {
                                 cyl = (Cylinder)po.getObject();
                             }
                         }
@@ -421,11 +420,13 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
                         }
                     }
                 }
-                
+
                 private void doSelect(final Cylinder cyl) {
                     final Position p = cyl.getCenterPosition();
                     final GlobeAnnotationBalloon gab = new GlobeAnnotationBalloon(
-                            "<html>Ignition probability:<br/><b>" + (Math.floor(cyl.getVerticalRadius() / 0.25) / 100) + " %</b></html>", 
+                            "<html>Ignition probability:<br/><b>"
+                                    + (Math.floor(cyl.getVerticalRadius() / 0.25) / 100)
+                                    + " %</b></html>",
                             new Position(p.latitude, p.longitude, p.elevation + cyl.getVerticalRadius()));
                     final BasicBalloonAttributes attrs = new BasicBalloonAttributes();
                     attrs.setSize(Size.fromPixels(140, 67));
@@ -435,17 +436,17 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
                     attrs.setOutlineMaterial(new Material(new Color(Integer.decode("0x999999"))));
                     gab.setAttributes(attrs);
 
-                    if(currentBallon != null) {
+                    if (currentBallon != null) {
                         featureLayer.removeRenderable(currentBallon);
                     }
-                    
+
                     featureLayer.addRenderable(gab);
                     currentBallon = gab;
                 }
 
                 private GlobeAnnotationBalloon currentBallon;
             });
-        
+
         // Insert the layer into the layer list just before the compass.
         pos = 0;
         layers = c.getModel().getLayers();
