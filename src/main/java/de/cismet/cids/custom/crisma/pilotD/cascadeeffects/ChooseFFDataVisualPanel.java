@@ -133,7 +133,7 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
     private final Object lock = new Object();
 
     private BufferedImage texture;
-    private BufferedImage mmiLegend;
+    public static BufferedImage MMI_LEGEND;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler1;
@@ -155,6 +155,16 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
+    static{
+        try {
+            MMI_LEGEND = ImageIO.read(ChooseFFDataVisualPanel.class.getResourceAsStream(
+                        "/"
+                                + ChooseFFDataVisualPanel.class.getPackage().getName().replaceAll("\\.", "/")
+                                + "/legend_transparent.png"));
+        } catch (final IOException e) {
+            LOG.warn("cannot load mmi legend", e);
+        }
+    }
     //~ Constructors -----------------------------------------------------------
 
     /**
@@ -170,10 +180,6 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
                         "/"
                                 + getClass().getPackage().getName().replaceAll("\\.", "/")
                                 + "/smoke_texture.jpeg"));
-            this.mmiLegend = ImageIO.read(getClass().getResourceAsStream(
-                        "/"
-                                + getClass().getPackage().getName().replaceAll("\\.", "/")
-                                + "/legend_transparent.png"));
         } catch (final IOException e) {
             LOG.warn("cannot load smoke texture", e);
             this.texture = null;
@@ -552,7 +558,8 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
                             addEq(
                                 c,
                                 new File(
-                                    "/Users/mscholl/projects/crisma/SP5/WP55/layers/Shakemap_mainEvent_Mw5.6_NE_LAquila/shakemap_mainevent_newgrid_clipped_300px.tif"));
+                                    "/Users/mscholl/projects/crisma/SP5/WP55/layers/Shakemap_mainEvent_Mw5.6_NE_LAquila/shakemap_mainevent_newgrid_clipped_300px.tif"),
+                                true);
                         } catch (final Exception e) {
                             e.printStackTrace();
                         }
@@ -805,7 +812,7 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
      *
      * @return  DOCUMENT ME!
      */
-    private Material getMaterial(final double intensity) {
+    public static Material getMaterial(final double intensity) {
         if (intensity < 2.0) {
             return new Material(new Color(255, 255, 255, 0));
         } else if (intensity < 3.0) {
@@ -841,7 +848,7 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
      *
      * @throws  Exception  DOCUMENT ME!
      */
-    private void addEq(final WorldWindow ww, final File file) throws Exception {
+    public static void addEq(final WorldWindow ww, final File file, final boolean showInitially) throws Exception {
         final RenderableLayer surfaceLayer = new RenderableLayer();
         surfaceLayer.setPickEnabled(false);
         surfaceLayer.setName("Earthquake");
@@ -889,13 +896,12 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
         surface.setSurfaceAttributes(attr);
 
         final ScreenImage legend = new ScreenImage();
-        legend.setImageSource(mmiLegend);
+        legend.setImageSource(MMI_LEGEND);
         legend.setOpacity(1);
         legend.setImageOffset(Offset.RIGHT_CENTER);
         legend.setScreenOffset(Offset.RIGHT_CENTER);
 
-//        legend.setScreenLocation(new java.awt.Point(pnl3d.getWidth() - 300, 250));
-
+        surfaceLayer.setEnabled(showInitially);
         EventQueue.invokeLater(new Runnable() {
 
                 @Override
@@ -914,7 +920,7 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
      *
      * @return  DOCUMENT ME!
      */
-    private Iterable<? extends AnalyticSurface.GridPointAttributes> createMMIValues(final BufferWrapper values) {
+    public static Iterable<? extends AnalyticSurface.GridPointAttributes> createMMIValues(final BufferWrapper values) {
         final ArrayList<GridPointAttributes> l = new ArrayList<GridPointAttributes>();
         for (int i = 0; i < values.length(); i++) {
             final double value = values.getDouble(i);
@@ -1010,7 +1016,7 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
      *
      * @version  $Revision$, $Date$
      */
-    private static final class GPA implements GridPointAttributes {
+    public static final class GPA implements GridPointAttributes {
 
         //~ Instance fields ----------------------------------------------------
 
