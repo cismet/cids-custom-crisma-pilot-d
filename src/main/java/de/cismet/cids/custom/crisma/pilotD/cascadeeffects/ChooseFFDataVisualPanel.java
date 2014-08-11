@@ -117,6 +117,18 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
     //~ Static fields/initializers ---------------------------------------------
 
     private static final transient Logger LOG = LoggerFactory.getLogger(ChooseFFDataVisualPanel.class);
+    public static BufferedImage MMI_LEGEND;
+
+    static {
+        try {
+            MMI_LEGEND = ImageIO.read(ChooseFFDataVisualPanel.class.getResourceAsStream(
+                        "/"
+                                + ChooseFFDataVisualPanel.class.getPackage().getName().replaceAll("\\.", "/")
+                                + "/legend_transparent.png"));
+        } catch (final IOException e) {
+            LOG.warn("cannot load mmi legend", e);
+        }
+    }
 
     //~ Instance fields --------------------------------------------------------
 
@@ -133,7 +145,6 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
     private final Object lock = new Object();
 
     private BufferedImage texture;
-    public static BufferedImage MMI_LEGEND;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.Box.Filler filler1;
@@ -155,16 +166,6 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
-    static{
-        try {
-            MMI_LEGEND = ImageIO.read(ChooseFFDataVisualPanel.class.getResourceAsStream(
-                        "/"
-                                + ChooseFFDataVisualPanel.class.getPackage().getName().replaceAll("\\.", "/")
-                                + "/legend_transparent.png"));
-        } catch (final IOException e) {
-            LOG.warn("cannot load mmi legend", e);
-        }
-    }
     //~ Constructors -----------------------------------------------------------
 
     /**
@@ -843,8 +844,9 @@ public class ChooseFFDataVisualPanel extends javax.swing.JPanel {
     /**
      * DOCUMENT ME!
      *
-     * @param   ww    DOCUMENT ME!
-     * @param   file  DOCUMENT ME!
+     * @param   ww             DOCUMENT ME!
+     * @param   file           DOCUMENT ME!
+     * @param   showInitially  DOCUMENT ME!
      *
      * @throws  Exception  DOCUMENT ME!
      */

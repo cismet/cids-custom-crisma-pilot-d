@@ -7,7 +7,6 @@
 ****************************************************/
 package de.cismet.cids.custom.crisma.pilotD.worldstate;
 
-import de.cismet.cids.custom.crisma.pilotD.cascadeeffects.ChooseFFDataVisualPanel;
 import gov.nasa.worldwind.Model;
 import gov.nasa.worldwind.WorldWind;
 import gov.nasa.worldwind.WorldWindow;
@@ -59,6 +58,7 @@ import javax.swing.WindowConstants;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 
+import de.cismet.cids.custom.crisma.pilotD.cascadeeffects.ChooseFFDataVisualPanel;
 import de.cismet.cids.custom.crisma.pilotD.cascadeeffects.ChooseFFDataVisualPanel.GPA;
 import de.cismet.cids.custom.crisma.worldstate.viewer.AbstractDetailView;
 
@@ -380,18 +380,18 @@ public class ForestFireView extends AbstractDetailView {
                     upperBound,
                     FuelMapView.HUE_BLUE,
                     FuelMapView.HUE_RED));
-        attr.setInteriorOpacity(1);
-        surface.setVerticalScale(2500 / upperBound);
-        surface.setAltitude(3000);
+            attr.setInteriorOpacity(1);
+            surface.setVerticalScale(2500 / upperBound);
+            surface.setAltitude(3000);
         } else {
             surface.setValues(createSmokeIntensityValues(
                     raster.getBuffer(),
                     lowerBound,
                     upperBound,
                     raster.getTransparentValue()));
-        attr.setInteriorOpacity(0.8);
-        surface.setVerticalScale(0);
-        surface.setAltitude(2500);
+            attr.setInteriorOpacity(0.8);
+            surface.setVerticalScale(0);
+            surface.setAltitude(2500);
         }
 
         attr.setDrawOutline(false);
@@ -453,7 +453,7 @@ public class ForestFireView extends AbstractDetailView {
                 attributesList.add(new GPA(value, new Color(0, 0, 0, 0)));
             } else {
                 int grey = Double.valueOf(255 - (255 * (value / (max - min)))).intValue();
-                if(grey < 0) {
+                if (grey < 0) {
                     grey = 0;
                 }
                 attributesList.add(new GPA(value, new Color(grey, grey, grey, 255)));
